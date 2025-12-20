@@ -3,7 +3,15 @@ import { SectionProps } from '@/types/wedding';
 export default function BasicLocation({ config, isVisible }: SectionProps) {
   if (!isVisible) return null;
 
-  const { location } = config;
+  interface LocationConfig {
+    location?: {
+      name: string;
+      address: string;
+      mapUrl?: string;
+    };
+  }
+
+  const { location } = config as unknown as LocationConfig;
 
   return (
     <section className="py-16 px-6 bg-white text-center">

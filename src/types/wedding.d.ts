@@ -55,4 +55,5 @@ export interface SectionConfig {
 export interface SectionProps {
   config: Record<string, unknown>;
   isVisible: boolean;
+  onEnter?: () => void;
 }

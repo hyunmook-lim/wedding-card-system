@@ -65,7 +65,7 @@ const MOCK_DB: Record<string, WeddingConfig> = {
         }
       },
       {
-        id: 'sec_4',
+        id: 'sec_5',
         type: 'location',
         variant: 'basic',
         isVisible: true,
@@ -74,15 +74,6 @@ const MOCK_DB: Record<string, WeddingConfig> = {
         }
       },
        {
-        id: 'sec_5',
-        type: 'gallery',
-        variant: 'basic',
-        isVisible: true,
-        content: {
-          images: []
-        }
-      },
-      {
         id: 'sec_6',
         type: 'account',
         variant: 'basic',
@@ -91,6 +82,15 @@ const MOCK_DB: Record<string, WeddingConfig> = {
           accounts: [
             { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
           ]
+        }
+      },
+      {
+        id: 'sec_7',
+        type: 'gallery',
+        variant: 'basic',
+        isVisible: true,
+        content: {
+          images: []
         }
       }
     ]

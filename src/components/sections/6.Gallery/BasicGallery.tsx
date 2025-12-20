@@ -4,7 +4,7 @@ import Image from 'next/image';
 export default function BasicGallery({ config, isVisible }: SectionProps) {
   if (!isVisible) return null;
 
-  const images = config.images || [];
+  const images = (config.images as string[]) || [];
 
   return (
     <section className="py-16 bg-white">
