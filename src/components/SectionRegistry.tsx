@@ -16,6 +16,7 @@ const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
 const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
 const SoftTypingDate = dynamic(() => import('./sections/3.Date/SoftTypingDate'));
 const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
+const MemoLocation = dynamic(() => import('./sections/4.Location/MemoLocation'));
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
 
@@ -42,6 +43,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   },
   location: {
     basic: BasicLocation,
+    memo: MemoLocation,
   },
   account: {
     basic: BasicAccount,

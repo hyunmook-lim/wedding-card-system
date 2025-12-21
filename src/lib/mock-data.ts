@@ -78,7 +78,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       {
         id: 'sec_5',
         type: 'location',
-        variant: 'basic',
+        variant: 'memo',
         isVisible: true,
         content: {
           // location injected from global event
