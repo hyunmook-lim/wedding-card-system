@@ -69,7 +69,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       {
         id: 'sec_4',
         type: 'date',
-        variant: 'basic',
+        variant: 'soft',
         isVisible: true,
         content: {
           // date injected from global event

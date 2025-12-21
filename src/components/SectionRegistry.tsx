@@ -13,6 +13,8 @@ const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGr
 const MainIntro = dynamic(() => import('./sections/0.Intro/MainIntro'));
 
 const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
+const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
+const SoftTypingDate = dynamic(() => import('./sections/3.Date/SoftTypingDate'));
 const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
@@ -35,6 +37,8 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   },
   date: {
     basic: BasicDate,
+    typing: TypingDate,
+    soft: SoftTypingDate,
   },
   location: {
     basic: BasicLocation,

@@ -47,7 +47,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       }
     },
     top: {
-      y: "-45vh",
+      y: "-40vh",
       opacity: 1,
       scale: 0.7,
       transition: {
@@ -56,7 +56,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       }
     },
     flipped: {
-      y: "-45vh",
+      y: "-40vh",
       opacity: 1,
       scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }
