@@ -7,7 +7,9 @@ import { SectionProps } from '@/types/wedding';
 
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
+const VideoGreeting = dynamic(() => import('./sections/1.Greeting/VideoGreeting'));
 const BasicBrideGroom = dynamic(() => import('./sections/2.BrideGroom/BasicBrideGroom'));
+const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGroom'));
 const MainIntro = dynamic(() => import('./sections/0.Intro/MainIntro'));
 
 const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
@@ -15,16 +17,21 @@ const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
 
+// Debug Wrapper
+import SectionDebugWrapper from './dev/SectionDebugWrapper';
+
 // Map types to components
 const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionProps>>> = {
   greeting: {
     basic: BasicGreeting,
+    video: VideoGreeting,
   },
   intro: {
     basic: MainIntro,
   },
   bride_groom: {
     basic: BasicBrideGroom,
+    card: CardBrideGroom,
   },
   date: {
     basic: BasicDate,
@@ -40,6 +47,8 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   },
   // Add other sections here as they are created
 };
+
+
 
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
@@ -68,7 +77,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     if (!Component) return null;
 
     return (
-      <div className="fixed inset-0 z-[100] transition-opacity duration-1000 ease-in-out">
+      <div className="absolute inset-0 z-[100] h-full w-full transition-opacity duration-1000 ease-in-out">
          <Component 
             key={introSection.id}
             config={introSection.content}
@@ -87,7 +96,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
 
       {/* Render Main Content (only visible after intro is gone, or keep it behind) */}
       <div className={`transition-opacity duration-1000 ${showIntro ? 'opacity-0 overflow-hidden h-screen' : 'opacity-100'}`}>
-        {otherSections.map((section) => {
+        {otherSections.map((section, index) => {
             const componentMap = SECTION_COMPONENTS[section.type];
             if (!componentMap) return null;
 
@@ -95,11 +104,12 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             if (!Component) return null;
 
             return (
-            <Component 
-                key={section.id} 
-                config={section.content} 
-                isVisible={section.isVisible} 
-            />
+              <SectionDebugWrapper key={section.id} id={section.id} type={section.type} index={index}>
+                <Component 
+                    config={section.content} 
+                    isVisible={section.isVisible} 
+                />
+              </SectionDebugWrapper>
             );
         })}
       </div>

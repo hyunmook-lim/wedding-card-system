@@ -3,7 +3,7 @@
 import { type ElementType, type HTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-type TypographyVariant = "h1" | "h2" | "h3" | "body" | "caption" | "highlight";
+type TypographyVariant = "h1" | "h2" | "h3" | "body" | "caption" | "highlight" | "display" | "overlay-title" | "overlay-body";
 
 interface TypographyProps extends HTMLAttributes<HTMLElement> {
   variant?: TypographyVariant;
@@ -17,6 +17,9 @@ const ELEMENT_TAGS: Record<TypographyVariant, ElementType> = {
   body: "p",
   caption: "span",
   highlight: "span",
+  display: "h1",
+  "overlay-title": "h2",
+  "overlay-body": "p",
 };
 
 export function Typography({
@@ -52,6 +55,12 @@ function getVariantClasses(variant: TypographyVariant): string {
       return "text-sm text-gray-500";
     case "highlight":
       return "text-base font-medium text-rose-500";
+    case "display":
+      return "text-6xl font-serif text-gray-900 leading-tight";
+    case "overlay-title":
+      return "text-3xl font-serif mb-4 drop-shadow-md text-white";
+    case "overlay-body":
+      return "text-lg font-light leading-relaxed whitespace-pre-line drop-shadow-md opacity-90 text-white";
     default:
       return "";
   }

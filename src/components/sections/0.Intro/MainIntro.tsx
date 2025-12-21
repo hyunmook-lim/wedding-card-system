@@ -8,7 +8,7 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
 
   return (
     <section 
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white cursor-pointer"
+      className="w-full h-full flex flex-col items-center justify-center bg-white cursor-pointer overflow-hidden"
       onClick={onEnter}
     >
         <div className="relative w-full h-full">
