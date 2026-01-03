@@ -13,10 +13,14 @@ interface StickySectionProps {
 export function StickySection({ children, height = '100lvh', index, className = '' }: StickySectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   
+  // For the first section (index 0), use negative margin to make it visible from the start
+  const isFirst = index === 0;
+  const marginTop = isFirst ? '-100lvh' : '0';
+  
   return (
     <div 
       ref={containerRef}
-      style={{ height, zIndex: index }} 
+      style={{ height, marginTop, zIndex: index }} 
       className="relative w-full"
     >
       <StickyScrollContext.Provider value={containerRef as unknown as React.RefObject<HTMLElement>}>
