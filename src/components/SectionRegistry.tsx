@@ -23,6 +23,7 @@ const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
 
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
+import { StickySection } from '@/components/ui/StickySection';
 
 // Map types to components
 const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionProps>>> = {
@@ -54,6 +55,26 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     basic: BasicGallery,
   },
   // Add other sections here as they are created
+};
+
+// Define default heights for specific section variants
+const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
+  greeting: {
+    video: '500vh',
+  },
+  account: {
+    masked: '300vh',
+  },
+  date: {
+    typing: '200vh',
+    soft: '200vh',
+  },
+  location: {
+    memo: '300vh',
+  },
+  bride_groom: {
+    card: '300vh',
+  },
 };
 
 
@@ -111,15 +132,20 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             const Component = componentMap[section.variant] || componentMap['basic'];
             if (!Component) return null;
 
-            return (
-              <SectionDebugWrapper key={section.id} id={section.id} type={section.type} index={index}>
-                <Component 
-                    config={section.content} 
-                    isVisible={section.isVisible} 
-                />
-              </SectionDebugWrapper>
-            );
-        })}
+        // Define scroll heights for specific sections
+        const height = SECTION_HEIGHTS[section.type]?.[section.variant] || '100dvh';
+
+        return (
+          <SectionDebugWrapper key={section.id} id={section.id} type={section.type} index={index}>
+            <StickySection index={index} height={height}>
+              <Component 
+                  config={section.content} 
+                  isVisible={section.isVisible} 
+              />
+            </StickySection>
+          </SectionDebugWrapper>
+        );
+      })}
       </div>
     </main>
   );

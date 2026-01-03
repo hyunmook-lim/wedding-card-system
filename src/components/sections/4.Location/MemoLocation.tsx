@@ -5,13 +5,15 @@ import { useRef, useState } from 'react';
 import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import Image from 'next/image';
+import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 export default function MemoLocation({ config, isVisible }: SectionProps) {
+  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
   const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'info'>('hidden');
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: scrollRef || undefined,
     offset: ['start end', 'end start']
   });
 
@@ -88,8 +90,8 @@ export default function MemoLocation({ config, isVisible }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={containerRef} className="relative h-[300vh]">
-      <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
+    <section ref={containerRef} className="relative w-full h-full">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"

@@ -112,8 +112,8 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={containerRef} className="relative h-[300vh]">
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden perspective-[1000px]">
+    <section ref={containerRef} className="relative w-full h-full">
+      <div className="absolute top-0 h-full w-full flex flex-col items-center justify-center overflow-hidden perspective-[1000px]">
         <motion.div 
           initial="hidden"
           animate={animationState === 'flipped' ? 'flipped' : animationState}

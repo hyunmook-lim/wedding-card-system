@@ -1,9 +1,8 @@
-'use client';
-
 import { SectionProps } from '@/types/wedding';
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
+import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 // Helper component for scrambling effect (unchanged)
 function ScrambleText({ text, delay = 0, className }: { text: string; delay?: number; className?: string }) {
@@ -54,11 +53,12 @@ function ScrambleText({ text, delay = 0, className }: { text: string; delay?: nu
 }
 
 export default function TypingDate({ config, isVisible }: SectionProps) {
+  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
   const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top'>('hidden');
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: scrollRef || undefined,
     offset: ['start end', 'end start']
   });
 
@@ -124,8 +124,8 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
   const fullDateString = `${year}.${month}.${day} ${dayName}`;
 
   return (
-    <section ref={containerRef} className="relative h-[200vh]">
-      <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
+    <section ref={containerRef} className="relative w-full h-full">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"

@@ -1,10 +1,11 @@
 'use client';
 
 import { SectionProps } from '@/types/wedding';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import { cn } from '@/lib/utils';
+import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 type AccountType = 'groom' | 'bride';
 
@@ -83,13 +84,14 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
 }
 
 export default function MaskedAccount({ config: _config, isVisible }: SectionProps) {
+  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
   const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'info'>('hidden');
   const [groomRevealed, setGroomRevealed] = useState(false);
   const [brideRevealed, setBrideRevealed] = useState(false);
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: scrollRef || undefined,
     offset: ['start end', 'end start']
   });
 
@@ -153,8 +155,8 @@ export default function MaskedAccount({ config: _config, isVisible }: SectionPro
   if (!isVisible) return null;
 
   return (
-    <section ref={containerRef} className="relative h-[300vh]">
-      <div className="sticky top-0 left-0 w-full h-screen flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
+    <section ref={containerRef} className="relative w-full h-full">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"

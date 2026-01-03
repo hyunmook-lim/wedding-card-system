@@ -16,7 +16,6 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const message = (config.message as string) || '';
   
   // Height multiplier for scroll distance
-  const scrollHeightClass = images.length > 0 ? 'h-[500vh]' : 'h-auto';
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -133,10 +132,9 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <div ref={containerRef} className={cn("relative w-full", scrollHeightClass)}>
-
+    <div ref={containerRef} className={cn("relative w-full h-full")}>
       <motion.div 
-        className="sticky top-0 left-0 w-full h-screen overflow-hidden bg-black"
+        className="absolute top-0 left-0 w-full h-full overflow-hidden bg-black"
         style={{ 
           opacity: containerOpacity,
           filter: containerBlur,
