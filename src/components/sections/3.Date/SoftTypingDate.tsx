@@ -60,15 +60,15 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
   const { date } = config;
   
   const dateObj = new Date(date as string);
-  const year = dateObj.getFullYear();
-  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-  const day = String(dateObj.getDate()).padStart(2, '0');
+  const year = dateObj.getUTCFullYear();
+  const month = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getUTCDate()).padStart(2, '0');
   
   const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  const dayName = days[dateObj.getDay()];
+  const dayName = days[dateObj.getUTCDay()];
 
-  const hours = dateObj.getHours();
-  const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+  const hours = dateObj.getUTCHours();
+  const minutes = String(dateObj.getUTCMinutes()).padStart(2, '0');
   const ampm = hours >= 12 ? 'PM' : 'AM';
   const formattedHours = hours % 12 || 12; // 0 should be 12
 
