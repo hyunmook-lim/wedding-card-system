@@ -133,10 +133,10 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             if (!Component) return null;
 
         // Define scroll heights for specific sections
-        const height = SECTION_HEIGHTS[section.type]?.[section.variant] || '100dvh';
+        const height = SECTION_HEIGHTS[section.type]?.[section.variant] || '100lvh';
 
         return (
-          <SectionDebugWrapper key={section.id} id={section.id} type={section.type} index={index}>
+          <SectionDebugWrapper key={section.id} type={section.type} index={index}>
             <StickySection index={index} height={height}>
               <Component 
                   config={section.content} 

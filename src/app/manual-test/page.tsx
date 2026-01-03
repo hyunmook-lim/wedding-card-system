@@ -5,9 +5,9 @@ import { FadeIn } from "@/components/ui/FadeIn";
 import { FadeOut } from "@/components/ui/FadeOut";
 import { Button } from "@/components/ui/Button";
 import { IconWrapper } from "@/components/ui/IconWrapper";
-import { useState } from "react";
+import { useState, type SVGProps } from "react";
 
-const HeartIcon = (props: any) => (
+const HeartIcon = (props: SVGProps<SVGSVGElement>) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
     viewBox="0 0 24 24" 

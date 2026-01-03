@@ -7,7 +7,7 @@ import { Typography } from '@/components/ui/Typography';
 import Image from 'next/image';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
-export default function MemoLocation({ config, isVisible }: SectionProps) {
+export default function MemoLocation({ isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
   const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'info'>('hidden');

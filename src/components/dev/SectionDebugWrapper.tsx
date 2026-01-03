@@ -3,7 +3,7 @@
 import { useRef } from 'react';
 import { useScroll, useMotionValueEvent } from 'framer-motion';
 
-export default function SectionDebugWrapper({ children, id, type, index }: { children: React.ReactNode; id?: string; type: string; index: number }) {
+export default function SectionDebugWrapper({ children, type, index }: { children: React.ReactNode; type: string; index: number }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   

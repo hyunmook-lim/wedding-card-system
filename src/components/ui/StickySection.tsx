@@ -10,7 +10,7 @@ interface StickySectionProps {
   className?: string; // Extra classes for the internal sticky container
 }
 
-export function StickySection({ children, height = '100dvh', index, className = '' }: StickySectionProps) {
+export function StickySection({ children, height = '100lvh', index, className = '' }: StickySectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   
   return (
@@ -20,7 +20,7 @@ export function StickySection({ children, height = '100dvh', index, className = 
       className="relative w-full"
     >
       <StickyScrollContext.Provider value={containerRef as unknown as React.RefObject<HTMLElement>}>
-        <div className={`sticky top-0 h-[100dvh] w-full overflow-hidden bg-white ${className}`}>
+        <div className={`sticky top-0 h-[100lvh] w-full overflow-hidden bg-white ${className}`}>
           {children}
         </div>
       </StickyScrollContext.Provider>

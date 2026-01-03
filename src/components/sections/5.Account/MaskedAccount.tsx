@@ -83,7 +83,7 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
   );
 }
 
-export default function MaskedAccount({ config: _config, isVisible }: SectionProps) {
+export default function MaskedAccount({ isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
   const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'info'>('hidden');
