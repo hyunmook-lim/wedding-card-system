@@ -60,20 +60,20 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
 // Define default heights for specific section variants
 const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   greeting: {
-    video: '500vh',
+    video: '500lvh',
   },
   account: {
-    masked: '300vh',
+    masked: '300lvh',
   },
   date: {
-    typing: '200vh',
-    soft: '200vh',
+    typing: '200lvh',
+    soft: '200lvh',
   },
   location: {
-    memo: '300vh',
+    memo: '300lvh',
   },
   bride_groom: {
-    card: '300vh',
+    card: '300lvh',
   },
 };
 

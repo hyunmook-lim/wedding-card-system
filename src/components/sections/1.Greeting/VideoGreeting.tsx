@@ -5,8 +5,10 @@ import { useScroll, useTransform, motion } from 'framer-motion';
 import { SectionProps } from '@/types/wedding';
 import { cn } from '@/lib/utils';
 import { Typography } from '@/components/ui/Typography';
+import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 export default function VideoGreeting({ config, isVisible }: SectionProps) {
+  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
@@ -18,13 +20,13 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   // Height multiplier for scroll distance
 
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: scrollRef || undefined,
     offset: ['start start', 'end end'],
   });
 
   // Exit phase: When the sticky container scrolls out of view (after 'end end')
   const { scrollYProgress: scrollYExit } = useScroll({
-    target: containerRef,
+    target: scrollRef || undefined,
     offset: ['end end', 'end start'],
   });
 

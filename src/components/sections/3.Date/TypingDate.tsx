@@ -74,7 +74,7 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
 
   const titleVariants: Variants = {
     hidden: { 
-      y: "30vh", 
+      y: "30lvh", 
       opacity: 0, 
       scale: 0.8,
       transition: { duration: 1.0, ease: "easeInOut" }
@@ -86,7 +86,7 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
       transition: { duration: 1.0, ease: "easeInOut" }
     },
     top: {
-      y: "-40vh", // Move up
+      y: "-40lvh", // Move up
       opacity: 1,
       scale: 0.8,
       transition: { duration: 0.8, ease: "easeInOut" }

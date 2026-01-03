@@ -6,12 +6,15 @@ import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion'
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 
+import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+
 export default function CardBrideGroom({ isVisible }: SectionProps) {
+  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
   const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'flipped'>('hidden');
   
   const { scrollYProgress } = useScroll({
-    target: containerRef,
+    target: scrollRef || undefined,
     offset: ['start end', 'end start']
   });
 
@@ -29,7 +32,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
 
   const variants: Variants = {
     hidden: { 
-      y: "60vh",
+      y: "60lvh",
       opacity: 0, 
       scale: 0.8,
       transition: {
@@ -47,7 +50,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       }
     },
     top: {
-      y: "-40vh",
+      y: "-40lvh",
       opacity: 1,
       scale: 0.7,
       transition: {
@@ -56,7 +59,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       }
     },
     flipped: {
-      y: "-40vh",
+      y: "-40lvh",
       opacity: 1,
       scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }
@@ -65,7 +68,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
 
   const cardVariantsA: Variants = {
     hidden: { 
-      y: "70vh", 
+      y: "70lvh", 
       rotate: 0, 
       rotateY: 0,
       transition: { duration: 1, ease: "easeInOut" }
@@ -88,7 +91,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
 
   const cardVariantsB: Variants = {
     hidden: { 
-      y: "70vh", 
+      y: "70lvh", 
       rotate: 0, 
       rotateY: 180,
       transition: { duration: 1, ease: "easeInOut" }
