@@ -87,7 +87,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
        {
         id: 'sec_6',
         type: 'account',
-        variant: 'basic',
+        variant: 'masked',
         isVisible: true,
         content: {
           accounts: [

@@ -18,6 +18,7 @@ const SoftTypingDate = dynamic(() => import('./sections/3.Date/SoftTypingDate'))
 const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
 const MemoLocation = dynamic(() => import('./sections/4.Location/MemoLocation'));
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
+const MaskedAccount = dynamic(() => import('./sections/5.Account/MaskedAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
 
 // Debug Wrapper
@@ -47,6 +48,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   },
   account: {
     basic: BasicAccount,
+    masked: MaskedAccount,
   },
   gallery: {
     basic: BasicGallery,
