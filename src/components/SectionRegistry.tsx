@@ -60,20 +60,20 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
 // Define default heights for specific section variants
 const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   greeting: {
-    video: '500lvh',
+    video: '4000px', // 500lvh -> 5 * 800
   },
   account: {
-    masked: '300lvh',
+    masked: '2400px', // 300lvh -> 3 * 800
   },
   date: {
-    typing: '200lvh',
-    soft: '200lvh',
+    typing: '1600px', // 200lvh -> 2 * 800
+    soft: '1600px', // 200lvh -> 2 * 800
   },
   location: {
-    memo: '300lvh',
+    memo: '2400px', // 300lvh -> 3 * 800
   },
   bride_groom: {
-    card: '300lvh',
+    card: '2400px', // 300lvh -> 3 * 800
   },
 };
 
@@ -133,7 +133,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             if (!Component) return null;
 
         // Define scroll heights for specific sections
-        const height = SECTION_HEIGHTS[section.type]?.[section.variant] || '100lvh';
+        const height = SECTION_HEIGHTS[section.type]?.[section.variant] || '800px';
 
         return (
           <SectionDebugWrapper key={section.id} type={section.type} index={index}>

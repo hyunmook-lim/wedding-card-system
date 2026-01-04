@@ -31,7 +31,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
 
   const titleVariants: Variants = {
     hidden: {
-      y: "30lvh",
+      y: "240px",
       opacity: 0,
       scale: 0.9,
       transition: { duration: 0.8, ease: "easeInOut" }
@@ -43,7 +43,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
       transition: { duration: 0.8, ease: "easeInOut" }
     },
     exit: {
-      y: "-40lvh",
+      y: "-320px",
       opacity: 0,
       scale: 0.9,
       transition: { duration: 0.8, ease: "easeInOut" }

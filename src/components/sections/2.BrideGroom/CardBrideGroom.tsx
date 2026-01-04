@@ -32,7 +32,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
 
   const variants: Variants = {
     hidden: { 
-      y: "60lvh",
+      y: "480px", // 60lvh -> 0.6 * 800
       opacity: 0, 
       scale: 0.8,
       transition: {
@@ -50,7 +50,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       }
     },
     top: {
-      y: "-40lvh",
+      y: "-320px", // -40lvh -> -0.4 * 800
       opacity: 1,
       scale: 0.7,
       transition: {
@@ -59,7 +59,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       }
     },
     flipped: {
-      y: "-40lvh",
+      y: "-320px", // -40lvh -> -0.4 * 800
       opacity: 1,
       scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }
@@ -68,7 +68,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
 
   const cardVariantsA: Variants = {
     hidden: { 
-      y: "70lvh", 
+      y: "560px", // 70lvh -> 0.7 * 800
       rotate: 0, 
       rotateY: 0,
       transition: { duration: 1, ease: "easeInOut" }
@@ -91,7 +91,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
 
   const cardVariantsB: Variants = {
     hidden: { 
-      y: "70lvh", 
+      y: "560px", // 70lvh -> 0.7 * 800
       rotate: 0, 
       rotateY: 180,
       transition: { duration: 1, ease: "easeInOut" }

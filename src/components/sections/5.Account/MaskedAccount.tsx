@@ -116,27 +116,36 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
 
   const titleVariants: Variants = {
     hidden: { 
-      y: "30lvh", 
+      y: "240px", // 30lvh -> 240px
       opacity: 0, 
-      scale: 0.8,
-      transition: { duration: 1.0, ease: "easeInOut" }
+      scale: 0.9,
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut"
+      }
     },
     visible: { 
       y: 0,
       opacity: 1, 
       scale: 1,
-      transition: { duration: 1.0, ease: "easeInOut" }
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut"
+      }
     },
     top: {
-      y: "-40lvh",
-      opacity: 1,
-      scale: 0.8,
-      transition: { duration: 0.8, ease: "easeInOut" }
+      y: "-320px", // -40lvh -> -320px
+      opacity: 0,
+      scale: 0.9,
+      transition: {
+        duration: 0.8,
+        ease: "easeInOut"
+      }
     },
-    info: {
-      y: "-40lvh",
-      opacity: 1,
-      scale: 0.8,
+    exit: {
+      y: "-320px", // -40lvh -> -320px
+      opacity: 0,
+      scale: 0.9,
       transition: { duration: 0.8, ease: "easeInOut" }
     }
   };
