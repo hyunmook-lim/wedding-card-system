@@ -20,7 +20,7 @@ export function StickySection({ children, height = '800px', index, className = '
       className="relative w-full"
     >
       <StickyScrollContext.Provider value={containerRef as unknown as React.RefObject<HTMLElement>}>
-        <div className={`sticky top-0 h-[800px] w-full overflow-hidden bg-white ${className}`}>
+        <div className={`sticky top-0 h-[100dvh] w-full overflow-hidden bg-white ${className}`}>
           {children}
         </div>
       </StickyScrollContext.Provider>

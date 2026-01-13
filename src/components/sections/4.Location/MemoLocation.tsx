@@ -42,16 +42,16 @@ export default function MemoLocation({ isVisible }: SectionProps) {
       scale: 1,
       transition: { duration: 0.8, ease: "easeInOut" }
     },
-    exit: {
+    top: {
       y: "-320px",
-      opacity: 0,
-      scale: 0.9,
+      opacity: 1,
+      scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }
     },
     info: {
-      y: "-40vh",
+      y: "-320px",
       opacity: 1,
-      scale: 0.8,
+      scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }
     }
   };

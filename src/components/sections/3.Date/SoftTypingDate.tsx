@@ -17,9 +17,9 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.40) { // User requested 40% for top
+    if (latest > 0.35) { // Adjusted to match CardBrideGroom logic
       setAnimationState('top');
-    } else if (latest > 0.25) { // User requested 25% for visible
+    } else if (latest > 0.25) { 
       setAnimationState('visible');
     } else {
       setAnimationState('hidden');
@@ -47,8 +47,8 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
     },
     top: {
       y: "-320px", // -40lvh -> -320px
-      opacity: 0,
-      scale: 0.9,
+      opacity: 1,
+      scale: 0.7,
       transition: {
         duration: 0.8,
         ease: "easeInOut"

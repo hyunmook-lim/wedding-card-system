@@ -135,17 +135,17 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
     },
     top: {
       y: "-320px", // -40lvh -> -320px
-      opacity: 0,
-      scale: 0.9,
+      opacity: 1,
+      scale: 0.7,
       transition: {
         duration: 0.8,
         ease: "easeInOut"
       }
     },
-    exit: {
+    info: {
       y: "-320px", // -40lvh -> -320px
-      opacity: 0,
-      scale: 0.9,
+      opacity: 1,
+      scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }
     }
   };

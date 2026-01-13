@@ -106,7 +106,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     if (!Component) return null;
 
     return (
-      <div className="absolute inset-0 z-[100] h-full w-full transition-opacity duration-1000 ease-in-out">
+      <div className="absolute inset-0 z-[100] transition-opacity duration-1000 ease-in-out">
          <Component 
             key={introSection.id}
             config={introSection.content}
@@ -124,8 +124,10 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       {renderIntro()}
 
       {/* Render Main Content (only visible after intro is gone, or keep it behind) */}
-      <div className={`transition-opacity duration-1000 ${showIntro ? 'opacity-0 overflow-hidden h-screen' : 'opacity-100'}`}>
+      <div className={`${showIntro ? 'overflow-hidden h-screen' : ''}`}>
         {otherSections.map((section, index) => {
+            if (!section.isVisible) return null;
+
             const componentMap = SECTION_COMPONENTS[section.type];
             if (!componentMap) return null;
 
