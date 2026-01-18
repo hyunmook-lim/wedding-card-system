@@ -27,3 +27,4 @@ export function StickySection({ children, height = '800px', index, className = '
     </div>
   );
 }
+

@@ -20,6 +20,7 @@ const MemoLocation = dynamic(() => import('./sections/4.Location/MemoLocation'))
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
 const MaskedAccount = dynamic(() => import('./sections/5.Account/MaskedAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
+const FlyingGallery = dynamic(() => import('./sections/6.Gallery/FlyingGallery'));
 
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
@@ -52,7 +53,9 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     masked: MaskedAccount,
   },
   gallery: {
-    basic: BasicGallery,
+    basic: FlyingGallery,
+    flying: FlyingGallery,
+    grid: BasicGallery,
   },
   // Add other sections here as they are created
 };
@@ -74,6 +77,10 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   },
   bride_groom: {
     card: '2400px', // 300lvh -> 3 * 800
+  },
+  gallery: {
+    basic: '4000px',
+    flying: '4000px',
   },
 };
 
@@ -152,3 +159,4 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     </main>
   );
 }
+
