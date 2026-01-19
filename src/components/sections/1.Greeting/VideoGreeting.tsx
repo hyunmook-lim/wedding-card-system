@@ -6,6 +6,7 @@ import { SectionProps } from '@/types/wedding';
 import { cn } from '@/lib/utils';
 import { Typography } from '@/components/ui/Typography';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import Image from 'next/image';
 
 export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
@@ -41,6 +42,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   // Preload images
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
 
     // Begin loading
     images.forEach((src) => {
-      const img = new Image();
+      const img = document.createElement('img');
       img.src = src;
       img.onload = () => {
         loadedCount++;
@@ -118,6 +120,16 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     return () => unsubscribe();
   }, [loadedImages, scrollYProgress]);
 
+  // 스크롤 시작 감지
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.on("change", (latest) => {
+      if (latest > 0.01 && !hasScrolled) {
+        setHasScrolled(true);
+      }
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress, hasScrolled]);
+
   // Handle Resize
   useEffect(() => {
     const handleResize = () => {
@@ -143,10 +155,30 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         }}
       >
         {images.length > 0 ? (
-          <canvas 
-            ref={canvasRef} 
-            className="w-full h-full object-cover"
-          />
+          <>
+            {/* 첫 번째 이미지 - 스크롤 전에 항상 표시 */}
+            <div className={cn(
+              "absolute inset-0 transition-opacity duration-300",
+              hasScrolled ? "opacity-0" : "opacity-100"
+            )}>
+              <Image
+                src={images[0]}
+                alt="First frame"
+                fill
+                className="object-cover"
+                priority
+                unoptimized
+              />
+            </div>
+            {/* 캔버스 - 스크롤 시작 후 표시 */}
+            <canvas 
+              ref={canvasRef} 
+              className={cn(
+                "w-full h-full object-cover transition-opacity duration-300",
+                hasScrolled ? "opacity-100" : "opacity-0"
+              )}
+            />
+          </>
         ) : (
            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white p-4">
              <p>[VideoGreeting] 설정된 이미지가 없습니다.</p>

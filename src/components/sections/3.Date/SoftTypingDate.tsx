@@ -1,60 +1,14 @@
 'use client';
 
 import { SectionProps } from '@/types/wedding';
-import { useRef, useState } from 'react';
-import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
-import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 export default function SoftTypingDate({ config, isVisible }: SectionProps) {
-  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
-  const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top'>('hidden');
-
-  const { scrollYProgress } = useScroll({
-    target: scrollRef || undefined,
-    offset: ['start end', 'end start']
-  });
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.35) { // Adjusted to match CardBrideGroom logic
-      setAnimationState('top');
-    } else if (latest > 0.25) { 
-      setAnimationState('visible');
-    } else {
-      setAnimationState('hidden');
-    }
-  });
-
-  const titleVariants: Variants = {
-    hidden: { 
-      y: "240px", // 30lvh -> 240px
-      opacity: 0, 
-      scale: 0.9,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    },
-    visible: { 
-      y: 0,
-      opacity: 1, 
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    },
-    top: {
-      y: "-320px", // -40lvh -> -320px
-      opacity: 1,
-      scale: 0.7,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    }
-  };
+  const { animationState, titleVariants } = useTitleAnimation();
 
   const contentVariants: Variants = {
     hidden: { opacity: 0, y: 20 },

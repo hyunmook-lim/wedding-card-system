@@ -2,52 +2,27 @@
 
 import { SectionProps } from '@/types/wedding';
 import { useRef, useState } from 'react';
-import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
+import { motion, useMotionValueEvent, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import Image from 'next/image';
-import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 export default function MemoLocation({ isVisible }: SectionProps) {
-  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
-  const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'info'>('hidden');
-
-  const { scrollYProgress } = useScroll({
-    target: scrollRef || undefined,
-    offset: ['start end', 'end start']
-  });
-
+  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress } = useTitleAnimation();
+  
+  // 추가 상태: info (0.50 이상)
+  const [isInfo, setIsInfo] = useState(false);
+  
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.50) {
-      setAnimationState('info');
-    } else if (latest > 0.35) {
-      setAnimationState('top');
-    } else if (latest > 0.25) {
-      setAnimationState('visible');
-    } else {
-      setAnimationState('hidden');
-    }
+    setIsInfo(latest > 0.50);
   });
 
+  const animationState = isInfo ? 'info' : baseState;
+
+  // titleVariants에 info 상태 추가
   const titleVariants: Variants = {
-    hidden: {
-      y: "240px",
-      opacity: 0,
-      scale: 0.9,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    },
-    visible: {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    },
-    top: {
-      y: "-320px",
-      opacity: 1,
-      scale: 0.7,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    },
+    ...baseTitleVariants,
     info: {
       y: "-320px",
       opacity: 1,
@@ -109,7 +84,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
           initial="hidden"
           animate={animationState}
           variants={mapVariants}
-          className="absolute left-0 top-[25%] w-2/3 z-10 bg-transparent"
+          className="absolute left-0 top-[55px] w-2/3 z-10 bg-transparent"
         >
            <div className="relative w-full rounded-r-2xl overflow-hidden bg-transparent">
              <Image 
@@ -127,7 +102,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
           initial="hidden"
           animate={animationState}
           variants={infoVariants}
-          className="absolute right-0 bottom-[10%] w-2/3 z-20 text-right pr-6 space-y-6"
+          className="absolute right-0 bottom-[40px] w-2/3 z-20 text-right pr-6 space-y-6"
         >
            <div className="flex flex-col items-end">
              <Typography variant="h3" className="mb-2">지하철</Typography>

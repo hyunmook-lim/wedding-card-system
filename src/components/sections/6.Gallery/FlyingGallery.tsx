@@ -3,18 +3,16 @@
 import { SectionProps } from '@/types/wedding';
 import { Typography } from '@/components/ui/Typography';
 import { ImageViewer } from '@/components/ui/ImageViewer';
-import { motion, useScroll, useTransform, useMotionValueEvent, Variants, MotionValue } from 'framer-motion';
+import { motion, useTransform, useMotionValueEvent, MotionValue } from 'framer-motion';
 import { useRef, useState } from 'react';
 import Image from 'next/image';
-import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 // Test gallery images
 const GALLERY_IMAGES = Array.from({ length: 20 }, (_, i) => `/test-resources/gallery/${i + 1}.jpg`);
 
 export default function FlyingGallery({ config, isVisible }: SectionProps) {
-  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
-  const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top'>('hidden');
   const [showImages, setShowImages] = useState(false);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
@@ -23,27 +21,11 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
   const images = (configImages && configImages.length > 0) ? configImages : GALLERY_IMAGES;
   const title = (config?.title as string) || '갤러리';
 
-  const { scrollYProgress } = useScroll({
-    target: scrollRef || undefined,
-    offset: ['start end', 'end start']
-  });
+  const { animationState, titleVariants, scrollYProgress } = useTitleAnimation();
 
+  // 이미지 등장 상태 (0.4 이상)
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    // 1. 타이틀 및 컨테이너 고정: 0.35부터
-    if (latest > 0.3) {
-      setAnimationState('top');
-    } else if (latest > 0.15) {
-      setAnimationState('visible');
-    } else {
-      setAnimationState('hidden');
-    }
-
-    // 2. 이미지 등장: 0.4부터 (사용자 요청)
-    if (latest > 0.4) {
-      setShowImages(true);
-    } else {
-      setShowImages(false);
-    }
+    setShowImages(latest > 0.4);
   });
 
   // 사진 클릭 핸들러
@@ -51,21 +33,6 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
     console.log('[FlyingGallery] Photo clicked:', index);
     setViewerIndex(index);
     setViewerOpen(true);
-  };
-
-  const titleVariants: Variants = {
-    hidden: { 
-      y: "480px", opacity: 0, scale: 0.8,
-      transition: { duration: 1.0, ease: "easeInOut" }
-    },
-    visible: { 
-      y: 0, opacity: 1, scale: 1.2,
-      transition: { duration: 1.0, ease: "easeInOut" }
-    },
-    top: {
-      y: "-320px", opacity: 1, scale: 0.8,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    }
   };
 
   if (!isVisible) return null;

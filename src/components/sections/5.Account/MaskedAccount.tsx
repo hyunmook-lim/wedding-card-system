@@ -171,7 +171,7 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
            initial="hidden"
            animate={animationState}
            variants={titleVariants}
-           className="absolute z-20 text-center w-full px-4"
+           className="absolute z-20 text-center w-auto whitespace-nowrap px-4"
         >
              <Typography variant="display">
                  마음 전하실 곳

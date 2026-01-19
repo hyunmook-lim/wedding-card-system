@@ -2,64 +2,31 @@
 
 import { SectionProps } from '@/types/wedding';
 import { Typography } from '@/components/ui/Typography';
-import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
+import { motion, useMotionValueEvent, Variants } from 'framer-motion';
 import { useRef, useState } from 'react';
 import Image from 'next/image';
 
-import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 export default function CardBrideGroom({ isVisible }: SectionProps) {
-  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
-  const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'flipped'>('hidden');
   
-  const { scrollYProgress } = useScroll({
-    target: scrollRef || undefined,
-    offset: ['start end', 'end start']
-  });
+  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress } = useTitleAnimation();
 
+  // 추가 상태: flipped (0.50 이상)
+  const [isFlipped, setIsFlipped] = useState(false);
+  
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.50) {
-      setAnimationState('flipped');
-    } else if (latest > 0.35) {
-      setAnimationState('top');
-    } else if (latest > 0.25) {
-      setAnimationState('visible');
-    } else {
-      setAnimationState('hidden');
-    }
+    setIsFlipped(latest > 0.50);
   });
 
+  const animationState = isFlipped ? 'flipped' : baseState;
+
+  // titleVariants에 flipped 상태 추가
   const variants: Variants = {
-    hidden: { 
-      y: "480px", // 60lvh -> 0.6 * 800
-      opacity: 0, 
-      scale: 0.8,
-      transition: {
-        duration: 1.0,
-        ease: "easeInOut"
-      }
-    },
-    visible: { 
-      y: 0,
-      opacity: 1, 
-      scale: 1.3,
-      transition: {
-        duration: 1.0,
-        ease: "easeInOut"
-      }
-    },
-    top: {
-      y: "-320px", // -40lvh -> -0.4 * 800
-      opacity: 1,
-      scale: 0.7,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    },
+    ...baseTitleVariants,
     flipped: {
-      y: "-320px", // -40lvh -> -0.4 * 800
+      y: "-320px",
       opacity: 1,
       scale: 0.7,
       transition: { duration: 0.8, ease: "easeInOut" }

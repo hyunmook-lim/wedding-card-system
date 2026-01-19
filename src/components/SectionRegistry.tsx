@@ -89,6 +89,18 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
 
+  // Intro 표시 중일 때 body 스크롤 차단
+  useEffect(() => {
+    if (showIntro) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [showIntro]);
+
   useEffect(() => {
     if (showIntro) {
       const timer = setTimeout(() => {
