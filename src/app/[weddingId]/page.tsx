@@ -34,7 +34,9 @@ export default async function WeddingPage({ params }: PageProps) {
         ...section,
         content: {
           ...section.content,
-          date: wedding.event.date
+          date: wedding.event.date,
+          groom: wedding.couple.groom.name,
+          bride: wedding.couple.bride.name
         }
       };
     }

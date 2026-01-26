@@ -7,7 +7,7 @@ export default function BasicDate({ config, isVisible }: SectionProps) {
   const { date } = config;
 
   return (
-    <section className="py-16 px-6 bg-white text-center">
+    <section className="py-16 px-6 bg-[#fffdf7] text-center">
       <div>
         <h3 className="text-sm font-bold tracking-widest text-[#aa8f7b] mb-4">DATE</h3>
         <p className="text-xl font-medium text-slate-800">

@@ -21,11 +21,15 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
   const images = (configImages && configImages.length > 0) ? configImages : GALLERY_IMAGES;
   const title = (config?.title as string) || '갤러리';
 
-  const { animationState, titleVariants, scrollYProgress } = useTitleAnimation();
+  const { animationState, titleVariants, scrollYProgress } = useTitleAnimation({
+    variants: {
+      top: { y: '-360px', opacity: 1, scale: 0.25 }
+    }
+  });
 
-  // 이미지 등장 상태 (0.4 이상)
+  // 이미지 등장 상태 (0.45 이상)
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setShowImages(latest > 0.4);
+    setShowImages(latest > 0.45);
   });
 
   // 사진 클릭 핸들러
@@ -41,7 +45,7 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
 
   return (
     <>
-      <section ref={containerRef} className="relative w-full h-full overflow-hidden bg-white">
+      <section ref={containerRef} className="relative w-full h-full overflow-hidden bg-[#fffdf7]">
         <div 
           className="flex flex-col items-center justify-center"
           style={{
@@ -50,7 +54,7 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
             height: '100dvh',
             zIndex: isFixed ? 50 : 'auto',
             pointerEvents: isFixed ? 'auto' : 'none',
-            backgroundColor: 'white',
+            backgroundColor: '#fffdf7',
             // perspective 제거 (가짜 3D 사용)
           }}
         >
@@ -66,11 +70,10 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
             </Typography>
           </motion.div>
 
-          {/* Flying Photos: 컨테이너가 고정되고(top) + 스크롤이 0.4를 넘었을 때(showImages) 표시 */}
+          {/* Flying Photos: 컨테이너가 고정되고(top) + 스크롤이 0.45를 넘었을 때(showImages) 표시 */}
           {animationState === 'top' && showImages && (
             <div 
               className="absolute inset-0 flex items-center justify-center"
-              // transformStyle 제거
             >
               {images.map((src, idx) => (
                 <FlyingPhoto 
@@ -82,6 +85,9 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
                   onClick={() => handlePhotoClick(idx)}
                 />
               ))}
+              
+              {/* Thank You Message - flies in at the end */}
+              <ThankYouMessage scrollProgress={scrollYProgress} />
             </div>
           )}
         </div>
@@ -122,18 +128,18 @@ function FlyingPhoto({
   const offsetY = (seededRandom(index * 2 + 2) - 0.5) * 200;
 
   // 각 사진의 초기 z 위치 (가상 좌표계)
-  // 간격 요청: 2000 -> 800
-  const zSpacing = 800;
+  // 간격 늘림: 800 -> 1200
+  const zSpacing = 1200;
   const initialZ = -1000 - (index * zSpacing);
   
   // 스크롤 이동 거리
   const totalTravelDistance = 2000 + (total * zSpacing); 
   
   // 가상의 Z 위치 (실제 translateZ 아님)
-  // 속도는 기존 범위로 복원: 0.0 ~ 1.0 -> 0.35 ~ 0.8
+  // 스크롤 범위: 0.45 ~ 0.9
   const zPosition = useTransform(
     scrollProgress,
-    [0.40, 0.8],
+    [0.45, 0.8],
     [initialZ, initialZ + totalTravelDistance]
   );
 
@@ -145,10 +151,10 @@ function FlyingPhoto({
     [0.2, 0.5, 1, 1.3] 
   );
 
-  // Opacity 조정
+  // Opacity 조정 - 더 넓은 범위로 오래 보이도록
   const opacity = useTransform(
     zPosition,
-    [-1500, -500, 200, 600],
+    [-1800, -800, 400, 800],
     [0, 1, 1, 0]
   );
   
@@ -184,7 +190,7 @@ function FlyingPhoto({
     >
       {/* 내부 div에 클릭 반응 애니메이션 적용 */}
       <motion.div 
-        className="relative w-[280px] h-[380px] rounded-xl overflow-hidden shadow-2xl bg-white"
+        className="relative w-[280px] h-[380px] rounded-xl overflow-hidden shadow-2xl bg-[#fffdf7]"
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
       >
@@ -198,6 +204,42 @@ function FlyingPhoto({
           style={{ pointerEvents: 'none' }}
         />
       </motion.div>
+    </motion.div>
+  );
+}
+
+// Thank You Message Component
+function ThankYouMessage({ scrollProgress }: { scrollProgress: MotionValue<number> }) {
+  // 0.78에서 시작해서 0.8에 도착, 이후 유지
+  const zPosition = useTransform(
+    scrollProgress,
+    [0.78, 0.80],
+    [-500, 0]
+  );
+
+  const scale = useTransform(
+    zPosition,
+    [-500, 0],
+    [0.5, 1]
+  );
+
+  const opacity = useTransform(
+    zPosition,
+    [-500, -200],
+    [0, 1]
+  );
+
+  return (
+    <motion.div
+      className="absolute flex items-center justify-center z-50"
+      style={{
+        scale,
+        opacity,
+      }}
+    >
+      <p className="text-2xl font-['GowunDodum'] text-[rgb(255,182,193)] whitespace-nowrap">
+        감사합니다
+      </p>
     </motion.div>
   );
 }

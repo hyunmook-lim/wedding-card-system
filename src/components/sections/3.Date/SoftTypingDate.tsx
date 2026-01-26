@@ -22,7 +22,7 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
 
   if (!isVisible) return null;
 
-  const { date } = config;
+  const { date, groom, bride } = config;
   
   const dateObj = new Date(date as string);
   const year = dateObj.getUTCFullYear();
@@ -39,6 +39,17 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
 
   const timeString = `${formattedHours}:${minutes} ${ampm}`;
   const fullDateString = `${year}.${month}.${day} ${dayName}`;
+
+  // Calculate D-day
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const weddingDate = new Date(dateObj);
+  weddingDate.setHours(0, 0, 0, 0);
+  const diffTime = weddingDate.getTime() - today.getTime();
+  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  
+  const groomName = (groom as string) || '신랑';
+  const brideName = (bride as string) || '신부';
 
   // Text animation variants
   const sentence = {
@@ -65,7 +76,7 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
 
   return (
     <section ref={containerRef} className="relative w-full h-full">
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-[#fffdf7] overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"
@@ -91,7 +102,7 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
                 initial="hidden"
                 animate={animationState === 'top' ? 'top' : 'hidden'}
             >
-                <div className="block">
+                <div className="block whitespace-nowrap">
                     {fullDateString.split("").map((char, index) => (
                         <motion.span key={char + "-" + index} variants={letter} className="text-3xl font-serif text-slate-800">
                             {char}
@@ -105,6 +116,17 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
                         </motion.span>
                     ))}
                 </div>
+                <motion.div 
+                    variants={letter} 
+                    className="block mt-24 text-center text-[rgb(255,182,193)]"
+                >
+                    <p className="text-lg font-medium whitespace-nowrap">
+                        {groomName} & {brideName} 님의 결혼식이
+                    </p>
+                    <p className="text-xl font-semibold mt-1">
+                        {daysLeft > 0 ? `${daysLeft}일 남았습니다.` : daysLeft === 0 ? '오늘입니다!' : `${Math.abs(daysLeft)}일 지났습니다.`}
+                    </p>
+                </motion.div>
             </motion.div>
         </motion.div>
       </div>

@@ -14,7 +14,7 @@ export default function BasicLocation({ config, isVisible }: SectionProps) {
   const { location } = config as unknown as LocationConfig;
 
   return (
-    <section className="py-16 px-6 bg-white text-center">
+    <section className="py-16 px-6 bg-[#fffdf7] text-center">
       <div>
         <h3 className="text-sm font-bold tracking-widest text-[#aa8f7b] mb-4">LOCATION</h3>
         <p className="text-xl font-medium text-slate-800 mb-2">{location?.name}</p>

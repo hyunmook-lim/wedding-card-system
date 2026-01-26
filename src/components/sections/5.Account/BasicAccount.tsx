@@ -18,7 +18,7 @@ export default function BasicAccount({ config, isVisible }: SectionProps) {
       <h3 className="text-center font-serif text-xl mb-8">마음 전하실 곳</h3>
       <div className="space-y-4 max-w-sm mx-auto">
         {accounts.map((acc, idx) => (
-          <div key={idx} className="bg-white p-4 rounded-lg shadow-sm flexjustify-between items-center">
+          <div key={idx} className="bg-[#fffdf7] p-4 rounded-lg shadow-sm flexjustify-between items-center">
             <div>
               <p className="text-sm text-gray-500">{acc.bank} (예금주: {acc.name})</p>
               <p className="text-md font-mono mt-1 text-gray-700">{acc.account}</p>

@@ -9,7 +9,7 @@ import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 export default function MemoLocation({ isVisible }: SectionProps) {
   const containerRef = useRef<HTMLElement>(null);
-  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress } = useTitleAnimation();
+  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress, variantConfig } = useTitleAnimation();
   
   // 추가 상태: info (0.50 이상)
   const [isInfo, setIsInfo] = useState(false);
@@ -20,27 +20,27 @@ export default function MemoLocation({ isVisible }: SectionProps) {
 
   const animationState = isInfo ? 'info' : baseState;
 
-  // titleVariants에 info 상태 추가
+  // titleVariants에 info 상태 추가 (top과 동일한 위치 유지)
   const titleVariants: Variants = {
     ...baseTitleVariants,
     info: {
-      y: "-320px",
-      opacity: 1,
-      scale: 0.7,
+      ...variantConfig.top,
       transition: { duration: 0.8, ease: "easeInOut" }
     }
   };
 
   const mapVariants: Variants = {
-    hidden: { x: "-100%" },
-    visible: { x: "-100%" },
+    hidden: { 
+      x: "-100%",
+      transition: { duration: 0.8, ease: "easeInOut" }
+    },
+    visible: { 
+      x: "-100%",
+      transition: { duration: 0.8, ease: "easeInOut" }
+    },
     top: { 
       x: 0,
-      transition: { 
-        duration: 0.8, 
-        delay: 1.0, 
-        ease: "easeInOut" 
-      }
+      transition: { duration: 0.8, ease: "easeInOut" }
     },
     info: {
       x: 0,
@@ -66,7 +66,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
 
   return (
     <section ref={containerRef} className="relative w-full h-full">
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-[#fffdf7] overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"
@@ -84,7 +84,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
           initial="hidden"
           animate={animationState}
           variants={mapVariants}
-          className="absolute left-0 top-[55px] w-2/3 z-10 bg-transparent"
+          className="absolute left-0 top-[75px] w-2/3 z-10 bg-transparent"
         >
            <div className="relative w-full rounded-r-2xl overflow-hidden bg-transparent">
              <Image 
@@ -105,15 +105,15 @@ export default function MemoLocation({ isVisible }: SectionProps) {
           className="absolute right-0 bottom-[40px] w-2/3 z-20 text-right pr-6 space-y-6"
         >
            <div className="flex flex-col items-end">
-             <Typography variant="h3" className="mb-2">지하철</Typography>
+             <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">지하철</Typography>
              <Typography variant="body" className="text-sm">2호선 강남역 1번 출구 도보 5분</Typography>
            </div>
            <div className="flex flex-col items-end">
-             <Typography variant="h3" className="mb-2">버스</Typography>
+             <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">버스</Typography>
              <Typography variant="body" className="text-sm">146, 341, 740, 421 하차</Typography>
            </div>
            <div className="flex flex-col items-end">
-             <Typography variant="h3" className="mb-2">자가용</Typography>
+             <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">자가용</Typography>
              <Typography variant="body" className="text-sm">네비게이션 &apos;서울 웨딩홀&apos; 검색</Typography>
              <Typography variant="caption" className="mt-1">(주차 2시간 무료)</Typography>
            </div>

@@ -69,14 +69,14 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     masked: '2400px', // 300lvh -> 3 * 800
   },
   date: {
-    typing: '1600px', // 200lvh -> 2 * 800
-    soft: '1600px', // 200lvh -> 2 * 800
+    typing: '3200px', // 200lvh -> 2 * 800
+    soft: '3200px', // 200lvh -> 2 * 800
   },
   location: {
-    memo: '2400px', // 300lvh -> 3 * 800
+    memo: '3200px', // 300lvh -> 3 * 800
   },
   bride_groom: {
-    card: '2400px', // 300lvh -> 3 * 800
+    card: '3200px', // 300lvh -> 3 * 800
   },
   gallery: {
     basic: '4000px',
@@ -137,7 +137,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   };
 
   return (
-    <main className="w-full max-w-md mx-auto min-h-screen bg-white shadow-xl relative pb-20">
+    <main className="w-full max-w-md mx-auto min-h-screen bg-[#fffdf7] shadow-xl relative pb-20">
       
       {/* Render Intro Overlay */}
       {renderIntro()}

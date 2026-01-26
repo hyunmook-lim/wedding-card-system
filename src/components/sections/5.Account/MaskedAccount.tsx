@@ -2,10 +2,10 @@
 
 import { SectionProps } from '@/types/wedding';
 import { useRef, useState } from 'react';
-import { motion, useScroll, useMotionValueEvent, Variants } from 'framer-motion';
+import { motion, useMotionValueEvent, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import { cn } from '@/lib/utils';
-import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 type AccountType = 'groom' | 'bride';
 
@@ -50,7 +50,7 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
          <div 
             onClick={() => onToggle(true)}
             className={cn(
-               "absolute inset-0 flex justify-center items-center text-[1.1rem] transition-all duration-1000 z-20 cursor-pointer bg-white/95",
+               "absolute inset-0 flex justify-center items-center text-[1.1rem] transition-all duration-1000 z-20 cursor-pointer bg-[#fffdf7]/95",
                isRevealed ? "opacity-0 pointer-events-none z-[-100]" : "opacity-100"
             )}
             style={{ color: activeColor }}
@@ -84,68 +84,32 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
 }
 
 export default function MaskedAccount({ isVisible }: SectionProps) {
-  const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLElement>(null);
-  const [animationState, setAnimationState] = useState<'hidden' | 'visible' | 'top' | 'info'>('hidden');
+  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress, variantConfig } = useTitleAnimation();
   const [groomRevealed, setGroomRevealed] = useState(false);
   const [brideRevealed, setBrideRevealed] = useState(false);
-
-  const { scrollYProgress } = useScroll({
-    target: scrollRef || undefined,
-    offset: ['start end', 'end start']
-  });
+  
+  // 추가 상태: info (0.50 이상)
+  const [isInfo, setIsInfo] = useState(false);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest > 0.50) {
-      setAnimationState('info');
-    } else if (latest > 0.35) {
-      setAnimationState('top');
-      // Reset reveal states when scrolling back up/down out of info view
-      setGroomRevealed(false);
-      setBrideRevealed(false);
-    } else if (latest > 0.25) {
-      setAnimationState('visible');
-      setGroomRevealed(false);
-      setBrideRevealed(false);
+      setIsInfo(true);
     } else {
-      setAnimationState('hidden');
+      setIsInfo(false);
+      // Reset reveal states when scrolling back up
       setGroomRevealed(false);
       setBrideRevealed(false);
     }
   });
 
+  const animationState = isInfo ? 'info' : baseState;
+
+  // titleVariants에 info 상태 추가 (top과 동일한 위치 유지)
   const titleVariants: Variants = {
-    hidden: { 
-      y: "240px", // 30lvh -> 240px
-      opacity: 0, 
-      scale: 0.9,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    },
-    visible: { 
-      y: 0,
-      opacity: 1, 
-      scale: 1,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    },
-    top: {
-      y: "-320px", // -40lvh -> -320px
-      opacity: 1,
-      scale: 0.7,
-      transition: {
-        duration: 0.8,
-        ease: "easeInOut"
-      }
-    },
+    ...baseTitleVariants,
     info: {
-      y: "-320px", // -40lvh -> -320px
-      opacity: 1,
-      scale: 0.7,
+      ...variantConfig.top,
       transition: { duration: 0.8, ease: "easeInOut" }
     }
   };
@@ -165,7 +129,7 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
 
   return (
     <section ref={containerRef} className="relative w-full h-full">
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-white overflow-hidden perspective-[1000px]">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-[#fffdf7] overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"
@@ -183,7 +147,7 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
           initial="hidden"
           animate={animationState}
           variants={contentVariants}
-          className="absolute inset-0 z-10 flex flex-col items-center justify-center space-y-1"
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center space-y-1 pt-16"
         >
              {/* Description moved here */}
              <div className="text-center mb-1">

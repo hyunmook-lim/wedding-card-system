@@ -7,7 +7,7 @@ export default function BasicGallery({ config, isVisible }: SectionProps) {
   const images = (config.images as string[]) || [];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-[#fffdf7]">
       <h3 className="text-center font-serif text-xl mb-8">Gallery</h3>
       <div className="grid grid-cols-3 gap-1 px-1">
         {images.map((src: string, idx: number) => (

@@ -11,27 +11,24 @@ import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 export default function CardBrideGroom({ isVisible }: SectionProps) {
   const containerRef = useRef<HTMLElement>(null);
   
-  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress } = useTitleAnimation();
+  // 제목 애니메이션 (useTitleAnimation 훅 사용)
+  const { animationState: titleState, titleVariants, scrollYProgress } = useTitleAnimation();
 
-  // 추가 상태: flipped (0.50 이상)
-  const [isFlipped, setIsFlipped] = useState(false);
+  // 카드만의 독립적인 상태
+  type CardState = 'hidden' | 'visible' | 'flipped';
+  const [cardState, setCardState] = useState<CardState>('hidden');
   
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setIsFlipped(latest > 0.50);
-  });
-
-  const animationState = isFlipped ? 'flipped' : baseState;
-
-  // titleVariants에 flipped 상태 추가
-  const variants: Variants = {
-    ...baseTitleVariants,
-    flipped: {
-      y: "-320px",
-      opacity: 1,
-      scale: 0.7,
-      transition: { duration: 0.8, ease: "easeInOut" }
+    if (latest > 0.75) {
+      setCardState('visible');
+    } else if (latest > 0.50) {
+      setCardState('flipped');
+    } else if (latest > 0.35) {
+      setCardState('visible');
+    } else {
+      setCardState('hidden');
     }
-  };
+  });
 
   const cardVariantsA: Variants = {
     hidden: { 
@@ -86,8 +83,8 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
       <div className="absolute top-0 h-full w-full flex flex-col items-center justify-center overflow-hidden perspective-[1000px]">
         <motion.div 
           initial="hidden"
-          animate={animationState === 'flipped' ? 'flipped' : animationState}
-          variants={variants}
+          animate={titleState}
+          variants={titleVariants}
           className="text-center space-y-6 z-10"
         >
           <div className="flex flex-col items-center justify-center space-y-4">
@@ -103,12 +100,12 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
            <motion.div
              variants={cardVariantsA}
              initial="hidden"
-             animate={animationState === 'top' || animationState === 'flipped' ? (animationState === 'flipped' ? "flipped" : "visible") : "hidden"}
+             animate={cardState}
              className="absolute w-[36%] aspect-[3/4] rounded-lg shadow-[0_10px_25px_rgba(0,0,0,0.1)] bg-transparent will-change-transform"
              style={{ transformStyle: 'preserve-3d' }}
            >
              {/* Front Face */}
-             <div className="absolute w-full h-full backface-hidden bg-white rounded-lg overflow-hidden">
+             <div className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden">
                 <Image 
                   src="/test-resources/bride-groom/front1.png" 
                   alt="Groom Front" 
@@ -119,7 +116,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              </div>
              {/* Back Face */}
              <div 
-               className="absolute w-full h-full backface-hidden bg-white rounded-lg overflow-hidden"
+               className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden"
                style={{ transform: 'rotateY(180deg)' }}
              >
                 <Image 
@@ -136,12 +133,12 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
            <motion.div
              variants={cardVariantsB}
              initial="hidden"
-             animate={animationState === 'top' || animationState === 'flipped' ? (animationState === 'flipped' ? "flipped" : "visible") : "hidden"}
+             animate={cardState}
              className="absolute w-[36%] aspect-[3/4] rounded-lg shadow-[0_10px_25px_rgba(0,0,0,0.1)] bg-transparent will-change-transform"
              style={{ transformStyle: 'preserve-3d' }}
            >
              {/* Face 1 (Back Image in this context) */}
-             <div className="absolute w-full h-full backface-hidden bg-white rounded-lg overflow-hidden">
+             <div className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden">
                 <Image 
                   src="/test-resources/bride-groom/back2.png" 
                   alt="Bride Back" 
@@ -152,7 +149,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              </div>
              {/* Face 2 (Front Image in this context) */}
              <div 
-               className="absolute w-full h-full backface-hidden bg-white rounded-lg overflow-hidden"
+               className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden"
                style={{ transform: 'rotateY(180deg)' }}
              >
                 <Image 
