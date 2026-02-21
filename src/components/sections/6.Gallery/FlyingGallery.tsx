@@ -45,7 +45,7 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
 
   return (
     <>
-      <section ref={containerRef} className="relative w-full h-full overflow-hidden bg-[#fffdf7]">
+      <section ref={containerRef} className="relative w-full h-full overflow-hidden bg-transparent">
         <div 
           className="flex flex-col items-center justify-center"
           style={{

@@ -145,7 +145,7 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
 
   return (
     <section ref={containerRef} className="relative w-full h-full">
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-[#fffdf7] overflow-hidden perspective-[1000px]">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"

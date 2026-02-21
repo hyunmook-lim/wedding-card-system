@@ -106,7 +106,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
            >
              {/* Front Face */}
-             <div className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden">
+             <div className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden bg-white">
                 <Image 
                   src="/test-resources/bride-groom/front1.png" 
                   alt="Groom Front" 
@@ -117,7 +117,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              </div>
              {/* Back Face */}
              <div 
-               className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden"
+               className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden bg-white"
                style={{ transform: 'rotateY(180deg)' }}
              >
                 <Image 
@@ -139,7 +139,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
            >
              {/* Face 1 (Back Image in this context) */}
-             <div className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden">
+             <div className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden bg-white">
                 <Image 
                   src="/test-resources/bride-groom/back2.png" 
                   alt="Bride Back" 
@@ -150,7 +150,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              </div>
              {/* Face 2 (Front Image in this context) */}
              <div 
-               className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden"
+               className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden bg-white"
                style={{ transform: 'rotateY(180deg)' }}
              >
                 <Image 

@@ -64,7 +64,9 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         type: 'bride_groom', // Intro -> BrideGroom
         variant: 'card',
         isVisible: true,
-        content: {}
+        content: {
+          background: { type: 'component', componentName: 'HeartPulseBackground', effects: ['snow'] } // Custom component with snow
+        }
       },
       {
         id: 'sec_4',
@@ -72,6 +74,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'soft',
         isVisible: true,
         content: {
+          background: { type: 'image', value: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200', effects: ['snow'] } 
           // date injected from global event
         }
       },
@@ -81,6 +84,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'memo',
         isVisible: true,
         content: {
+          background: { type: 'color', value: '#00FF00' } // Green
           // location injected from global event
         }
       },
@@ -90,6 +94,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'masked',
         isVisible: true,
         content: {
+          background: { type: 'color', value: '#FFFF00' }, // Yellow
           accounts: [
             { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
           ]
@@ -101,6 +106,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'basic',
         isVisible: true,
         content: {
+          background: { type: 'color', value: '#FF00FF' }, // Magenta
           images: []
         }
       }

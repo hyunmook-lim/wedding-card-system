@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { SectionConfig } from '@/types/wedding';
+import { SectionConfig, BackgroundConfig } from '@/types/wedding';
 import { ComponentType, useState, useEffect } from 'react';
 import { SectionProps } from '@/types/wedding';
 
@@ -158,7 +158,11 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
 
         return (
           <SectionDebugWrapper key={section.id} type={section.type} index={index}>
-            <StickySection index={index} height={height}>
+            <StickySection 
+                index={index} 
+                height={height}
+                background={section.content.background as BackgroundConfig}
+            >
               <Component 
                   config={section.content} 
                   isVisible={section.isVisible} 
