@@ -152,6 +152,7 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
            animate={animationState}
            variants={titleVariants}
            className="absolute z-20 text-center"
+           style={{ willChange: "transform, opacity" }}
         >
              <Typography variant="display">
                  날짜 & 시간
@@ -164,6 +165,7 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
            animate={animationState}
            variants={contentVariants}
            className="absolute z-10 text-center space-y-6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pt-20"
+           style={{ willChange: "transform, opacity" }}
         >
             {animationState === 'top' && (
                 <>

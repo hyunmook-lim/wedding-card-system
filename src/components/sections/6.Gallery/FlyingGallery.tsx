@@ -64,6 +64,7 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
             animate={animationState}
             variants={titleVariants}
             className="text-center z-20"
+            style={{ willChange: "transform, opacity" }}
           >
             <Typography variant="display">
               {title}
@@ -184,7 +185,8 @@ function FlyingPhoto({
         visibility,
         zIndex: baseZIndex,
         pointerEvents, 
-        touchAction: 'pan-y'
+        touchAction: 'pan-y',
+        willChange: 'transform, opacity'
       }}
       onTap={() => onClick()} // 탭 이벤트는 바깥에서 감지
     >
@@ -193,6 +195,7 @@ function FlyingPhoto({
         className="relative w-[280px] h-[380px] rounded-xl overflow-hidden shadow-2xl bg-[#fffdf7]"
         whileTap={{ scale: 0.95 }}
         transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        style={{ willChange: "transform" }}
       >
         <Image 
           src={src} 
@@ -235,6 +238,7 @@ function ThankYouMessage({ scrollProgress }: { scrollProgress: MotionValue<numbe
       style={{
         scale,
         opacity,
+        willChange: "transform, opacity"
       }}
     >
       <p className="text-2xl font-['GowunDodum'] text-[rgb(255,182,193)] whitespace-nowrap">

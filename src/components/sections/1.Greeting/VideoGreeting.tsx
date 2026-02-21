@@ -152,6 +152,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         style={{ 
           opacity: containerOpacity,
           filter: containerBlur,
+          willChange: "opacity, filter"
         }}
       >
         {images.length > 0 ? (
@@ -188,7 +189,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         {/* Text Overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
           <motion.div 
-            style={{ opacity: titleOpacity }}
+            style={{ opacity: titleOpacity, willChange: "opacity" }}
             className="text-center text-white px-6"
           >
             {title && <Typography variant="overlay-title">{title}</Typography>}
@@ -198,7 +199,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         
         {/* Scroll Hint */}
         <motion.div 
-            style={{ opacity: scrollHintOpacity }}
+            style={{ opacity: scrollHintOpacity, willChange: "opacity" }}
             className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white text-sm animate-bounce"
         >
             Scroll Down

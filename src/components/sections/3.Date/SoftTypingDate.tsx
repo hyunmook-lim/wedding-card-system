@@ -83,6 +83,7 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
            animate={animationState}
            variants={titleVariants}
            className="absolute z-20 text-center"
+           style={{ willChange: "transform, opacity" }}
         >
              <Typography variant="display">
                  날짜 & 시간
@@ -95,23 +96,25 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
            animate={animationState}
            variants={contentVariants}
            className="absolute z-10 text-center space-y-6 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pt-20"
+           style={{ willChange: "transform, opacity" }}
         >
             <motion.div 
                 key={animationState} // Force re-render to restart animation
                 variants={sentence} 
                 initial="hidden"
                 animate={animationState === 'top' ? 'top' : 'hidden'}
+                style={{ willChange: "opacity" }}
             >
                 <div className="block whitespace-nowrap">
                     {fullDateString.split("").map((char, index) => (
-                        <motion.span key={char + "-" + index} variants={letter} className="text-3xl font-serif text-slate-800">
+                        <motion.span key={char + "-" + index} variants={letter} className="text-3xl font-serif text-slate-800" style={{ willChange: "transform, opacity" }}>
                             {char}
                         </motion.span>
                     ))}
                 </div>
                  <div className="block mt-4">
                     {timeString.split("").map((char, index) => (
-                        <motion.span key={char + "-time-" + index} variants={letter} className="text-2xl font-light text-slate-600">
+                        <motion.span key={char + "-time-" + index} variants={letter} className="text-2xl font-light text-slate-600" style={{ willChange: "transform, opacity" }}>
                             {char}
                         </motion.span>
                     ))}
@@ -119,6 +122,7 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
                 <motion.div 
                     variants={letter} 
                     className="block mt-24 text-center text-[rgb(255,182,193)]"
+                    style={{ willChange: "transform, opacity" }}
                 >
                     <p className="text-lg font-medium whitespace-nowrap">
                         {groomName} & {brideName} 님의 결혼식이

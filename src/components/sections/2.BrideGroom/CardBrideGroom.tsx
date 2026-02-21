@@ -86,6 +86,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
           animate={titleState}
           variants={titleVariants}
           className="text-center space-y-6 z-10"
+          style={{ willChange: "transform, opacity" }}
         >
           <div className="flex flex-col items-center justify-center space-y-4">
               <Typography variant="display">
@@ -102,7 +103,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              initial="hidden"
              animate={cardState}
              className="absolute w-[36%] aspect-[3/4] rounded-lg shadow-[0_10px_25px_rgba(0,0,0,0.1)] bg-transparent will-change-transform"
-             style={{ transformStyle: 'preserve-3d' }}
+             style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
            >
              {/* Front Face */}
              <div className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden">
@@ -135,7 +136,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              initial="hidden"
              animate={cardState}
              className="absolute w-[36%] aspect-[3/4] rounded-lg shadow-[0_10px_25px_rgba(0,0,0,0.1)] bg-transparent will-change-transform"
-             style={{ transformStyle: 'preserve-3d' }}
+             style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
            >
              {/* Face 1 (Back Image in this context) */}
              <div className="absolute w-full h-full backface-hidden bg-[#fffdf7] rounded-lg overflow-hidden">

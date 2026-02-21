@@ -73,6 +73,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
            animate={animationState}
            variants={titleVariants}
            className="absolute z-20 text-center"
+           style={{ willChange: "transform, opacity" }}
         >
              <Typography variant="display">
                  오시는 길
@@ -85,6 +86,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
           animate={animationState}
           variants={mapVariants}
           className="absolute left-0 top-[75px] w-2/3 z-10 bg-transparent"
+          style={{ willChange: "transform" }}
         >
            <div className="relative w-full rounded-r-2xl overflow-hidden bg-transparent">
              <Image 
@@ -103,6 +105,7 @@ export default function MemoLocation({ isVisible }: SectionProps) {
           animate={animationState}
           variants={infoVariants}
           className="absolute right-0 bottom-[40px] w-2/3 z-20 text-right pr-6 space-y-6"
+          style={{ willChange: "transform, opacity" }}
         >
            <div className="flex flex-col items-end">
              <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">지하철</Typography>

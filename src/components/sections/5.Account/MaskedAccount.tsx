@@ -136,6 +136,7 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
            animate={animationState}
            variants={titleVariants}
            className="absolute z-20 text-center w-auto whitespace-nowrap px-4"
+           style={{ willChange: "transform, opacity" }}
         >
              <Typography variant="display">
                  마음 전하실 곳
@@ -148,6 +149,7 @@ export default function MaskedAccount({ isVisible }: SectionProps) {
           animate={animationState}
           variants={contentVariants}
           className="absolute inset-0 z-10 flex flex-col items-center justify-center space-y-1 pt-16"
+          style={{ willChange: "transform, opacity" }}
         >
              {/* Description moved here */}
              <div className="text-center mb-1">
