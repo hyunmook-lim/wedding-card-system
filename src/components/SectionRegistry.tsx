@@ -16,6 +16,7 @@ const MainIntro = dynamic(() => import('./sections/0.Intro/MainIntro'));
 const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
 const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
 const SoftTypingDate = dynamic(() => import('./sections/3.Date/SoftTypingDate'));
+const FlipBoardDate = dynamic(() => import('./sections/3.Date/FlipBoardDate'));
 const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
 const MemoLocation = dynamic(() => import('./sections/4.Location/MemoLocation'));
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
@@ -45,6 +46,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     basic: BasicDate,
     typing: TypingDate,
     soft: SoftTypingDate,
+    flipboard: FlipBoardDate,
   },
   location: {
     basic: BasicLocation,
@@ -73,6 +75,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   date: {
     typing: '3200px', // 200lvh -> 2 * 800
     soft: '3200px', // 200lvh -> 2 * 800
+    flipboard: '3200px',
   },
   location: {
     memo: '3200px', // 300lvh -> 3 * 800

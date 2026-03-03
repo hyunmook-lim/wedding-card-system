@@ -78,11 +78,11 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       {
         id: 'sec_4',
         type: 'date',
-        variant: 'soft',
+        variant: 'flipboard',
         isVisible: true,
         content: {
-          background: { type: 'image', value: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200', effects: ['snow'] } 
-          // date injected from global event
+          date: '2025-05-24T12:00:00', // injected from global event usually, but explicit here for clarity
+          background: { type: 'color', value: '#f0f0f0' }
         }
       },
       {
