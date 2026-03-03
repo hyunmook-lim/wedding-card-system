@@ -10,6 +10,7 @@ const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'
 const VideoGreeting = dynamic(() => import('./sections/1.Greeting/VideoGreeting'));
 const BasicBrideGroom = dynamic(() => import('./sections/2.BrideGroom/BasicBrideGroom'));
 const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGroom'));
+const TrendyTextBrideGroom = dynamic(() => import('./sections/2.BrideGroom/TrendyTextBrideGroom'));
 const MainIntro = dynamic(() => import('./sections/0.Intro/MainIntro'));
 
 const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
@@ -38,6 +39,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   bride_groom: {
     basic: BasicBrideGroom,
     card: CardBrideGroom,
+    trendy: TrendyTextBrideGroom,
   },
   date: {
     basic: BasicDate,
@@ -77,6 +79,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   },
   bride_groom: {
     card: '3200px', // 300lvh -> 3 * 800
+    trendy: '2400px', // 200lvh -> 2 * 800
   },
   gallery: {
     basic: '4000px',

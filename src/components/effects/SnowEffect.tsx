@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Particle {
@@ -36,6 +36,7 @@ export default function SnowEffect({ particleCount = 30 }: SnowEffectProps) {
       sway2: Math.random() * -20 + 10, // 10 ~ -10 
     }));
     
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setParticles(newParticles);
     setMounted(true);
   }, [particleCount]);

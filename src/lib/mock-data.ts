@@ -61,12 +61,19 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       },
       {
         id: 'sec_3',
-        type: 'bride_groom', // Intro -> BrideGroom
+        type: 'bride_groom',
         variant: 'card',
         isVisible: true,
         content: {
-          background: { type: 'component', componentName: 'HeartPulseBackground', effects: ['snow'] } // Custom component with snow
+          background: { type: 'none' } 
         }
+      },
+      {
+        id: 'sec_trendy_bg',
+        type: 'bride_groom',
+        variant: 'trendy',
+        isVisible: true,
+        content: {}
       },
       {
         id: 'sec_4',

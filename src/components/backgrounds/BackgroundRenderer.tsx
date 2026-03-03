@@ -7,10 +7,14 @@ const SolidColorBackground = dynamic(() => import('./SolidColorBackground'));
 const ImageBackground = dynamic(() => import('./ImageBackground'));
 const EffectsRenderer = dynamic(() => import('../effects/EffectsRenderer'));
 
-// 동적 로딩할 커스텀 배경 컴포넌트 목록
+// --- 동적 렌더링할 커스텀 배경 컴포넌트 레지스트리 ---
+// 앱에 사용될 모든 커스텀 배경 컴포넌트를 여기에 등록합니다.
+// next/dynamic을 사용하여 코드 스플리팅 적용 (초기 로딩 속도 최적화)
 const CUSTOM_COMPONENTS: Record<string, React.ComponentType<Record<string, unknown>>> = {
-  HeartPulseBackground: dynamic(() => import('./HeartPulseBackground')),
-  // 추후 생기는 커스텀 배경 컴포넌트들은 여기에 추가
+  // 예시: 쿵쾅거리는 하트 배경
+  // 'HeartPulse': dynamic(() => import('./HeartPulseBackground'), { ssr: false }),
+  // 향후 다른 화면에서 쓰일 커스텀 배경들...
+  'CardSpreadBackground': dynamic(() => import('./CardSpreadBackground'), { ssr: false }),
 };
 
 interface BackgroundRendererProps {
