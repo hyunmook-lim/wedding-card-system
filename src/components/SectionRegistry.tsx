@@ -75,7 +75,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   date: {
     typing: '3200px', // 200lvh -> 2 * 800
     soft: '3200px', // 200lvh -> 2 * 800
-    flipboard: '3200px',
+    flipboard: '1600px',
   },
   location: {
     memo: '3200px', // 300lvh -> 3 * 800

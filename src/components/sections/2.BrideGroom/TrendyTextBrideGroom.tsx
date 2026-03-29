@@ -16,12 +16,13 @@ export default function TrendyTextBrideGroom({ isVisible }: SectionProps) {
     offset: ['start start', 'end end'] 
   });
 
-  // 스크롤 진행도 [0, 0.5] 구간에서는 1차가 주로 보이고,
-  // [0.5, 1.0] 구간에서 2차 영역이 아래에서 위로 올라옵니다.
+  // 스크롤 진행도 [0.3, 0.7] 구간에서 1차(신랑)는 위로 올라가고,
+  // 2차(신부)는 아래에서 위로 올라오며 '밀어내기' 효과를 만듭니다.
+  const y1 = useTransform(scrollYProgress, [0.3, 0.7], ['0%', '-100%']);
   const y2 = useTransform(scrollYProgress, [0.3, 0.7], ['100%', '0%']);
   
-  // 2차가 완전히 올라가면 1차는 보이지 않아도 되므로 투명도 조절합니다.
-  const opacity1 = useTransform(scrollYProgress, [0.5, 0.7], [1, 0]);
+  // 투명도는 그대로 유지하거나 살짝 조절 가능 (필요시)
+  const opacity1 = useTransform(scrollYProgress, [0.5, 0.7], [1, 1]);
 
   // 남자 이미지(groom-full.png)가 스크롤에 따라 오른쪽으로 약간 이동하는 효과
   const groomX = useTransform(scrollYProgress, [0, 0.5], [0, 30]);
@@ -32,10 +33,10 @@ export default function TrendyTextBrideGroom({ isVisible }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={containerRef} className="relative w-full h-full overflow-hidden">
-      {/* 1차 Sticky 컴포넌트 */}
+    <section ref={containerRef} className="relative w-full h-full">
+      {/* 1차 Sticky 컴포넌트: 신랑 */}
       <motion.div 
-        style={{ opacity: opacity1 }}
+        style={{ y: y1, opacity: opacity1 }}
         className="absolute inset-0 flex flex-col p-8 z-0 bg-white"
       >
         {/* 상단 텍스트 영역 (1/3 높이) */}
@@ -47,7 +48,7 @@ export default function TrendyTextBrideGroom({ isVisible }: SectionProps) {
         </div>
 
         {/* 하단 그림 영역 (나머지 공간, 왼쪽 정렬) */}
-        <div className="flex-[0.67] relative w-full overflow-hidden">
+        <div className="flex-[0.67] relative w-full">
           {/* 이미지 스택 영역 (부모 높이 100%, 부모 너비 안에서 object-contain으로 원본 비율 유지) */}
           <div className="relative w-full h-full">
             {/* groom-background-full.png */}
@@ -91,7 +92,7 @@ export default function TrendyTextBrideGroom({ isVisible }: SectionProps) {
         </div>
 
         {/* 하단 그림 영역 (나머지 공간, 오른쪽 정렬) */}
-        <div className="flex-[0.67] relative w-full overflow-hidden">
+        <div className="flex-[0.67] relative w-full">
           {/* 이미지 스택 영역 (부모 높이 100%, 부모 너비 안에서 object-contain으로 원본 비율 유지) */}
           <div className="relative w-full h-full">
             {/* bride-background.png */}
