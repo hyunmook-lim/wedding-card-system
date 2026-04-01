@@ -6,121 +6,222 @@ import { motion, useMotionValueEvent, Variants } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import Image from 'next/image';
 import { useTitleAnimation } from '@/hooks/useTitleAnimation';
+import { cn } from '@/lib/utils';
+import { IconWrapper } from '@/components/ui/IconWrapper';
+
+const Icons = {
+  Subway: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="16" height="16" x="4" y="3" rx="2" />
+      <path d="M4 11h16" />
+      <path d="M12 3v8" />
+      <path d="m8 19-2 3" />
+      <path d="m18 22-2-3" />
+      <path d="M8 15h.01" />
+      <path d="M16 15h.01" />
+    </svg>
+  ),
+  Bus: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 6v6" />
+      <path d="M15 6v6" />
+      <path d="M2 12h19.6" />
+      <path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4c-1.1 0-2.1.8-2.4 1.8l-1.4 5c-.1.4-.2.8-.2 1.2 0 .4.1.8.2 1.2C.5 16.3 1 18 1 18h3" />
+      <path d="M4 18v1a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-1" />
+      <circle cx="7" cy="18" r="2" />
+      <circle cx="17" cy="18" r="2" />
+    </svg>
+  ),
+  Car: () => (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+      <circle cx="7" cy="17" r="2" />
+      <path d="M9 17h6" />
+      <circle cx="17" cy="17" r="2" />
+    </svg>
+  )
+};
 
 export default function MemoLocation({ isVisible }: SectionProps) {
   const containerRef = useRef<HTMLElement>(null);
-  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress, variantConfig } = useTitleAnimation();
+  const { animationState, titleVariants, scrollYProgress } = useTitleAnimation({
+    thresholds: {
+      visible: 0.25,
+      top: 0.35,
+    },
+    variants: {
+      top: { y: '-340px', opacity: 1, scale: 0.55 }
+    }
+  });
   
-  // 추가 상태: info (0.50 이상)
-  const [isInfo, setIsInfo] = useState(false);
+  const [isRevealed, setIsRevealed] = useState(false);
   
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    setIsInfo(latest > 0.50);
+    if (latest > 0.50) {
+      setIsRevealed(true);
+    } else {
+      setIsRevealed(false);
+    }
   });
 
-  const animationState = isInfo ? 'info' : baseState;
-
-  // titleVariants에 info 상태 추가 (top과 동일한 위치 유지)
-  const titleVariants: Variants = {
-    ...baseTitleVariants,
-    info: {
-      ...variantConfig.top,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    }
+  const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: (i: number) => ({
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        delay: i * 0.15,
+        duration: 0.8, 
+        ease: [0.215, 0.61, 0.355, 1.0] 
+      }
+    })
   };
 
-  const mapVariants: Variants = {
+  // Phase 2: Neumorphic shadow pops out SIMULTANEOUSLY for all items
+  const containerShadowVariants: Variants = {
     hidden: { 
-      x: "-100%",
-      transition: { duration: 0.8, ease: "easeInOut" }
+      boxShadow: "0px 0px 0px rgba(217, 215, 210, 0), 0px 0px 0px rgba(255, 255, 255, 0)"
     },
-    visible: { 
-      x: "-100%",
-      transition: { duration: 0.8, ease: "easeInOut" }
-    },
-    top: { 
-      x: 0,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    },
-    info: {
-      x: 0,
-      transition: { duration: 0.8, ease: "easeInOut" }
-    }
+    visible: (i: number) => ({
+      boxShadow: "6px 6px 16px #d9d7d2, -8px -8px 20px #ffffff",
+      transition: { 
+        // 딜레이에서 인덱스(i)를 제거하여 모든 그림자가 동시에 나타나도록 함
+        delay: 1.2, 
+        duration: 1.2,
+        ease: "easeInOut"
+      }
+    })
   };
 
-  const infoVariants: Variants = {
-    hidden: { x: "100%", opacity: 0 },
-    visible: { x: "100%", opacity: 0 },
-    top: { x: "100%", opacity: 0 },
-    info: { 
-      x: 0, 
+  // Phase 1: All content (icon + text) fades in sequentially
+  const contentFadeVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: (i: number) => ({
       opacity: 1,
       transition: { 
-        duration: 0.8, 
-        ease: "easeInOut" 
+        delay: i * 0.2,
+        duration: 0.8,
+        ease: "easeOut"
       }
-    }
+    })
   };
 
   if (!isVisible) return null;
 
   return (
     <section ref={containerRef} className="relative w-full h-full">
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
+      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center overflow-hidden perspective-[1000px]">
+        
         {/* Title Layer */}
         <motion.div
            initial="hidden"
            animate={animationState}
            variants={titleVariants}
-           className="absolute z-20 text-center"
+           className="absolute z-20 text-center w-full px-4"
            style={{ willChange: "transform, opacity" }}
         >
-             <Typography variant="display">
+             <div className="flex flex-col items-center justify-center">
+               <div className="flex items-center space-x-3 mb-4 opacity-30">
+                 <div className="w-8 h-[0.5px] bg-black" />
+                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-black/80">
+                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                 </svg>
+                 <div className="w-8 h-[0.5px] bg-black" />
+               </div>
+               
+               <Typography 
+                 className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+               >
                  오시는 길
-             </Typography>
+               </Typography>
+               
+               <Typography 
+                 className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80"
+               >
+                 Location Details
+               </Typography>
+             </div>
         </motion.div>
 
-        {/* Sliding Map Layer */}
+        {/* Map Image Layer */}
         <motion.div
           initial="hidden"
-          animate={animationState}
-          variants={mapVariants}
-          className="absolute left-0 top-[75px] w-2/3 z-10 bg-transparent"
-          style={{ willChange: "transform" }}
+          animate={isRevealed ? "visible" : "hidden"}
+          variants={fadeInUp}
+          custom={1}
+          className="absolute top-[220px] w-[65%] z-10 flex justify-center"
         >
-           <div className="relative w-full rounded-r-2xl overflow-hidden bg-transparent">
+           <div className="relative w-full rounded-2xl overflow-hidden bg-transparent">
              <Image 
                src="/test-resources/location/wedding-hall.png" 
                alt="Map" 
-               width={800}
-               height={600}
-               className="w-full h-auto object-cover" 
+               width={500}
+               height={312}
+               className="w-full h-auto object-cover opacity-90" 
              />
            </div>
         </motion.div>
 
-        {/* Transportation Info Layer */}
-        <motion.div
-          initial="hidden"
-          animate={animationState}
-          variants={infoVariants}
-          className="absolute right-0 bottom-[40px] w-2/3 z-20 text-right pr-6 space-y-6"
-          style={{ willChange: "transform, opacity" }}
-        >
-           <div className="flex flex-col items-end">
-             <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">지하철</Typography>
-             <Typography variant="body" className="text-sm">2호선 강남역 1번 출구 도보 5분</Typography>
-           </div>
-           <div className="flex flex-col items-end">
-             <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">버스</Typography>
-             <Typography variant="body" className="text-sm">146, 341, 740, 421 하차</Typography>
-           </div>
-           <div className="flex flex-col items-end">
-             <Typography variant="h3" className="mb-2 text-base text-[rgb(255,182,193)]">자가용</Typography>
-             <Typography variant="body" className="text-sm">네비게이션 &apos;서울 웨딩홀&apos; 검색</Typography>
-             <Typography variant="caption" className="mt-1">(주차 2시간 무료)</Typography>
-           </div>
-        </motion.div>
+        {/* Transportation Info Layer - 1단계(차례대로 페이드인) -> 2단계(동시에 그림자 생성) */}
+        <div className="absolute top-[600px] w-full px-8 z-20 flex flex-col items-center space-y-7">
+           {[ 
+             { title: "지하철", content: "2호선 강남역 1번 출구 도보 5분", icon: <Icons.Subway /> },
+             { title: "버스", content: "146, 341, 740, 421 하차", icon: <Icons.Bus /> },
+             { title: "자가용", content: "네비게이션 '서울 웨딩홀' 검색", sub: "(주차 2시간 무료)", icon: <Icons.Car /> }
+           ].map((info, idx) => (
+             <div
+               key={info.title}
+               className="flex items-center space-x-6 w-full max-w-[280px]"
+             >
+                {/* 2단계: 박스 그림자 (인덱스 상관없이 동시에 실행) */}
+                <motion.div 
+                  initial="hidden"
+                  animate={isRevealed ? "visible" : "hidden"}
+                  variants={containerShadowVariants}
+                  custom={2 + idx}
+                  className={cn(
+                    "flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center",
+                    "bg-[#fffdf7] text-black/40",
+                    "relative overflow-hidden"
+                  )}
+                  style={{ willChange: "box-shadow" }}
+                >
+                  {/* 1단계: 아이콘 페이드인 (차례대로 실행) */}
+                  <motion.div
+                    initial="hidden"
+                    animate={isRevealed ? "visible" : "hidden"}
+                    variants={contentFadeVariants}
+                    custom={2 + idx}
+                  >
+                    <IconWrapper size={24}>
+                      {info.icon}
+                    </IconWrapper>
+                  </motion.div>
+                </motion.div>
+
+                {/* 1단계: 텍스트 페이드인 (차례대로 실행) */}
+                <motion.div 
+                  initial="hidden"
+                  animate={isRevealed ? "visible" : "hidden"}
+                  variants={contentFadeVariants}
+                  custom={2 + idx}
+                  className="flex flex-col"
+                >
+                  <Typography className="text-[0.6rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
+                    {info.title}
+                  </Typography>
+                  <Typography variant="body" className="text-[0.85rem] text-black/80 font-semibold leading-tight">
+                    {info.content}
+                  </Typography>
+                  {info.sub && (
+                    <Typography className="text-[0.65rem] text-black/40 mt-1 font-light tracking-wide italic">
+                      {info.sub}
+                    </Typography>
+                  )}
+                </motion.div>
+             </div>
+           ))}
+        </div>
       </div>
     </section>
   );

@@ -91,7 +91,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'memo',
         isVisible: true,
         content: {
-          background: { type: 'color', value: '#00FF00' } // Green
+          background: { type: 'none' }
           // location injected from global event
         }
       },
