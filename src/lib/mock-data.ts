@@ -101,7 +101,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'masked',
         isVisible: true,
         content: {
-          background: { type: 'color', value: '#FFFF00' }, // Yellow
+          background: { type: 'image', value: '/bg/glass-bg.png' }, 
           accounts: [
             { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
           ]
