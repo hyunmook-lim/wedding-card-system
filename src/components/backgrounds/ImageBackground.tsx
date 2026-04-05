@@ -41,7 +41,7 @@ export default function ImageBackground({ imageUrl }: ImageBackgroundProps) {
         unoptimized // 임시/외부 url용
       />
       {/* 텍스트 가독성을 위한 살짝 어두운 오버레이 */}
-      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 bg-black/5" />
     </motion.div>
   );
 }

@@ -70,7 +70,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     video: '4000px', // 500lvh -> 5 * 800
   },
   account: {
-    masked: '2400px', // 300lvh -> 3 * 800
+    masked: '1200px', // 150lvh -> 1.5 * 800
   },
   date: {
     typing: '3200px', // 200lvh -> 2 * 800
@@ -78,7 +78,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     flipboard: '1600px',
   },
   location: {
-    memo: '3200px', // 300lvh -> 3 * 800
+    memo: '1200px', // 150lvh -> 1.5 * 800
   },
   bride_groom: {
     card: '3200px', // 300lvh -> 3 * 800

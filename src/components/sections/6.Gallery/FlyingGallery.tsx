@@ -23,7 +23,7 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
 
   const { animationState, titleVariants, scrollYProgress } = useTitleAnimation({
     variants: {
-      top: { y: '-360px', opacity: 1, scale: 0.25 }
+      top: { y: '-340px', opacity: 1, scale: 0.55 }
     }
   });
 
@@ -58,17 +58,35 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
             // perspective 제거 (가짜 3D 사용)
           }}
         >
-          {/* Title */}
+          {/* Title Layer */}
           <motion.div 
             initial="hidden"
             animate={animationState}
             variants={titleVariants}
-            className="text-center z-20"
+            className="absolute z-20 text-center w-full px-4"
             style={{ willChange: "transform, opacity" }}
           >
-            <Typography variant="display">
-              {title}
-            </Typography>
+             <div className="flex flex-col items-center justify-center">
+               <div className="flex items-center space-x-3 mb-4 opacity-30">
+                 <div className="w-8 h-[0.5px] bg-black" />
+                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-black/80">
+                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                 </svg>
+                 <div className="w-8 h-[0.5px] bg-black" />
+               </div>
+               
+               <Typography 
+                 className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+               >
+                 {title}
+               </Typography>
+               
+               <Typography 
+                 className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80"
+               >
+                 Our Moments
+               </Typography>
+             </div>
           </motion.div>
 
           {/* Flying Photos: 컨테이너가 고정되고(top) + 스크롤이 0.45를 넘었을 때(showImages) 표시 */}
@@ -144,21 +162,48 @@ function FlyingPhoto({
     [initialZ, initialZ + totalTravelDistance]
   );
 
-  // Z 위치를 Scale로 변환 (Pseudo-3D)
-  // 멀리(마이너스) 있을수록 작게, 0일 때 1, 가까우면(플러스) 크게
+  // Z 위치를 Scale로 변환 (Pseudo-3D) - 가까워질 때 확 커지도록 액센트
   const scale = useTransform(
     zPosition,
-    [-2000, -1000, 0, 500],
-    [0.2, 0.5, 1, 1.3] 
+    [-2000, -1000, 0, 400, 800],
+    [0.15, 0.5, 1, 1.6, 3.5] 
   );
 
-  // Opacity 조정 - 더 넓은 범위로 오래 보이도록
+  // Opacity 조정
   const opacity = useTransform(
     zPosition,
     [-1800, -800, 400, 800],
     [0, 1, 1, 0]
   );
   
+  // X/Y 좌표를 Z축 이동과 함께 흩어지도록 (원근감 카메라 효과 강화)
+  const dynamicX = useTransform(
+    zPosition,
+    [-2000, 0, 400, 800],
+    [offsetX * 0.2, offsetX, offsetX * 1.5, offsetX * 3.5]
+  );
+
+  const dynamicY = useTransform(
+    zPosition,
+    [-2000, 0, 400, 800],
+    [offsetY * 0.2, offsetY, offsetY * 1.5, offsetY * 3.5]
+  );
+
+  // 사진 기울기 (랜덤 회전) - 사라질 때 회전 폭 우아하게 증가
+  const randomRotate = (seededRandom(index * 3 + 1) - 0.5) * 30; // -15도 ~ 15도
+  const rotate = useTransform(
+    zPosition,
+    [-2000, 0, 400, 800],
+    [randomRotate * 0.2, randomRotate, randomRotate * 1.5, randomRotate * 3]
+  );
+
+  // 심도(Depth of field) 액션용 블러 효과
+  const filter = useTransform(
+    zPosition,
+    [-2000, -1500, 0, 400, 800],
+    ["blur(5px)", "blur(0px)", "blur(0px)", "blur(0px)", "blur(16px)"]
+  );
+
   // 클릭 가능한 유효 범위 (Z=0 전후)
   const pointerEvents = useTransform(
     zPosition,
@@ -178,34 +223,51 @@ function FlyingPhoto({
     <motion.div
       className="absolute flex items-center justify-center cursor-pointer"
       style={{
-        translateX: offsetX,
-        translateY: offsetY,
+        x: dynamicX,
+        y: dynamicY,
         scale,        // 3D 거리감 표현용 Scale
+        rotate,
+        filter,
         opacity,
         visibility,
         zIndex: baseZIndex,
         pointerEvents, 
         touchAction: 'pan-y',
-        willChange: 'transform, opacity'
+        willChange: 'transform, opacity, filter'
       }}
       onTap={() => onClick()} // 탭 이벤트는 바깥에서 감지
     >
-      {/* 내부 div에 클릭 반응 애니메이션 적용 */}
-      <motion.div 
-        className="relative w-[280px] h-[380px] rounded-xl overflow-hidden shadow-2xl bg-[#fffdf7]"
-        whileTap={{ scale: 0.95 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      {/* 둥둥 떠다니는 플로팅 애니메이션 래퍼 */}
+      <motion.div
+        animate={{ y: [-15 - (index % 5), 15 + (index % 3)] }}
+        transition={{
+          duration: 3 + (index % 4) * 0.5,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+          delay: (index % 5) * 0.3
+        }}
         style={{ willChange: "transform" }}
       >
-        <Image 
-          src={src} 
-          alt={`Gallery photo ${index + 1}`}
-          fill
-          className="object-cover"
-          sizes="280px"
-          priority={index < 3}
-          style={{ pointerEvents: 'none' }}
-        />
+        {/* 내부 div에 클릭 반응 애니메이션 적용 */}
+        <motion.div 
+          className="relative w-[280px] h-[380px] rounded-2xl p-2 bg-white/90 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] ring-1 ring-black/[0.03] backdrop-blur-sm"
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          style={{ willChange: "transform" }}
+        >
+          <div className="relative w-full h-full rounded-xl overflow-hidden bg-white">
+            <Image 
+              src={src} 
+              alt={`Gallery photo ${index + 1}`}
+              fill
+              className="object-cover"
+              sizes="280px"
+              priority={index < 3}
+              style={{ pointerEvents: 'none' }}
+            />
+          </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );
@@ -216,14 +278,14 @@ function ThankYouMessage({ scrollProgress }: { scrollProgress: MotionValue<numbe
   // 0.78에서 시작해서 0.8에 도착, 이후 유지
   const zPosition = useTransform(
     scrollProgress,
-    [0.78, 0.80],
+    [0.75, 0.80],
     [-500, 0]
   );
 
   const scale = useTransform(
     zPosition,
     [-500, 0],
-    [0.5, 1]
+    [0.8, 1]
   );
 
   const opacity = useTransform(
@@ -234,16 +296,19 @@ function ThankYouMessage({ scrollProgress }: { scrollProgress: MotionValue<numbe
 
   return (
     <motion.div
-      className="absolute flex items-center justify-center z-50"
+      className="absolute flex flex-col items-center justify-center z-50 text-center"
       style={{
         scale,
         opacity,
         willChange: "transform, opacity"
       }}
     >
-      <p className="text-2xl font-['GowunDodum'] text-[rgb(255,182,193)] whitespace-nowrap">
+      <Typography className="font-serif text-[1.4rem] tracking-[0.2em] text-black/80 font-medium mb-3">
         감사합니다
-      </p>
+      </Typography>
+      <Typography className="text-[0.65rem] tracking-[0.3em] text-black/40 font-light uppercase">
+        Thank You
+      </Typography>
     </motion.div>
   );
 }

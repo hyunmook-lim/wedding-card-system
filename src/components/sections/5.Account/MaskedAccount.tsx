@@ -66,19 +66,90 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
         </Typography>
       </div>
 
-      <div className="relative overflow-hidden rounded-2xl border border-white/40 bg-white/30 backdrop-blur-md shadow-lg ring-1 ring-black/5">
-        <AnimatePresence mode="wait">
-          {!isRevealed ? (
+      <div 
+        className="relative overflow-hidden rounded-[20px] border border-white/30 w-full bg-white/10 backdrop-blur-md"
+        style={{
+          boxShadow: `
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.5),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.1)
+          `
+        }}
+      >
+        <div 
+          className="absolute top-0 left-0 right-0 h-px pointer-events-none z-10"
+          style={{ background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.8),transparent)' }}
+        />
+        <div 
+          className="absolute top-0 left-0 w-px h-full pointer-events-none z-10"
+          style={{ background: 'linear-gradient(180deg,rgba(255,255,255,0.8),transparent,rgba(255,255,255,0.3))' }}
+        />
+        
+        <motion.div 
+          className="divide-y divide-black/[0.03]"
+          animate={{ opacity: isRevealed ? 1 : 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          {accounts.map((acc, idx) => (
+            <div 
+              key={idx} 
+              className="flex items-center justify-between px-4 py-3.5 hover:bg-black/[0.01] transition-colors"
+            >
+              <div className="flex flex-col space-y-0.5">
+                <div className="flex items-center space-x-2">
+                   <span className="text-[0.7rem] font-bold px-1.5 py-0.5 rounded-md bg-black/5 text-black/40 uppercase tracking-tighter">
+                      {acc.relation}
+                   </span>
+                   <span className="text-[0.85rem] font-semibold text-black/80">
+                      {acc.name}
+                   </span>
+                </div>
+                <div className="text-[0.75rem] text-black/50 font-medium">
+                  {acc.bank} | {acc.accountNumber}
+                </div>
+              </div>
+              
+              <button 
+                onClick={() => handleCopy(acc.accountNumber, idx)}
+                className={cn(
+                  "relative h-8 px-3 rounded-full text-[0.7rem] font-bold transition-all active:scale-95 shadow-sm",
+                  copiedIndex === idx 
+                    ? "bg-green-500 text-white" 
+                    : "bg-white border border-black/5 text-black/60 hover:bg-black/5"
+                )}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={copiedIndex === idx ? 'copied' : 'copy'}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {copiedIndex === idx ? '성공' : '복사'}
+                  </motion.span>
+                </AnimatePresence>
+              </button>
+            </div>
+          ))}
+        </motion.div>
+
+        <AnimatePresence>
+          {!isRevealed && (
             <motion.div
-              key="reveal-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
               onClick={() => onToggle(true)}
-              className="group cursor-pointer py-5 flex flex-col items-center justify-center space-y-1 transition-all hover:bg-black/[0.02]"
+              className="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer group hover:bg-black/[0.01]"
+              style={{ 
+                backgroundColor: 'transparent',
+                backdropFilter: 'blur(8px)',
+                WebkitBackdropFilter: 'blur(8px)'
+              }}
             >
               <div 
-                className="text-[0.9rem] font-medium transition-colors"
+                className="text-[0.9rem] font-medium transition-colors space-x-1"
                 style={{ color: theme.accent }}
               >
                 계좌번호 확인하기
@@ -86,62 +157,11 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
               <svg 
                 width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
                 strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                className="opacity-40 group-hover:opacity-60 transition-all group-hover:translate-y-0.5"
+                className="opacity-50 group-hover:opacity-80 transition-all group-hover:translate-y-0.5 mt-1"
                 style={{ color: theme.accent }}
               >
                 <path d="m6 9 6 6 6-6"/>
               </svg>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="account-list"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              transition={{ duration: 0.4, ease: "circOut" }}
-              className="divide-y divide-black/[0.03]"
-            >
-              {accounts.map((acc, idx) => (
-                <div 
-                  key={idx} 
-                  className="flex items-center justify-between p-4 hover:bg-black/[0.01] transition-colors"
-                >
-                  <div className="flex flex-col space-y-0.5">
-                    <div className="flex items-center space-x-2">
-                       <span className="text-[0.7rem] font-bold px-1.5 py-0.5 rounded-md bg-black/5 text-black/40 uppercase tracking-tighter">
-                          {acc.relation}
-                       </span>
-                       <span className="text-[0.85rem] font-semibold text-black/80">
-                          {acc.name}
-                       </span>
-                    </div>
-                    <div className="text-[0.75rem] text-black/50 font-medium">
-                      {acc.bank} | {acc.accountNumber}
-                    </div>
-                  </div>
-                  
-                  <button 
-                    onClick={() => handleCopy(acc.accountNumber, idx)}
-                    className={cn(
-                      "relative h-8 px-3 rounded-full text-[0.7rem] font-bold transition-all active:scale-95 shadow-sm",
-                      copiedIndex === idx 
-                        ? "bg-green-500 text-white" 
-                        : "bg-white border border-black/5 text-black/60 hover:bg-black/5"
-                    )}
-                  >
-                    <AnimatePresence mode="wait">
-                      <motion.span
-                        key={copiedIndex === idx ? 'copied' : 'copy'}
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        transition={{ duration: 0.15 }}
-                      >
-                        {copiedIndex === idx ? '성공' : '복사'}
-                      </motion.span>
-                    </AnimatePresence>
-                  </button>
-                </div>
-              ))}
             </motion.div>
           )}
         </AnimatePresence>
@@ -154,12 +174,13 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
   const containerRef = useRef<HTMLElement>(null);
   const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress } = useTitleAnimation({
     variants: {
-      top: { y: '-350px', opacity: 1, scale: 0.7 }
+      top: { y: '-340px', opacity: 1, scale: 0.55 }
     }
   });
+
+  const [isInfo, setIsInfo] = useState(false);
   const [groomRevealed, setGroomRevealed] = useState(false);
   const [brideRevealed, setBrideRevealed] = useState(false);
-  const [isInfo, setIsInfo] = useState(false);
 
   // Cast config to proper structure
   const accountConfig = config?.content as {
@@ -181,7 +202,7 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
   };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.50) {
+    if (latest > 0.35) {
       setIsInfo(true);
     } else {
       setIsInfo(false);
@@ -195,9 +216,9 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
   const titleVariants: Variants = {
     ...baseTitleVariants,
     info: {
-      y: '-350px',
+      y: '-340px',
       opacity: 1,
-      scale: 0.7, 
+      scale: 0.55, 
       transition: { duration: 0.8, ease: "circOut" }
     }
   };
@@ -207,17 +228,17 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
     visible: { y: "40px", opacity: 0 },
     top: { y: "40px", opacity: 0 },
     info: { 
-      y: 10, 
+      y: 0, 
       opacity: 1,
-      transition: { duration: 1.0, ease: "circOut", delay: 0.1 }
+      transition: { duration: 1.0, ease: "circOut", delay: 0.8 }
     }
   };
 
   if (!isVisible) return null;
 
   return (
-    <section ref={containerRef} className="relative w-full h-full">
-      <div className="absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
+    <section ref={containerRef} className="relative w-full h-[100dvh]">
+      <div className="absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
         {/* Title Layer */}
         <motion.div
            initial="hidden"
@@ -258,16 +279,11 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
               animate="info"
               exit="hidden"
               variants={contentVariants}
-              className="absolute inset-0 z-10 flex flex-col items-center justify-center pt-36 pb-8 overflow-y-auto custom-scrollbar"
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center pt-24 pb-8 overflow-y-auto custom-scrollbar"
               style={{ willChange: "transform, opacity" }}
             >
                 {/* Description */}
-                <motion.div 
-                  className="text-center mb-10 px-6"
-                  initial={{ opacity: 1 }}
-                  animate={{ opacity: (groomRevealed || brideRevealed) ? 0 : 1 }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
-                >
+                <div className="text-center mb-6 px-6">
                   <Typography variant="body" className="text-[0.85rem] leading-7 text-black/60 font-medium">
                     {(accountConfig.description || "").split('\n').map((line, i) => (
                       <span key={i}>
@@ -276,9 +292,12 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
                       </span>
                     ))}
                   </Typography>
-                </motion.div>
+                </div>
 
-                <div className="space-y-4">
+                <motion.div 
+                  className="space-y-4"
+                  layout
+                >
                   <AccountGroup 
                     type="groom" 
                     label="신랑측" 
@@ -294,7 +313,7 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
                     onToggle={setBrideRevealed}
                     accounts={accountConfig.bride} 
                   />
-                </div>
+                </motion.div>
             </motion.div>
           )}
         </AnimatePresence>

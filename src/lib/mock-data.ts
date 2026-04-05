@@ -91,7 +91,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'memo',
         isVisible: true,
         content: {
-          background: { type: 'none' }
+          background: { type: 'color', value: '#e8e8e8' }
           // location injected from global event
         }
       },
@@ -101,7 +101,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'masked',
         isVisible: true,
         content: {
-          background: { type: 'image', value: '/bg/glass-bg.png' }, 
+          background: { type: 'image', value: '/bg/silk-bg.png' }, 
           accounts: [
             { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
           ]
