@@ -162,11 +162,11 @@ function FlyingPhoto({
     [initialZ, initialZ + totalTravelDistance]
   );
 
-  // Z 위치를 Scale로 변환 (Pseudo-3D) - 가까워질 때 확 커지도록 액센트
+  // Z 위치를 Scale로 변환 (Pseudo-3D) - 부드럽게 커지며 사라지도록 조정
   const scale = useTransform(
     zPosition,
     [-2000, -1000, 0, 400, 800],
-    [0.15, 0.5, 1, 1.6, 3.5] 
+    [0.15, 0.5, 1, 1.2, 2.0] 
   );
 
   // Opacity 조정
@@ -176,32 +176,19 @@ function FlyingPhoto({
     [0, 1, 1, 0]
   );
   
-  // X/Y 좌표를 Z축 이동과 함께 흩어지도록 (원근감 카메라 효과 강화)
-  const dynamicX = useTransform(
-    zPosition,
-    [-2000, 0, 400, 800],
-    [offsetX * 0.2, offsetX, offsetX * 1.5, offsetX * 3.5]
-  );
 
-  const dynamicY = useTransform(
-    zPosition,
-    [-2000, 0, 400, 800],
-    [offsetY * 0.2, offsetY, offsetY * 1.5, offsetY * 3.5]
-  );
 
-  // 사진 기울기 (랜덤 회전) - 사라질 때 회전 폭 우아하게 증가
-  const randomRotate = (seededRandom(index * 3 + 1) - 0.5) * 30; // -15도 ~ 15도
-  const rotate = useTransform(
-    zPosition,
-    [-2000, 0, 400, 800],
-    [randomRotate * 0.2, randomRotate, randomRotate * 1.5, randomRotate * 3]
-  );
-
-  // 심도(Depth of field) 액션용 블러 효과
+  // 시네마틱 렌즈 효과 (Cinematic Blow-out) - 지나갈 때 빛이 번지며 밝아지는 몽환적인 효과
   const filter = useTransform(
     zPosition,
     [-2000, -1500, 0, 400, 800],
-    ["blur(5px)", "blur(0px)", "blur(0px)", "blur(0px)", "blur(16px)"]
+    [
+      "blur(5px) brightness(0.9) contrast(0.9)", 
+      "blur(0px) brightness(1) contrast(1)", 
+      "blur(0px) brightness(1) contrast(1)", 
+      "blur(2px) brightness(1.05) contrast(1.05)", 
+      "blur(10px) brightness(1.2) contrast(1.1)"
+    ]
   );
 
   // 클릭 가능한 유효 범위 (Z=0 전후)
@@ -223,10 +210,9 @@ function FlyingPhoto({
     <motion.div
       className="absolute flex items-center justify-center cursor-pointer"
       style={{
-        x: dynamicX,
-        y: dynamicY,
+        x: offsetX,
+        y: offsetY,
         scale,        // 3D 거리감 표현용 Scale
-        rotate,
         filter,
         opacity,
         visibility,
