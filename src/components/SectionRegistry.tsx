@@ -23,6 +23,7 @@ const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
 const MaskedAccount = dynamic(() => import('./sections/5.Account/MaskedAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
 const FlyingGallery = dynamic(() => import('./sections/6.Gallery/FlyingGallery'));
+const AlbumGallery = dynamic(() => import('./sections/6.Gallery/AlbumGallery'));
 
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
@@ -60,6 +61,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     basic: FlyingGallery,
     flying: FlyingGallery,
     grid: BasicGallery,
+    album: AlbumGallery,
   },
   // Add other sections here as they are created
 };
@@ -87,6 +89,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   gallery: {
     basic: '4000px',
     flying: '4000px',
+    album: '4000px',
   },
 };
 

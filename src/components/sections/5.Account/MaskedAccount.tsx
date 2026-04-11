@@ -1,11 +1,11 @@
 'use client';
 
 import { SectionProps } from '@/types/wedding';
-import { useRef, useState } from 'react';
-import { motion, AnimatePresence, useMotionValueEvent, Variants } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence, useMotionValueEvent, Variants, useScroll } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import { cn, copyToClipboard } from '@/lib/utils';
-import { useTitleAnimation } from '@/hooks/useTitleAnimation';
+import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 type AccountType = 'groom' | 'bride';
 
@@ -171,14 +171,14 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
 }
 
 export default function MaskedAccount({ isVisible, config }: SectionProps) {
-  const containerRef = useRef<HTMLElement>(null);
-  const { animationState: baseState, titleVariants: baseTitleVariants, scrollYProgress } = useTitleAnimation({
-    variants: {
-      top: { y: '-340px', opacity: 1, scale: 0.55 }
-    }
+  const scrollRef = useStickyScrollRef();
+  const { scrollYProgress: inViewProgress } = useScroll({
+    target: scrollRef || undefined,
+    offset: ['start end', 'start start']
   });
 
   const [isInfo, setIsInfo] = useState(false);
+  const [showTitle, setShowTitle] = useState(false);
   const [groomRevealed, setGroomRevealed] = useState(false);
   const [brideRevealed, setBrideRevealed] = useState(false);
 
@@ -201,27 +201,22 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
     ]
   };
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest > 0.35) {
+  // 화면 진입 시 타이틀 등장 트랜지션 (inViewProgress 기준)
+  useMotionValueEvent(inViewProgress, "change", (latest) => {
+    if (latest > 0.95) {
       setIsInfo(true);
     } else {
       setIsInfo(false);
       setGroomRevealed(false);
       setBrideRevealed(false);
     }
-  });
 
-  const animationState = isInfo ? 'info' : baseState;
-
-  const titleVariants: Variants = {
-    ...baseTitleVariants,
-    info: {
-      y: '-340px',
-      opacity: 1,
-      scale: 0.55, 
-      transition: { duration: 0.8, ease: "circOut" }
+    if (latest > 0.5) {
+      setShowTitle(true);
+    } else {
+      setShowTitle(false);
     }
-  };
+  });
 
   const contentVariants: Variants = {
     hidden: { y: "40px", opacity: 0 },
@@ -237,40 +232,46 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={containerRef} className="relative w-full h-[100dvh]">
-      <div className="absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
-        {/* Title Layer */}
-        <motion.div
-           initial="hidden"
-           animate={animationState}
-           variants={titleVariants}
-           className="absolute z-20 text-center w-full px-4"
-           style={{ willChange: "transform, opacity" }}
-        >
-             <div className="flex flex-col items-center justify-center">
-               <div className="flex items-center space-x-3 mb-4 opacity-30">
-                 <div className="w-8 h-[0.5px] bg-black" />
-                 {/* Small Heart SVG for Stationery look */}
-                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-black/80">
-                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                 </svg>
-                 <div className="w-8 h-[0.5px] bg-black" />
-               </div>
-               
-               <Typography 
-                 className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
-               >
-                 마음 전하실 곳
-               </Typography>
-               
-               <Typography 
-                 className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80"
-               >
-                 A Token of Gratitude
-               </Typography>
+    <section ref={scrollRef} className="relative w-full h-[100dvh]">
+      {/* Title Layer: 독립적으로 최상단에 배치하여 중앙 정렬 간섭 방지 */}
+      <motion.div
+         initial={{ opacity: 0, y: 50 }}
+         animate={{ 
+           opacity: showTitle ? 1 : 0, 
+           y: showTitle ? 0 : 50 
+         }}
+         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+         style={{ 
+           scale: 0.55, 
+           transformOrigin: "top center",
+           willChange: "transform, opacity"
+         }}
+         className="absolute top-16 inset-x-0 flex flex-col items-center z-30 pointer-events-none"
+      >
+           <div className="flex flex-col items-center justify-center">
+             <div className="flex items-center space-x-3 mb-4 opacity-30">
+               <div className="w-8 h-[0.5px] bg-black" />
+               <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-black/80">
+                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+               </svg>
+               <div className="w-8 h-[0.5px] bg-black" />
              </div>
-        </motion.div>
+             
+             <Typography 
+               className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+             >
+               마음 전하실 곳
+             </Typography>
+             
+             <Typography 
+               className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80"
+             >
+               A Token of Gratitude
+             </Typography>
+           </div>
+      </motion.div>
 
+      <div className="absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
         {/* Account Info Layer */}
         <AnimatePresence>
           {isInfo && (

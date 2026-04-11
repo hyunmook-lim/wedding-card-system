@@ -111,10 +111,20 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         id: 'sec_7',
         type: 'gallery',
         variant: 'basic',
-        isVisible: true,
+        isVisible: false,
         content: {
           background: { type: 'color', value: '#FF00FF' }, // Magenta
           images: []
+        }
+      },
+      {
+        id: 'sec_8',
+        type: 'gallery',
+        variant: 'album',
+        isVisible: true,
+        content: {
+          background: { type: 'color', value: '#fffdf7' },
+          images: [] // 20 test images will be used by default
         }
       }
     ]
