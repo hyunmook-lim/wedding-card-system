@@ -29,7 +29,7 @@ export function Typography({
   children,
   ...props
 }: TypographyProps) {
-  const Tag = as || ELEMENT_TAGS[variant] || "p";
+  const Tag = (as || ELEMENT_TAGS[variant] || "p") as ElementType<HTMLAttributes<HTMLElement>>;
 
   return (
     <Tag

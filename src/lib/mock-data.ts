@@ -63,7 +63,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         id: 'sec_3',
         type: 'bride_groom',
         variant: 'card',
-        isVisible: true,
+        isVisible: false,
         content: {
           background: { type: 'none' } 
         }
@@ -125,6 +125,19 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         content: {
           background: { type: 'color', value: '#fffdf7' },
           images: [] // 20 test images will be used by default
+        }
+      },
+      {
+        id: 'sec_ar_scan',
+        type: 'ar_viewer',
+        variant: 'card_scan',
+        isVisible: true,
+        content: {
+          background: { type: 'color', value: '#000000' },
+          targetImage: '/test-resources/ar/target-image.mind',
+          videoUrl: '/test-resources/ar/test-video.MP4',
+          title: 'AR 초대장 스캔',
+          subtitle: '명함의 뒷면을 카메라에 비춰보세요'
         }
       }
     ]

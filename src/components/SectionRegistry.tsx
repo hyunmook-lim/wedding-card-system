@@ -24,6 +24,8 @@ const MaskedAccount = dynamic(() => import('./sections/5.Account/MaskedAccount')
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
 const FlyingGallery = dynamic(() => import('./sections/6.Gallery/FlyingGallery'));
 const AlbumGallery = dynamic(() => import('./sections/6.Gallery/AlbumGallery'));
+const ARViewer = dynamic(() => import('./sections/7.special/ARViewer'));
+const ARCardScan = dynamic(() => import('./sections/7.special/ARCardScan'));
 
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
@@ -63,6 +65,10 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     grid: BasicGallery,
     album: AlbumGallery,
   },
+  ar_viewer: {
+    basic: ARViewer,
+    card_scan: ARCardScan,
+  },
   // Add other sections here as they are created
 };
 
@@ -90,6 +96,10 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     basic: '4000px',
     flying: '4000px',
     album: '4000px',
+  },
+  ar_viewer: {
+    basic: '100lvh',
+    card_scan: '100lvh', // Changed to 100lvh to prevent unsticking by default
   },
 };
 
@@ -122,6 +132,8 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   // 1. Separate 'intro' from other sections
   const introSection = sections.find(s => s.type === 'intro');
   const otherSections = sections.filter(s => s.type !== 'intro');
+  const visibleSections = otherSections.filter(s => s.isVisible);
+  const lastSectionId = visibleSections[visibleSections.length - 1]?.id;
 
   // 2. Render Intro Overlay
   const renderIntro = () => {
@@ -146,7 +158,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   };
 
   return (
-    <main className="w-full max-w-md mx-auto min-h-screen bg-[#fffdf7] shadow-xl relative pb-20">
+    <main className="w-full max-w-md mx-auto min-h-screen bg-[#fffdf7] shadow-xl relative">
       
       {/* Render Intro Overlay */}
       {renderIntro()}
@@ -163,7 +175,11 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             if (!Component) return null;
 
         // Define scroll heights for specific sections
-        const height = SECTION_HEIGHTS[section.type]?.[section.variant] || '800px';
+        // If it's the last visible section, force 100dvh to prevent unsticking
+        const isLast = section.id === lastSectionId;
+        const height = isLast 
+          ? '100dvh' 
+          : (SECTION_HEIGHTS[section.type]?.[section.variant] || '800px');
 
         return (
           <SectionDebugWrapper key={section.id} type={section.type} index={index}>

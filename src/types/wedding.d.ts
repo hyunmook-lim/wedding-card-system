@@ -7,7 +7,8 @@ export type SectionType =
   | 'account' 
   | 'gallery' 
   | 'guestbook'
-  | 'share';
+  | 'share'
+  | 'ar_viewer';
 
 export interface WeddingConfig {
   id: string;
