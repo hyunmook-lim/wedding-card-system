@@ -17,6 +17,7 @@ const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
 const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
 const SoftTypingDate = dynamic(() => import('./sections/3.Date/SoftTypingDate'));
 const FlipBoardDate = dynamic(() => import('./sections/3.Date/FlipBoardDate'));
+const CalendarDate = dynamic(() => import('./sections/3.Date/CalendarDate'));
 const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
 const MemoLocation = dynamic(() => import('./sections/4.Location/MemoLocation'));
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
@@ -50,6 +51,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     typing: TypingDate,
     soft: SoftTypingDate,
     flipboard: FlipBoardDate,
+    calendar: CalendarDate,
   },
   location: {
     basic: BasicLocation,
@@ -84,6 +86,7 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     typing: '3200px', // 200lvh -> 2 * 800
     soft: '3200px', // 200lvh -> 2 * 800
     flipboard: '1600px',
+    calendar: '1200px',
   },
   location: {
     memo: '1200px', // 150lvh -> 1.5 * 800
@@ -187,6 +190,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
                 index={index} 
                 height={height}
                 background={section.content.background as BackgroundConfig}
+                isSticky={section.content.isSticky !== false}
             >
               <Component 
                   config={section.content} 

@@ -78,11 +78,12 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       {
         id: 'sec_4',
         type: 'date',
-        variant: 'flipboard',
+        variant: 'calendar',
         isVisible: true,
         content: {
+          isSticky: false,
           date: '2025-05-24T12:00:00', // injected from global event usually, but explicit here for clarity
-          background: { type: 'color', value: '#f0f0f0' }
+          background: { type: 'color', value: '#e8e8e8' }
         }
       },
       {
@@ -91,6 +92,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'memo',
         isVisible: true,
         content: {
+          isSticky: false,
           background: { type: 'color', value: '#e8e8e8' }
           // location injected from global event
         }
@@ -101,6 +103,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'masked',
         isVisible: true,
         content: {
+          isSticky: false,
           background: { type: 'image', value: '/bg/silk-bg.png' }, 
           accounts: [
             { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
