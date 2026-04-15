@@ -19,10 +19,19 @@ const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: stri
 
   useEffect(() => {
     const targetChar = triggered ? value : ' ';
+    
+    if (!triggered) {
+      // 리셋 시에는 애니메이션 없이 즉시 초기화하여 다음 등장을 준비
+      animationSessionRef.current++;
+      setCurrentValue(' ');
+      setNextValue(' ');
+      setIsAnimating(false);
+      return;
+    }
+
     if (currentValueRef.current === targetChar) return;
 
     const sessionId = ++animationSessionRef.current;
-    let initialTimeoutId: NodeJS.Timeout;
     const activeTimeouts: NodeJS.Timeout[] = [];
 
     const startAnimation = () => {
@@ -36,7 +45,7 @@ const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: stri
 
       const sequence: string[] = [];
       const steps = (targetIndex - startIndex + chars.length) % chars.length;
-      const minSteps = triggered ? 5 : 2;
+      const minSteps = 5; // 등장 시 항상 역동적으로 움직이도록 고정
       const actualSteps = steps < minSteps ? steps + chars.length : steps;
 
       for (let i = 1; i <= actualSteps; i++) {
@@ -54,7 +63,8 @@ const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: stri
         setIsAnimating(true);
 
         const progress = currentStep / (sequence.length - 1);
-        const animDelay = 20 + Math.pow(progress, 4) * 180; 
+        // 전체 지속 시간을 줄이기 위해 간격을 다시 단축 (snappy feel)
+        const animDelay = 40 + Math.pow(progress, 4) * 160; 
 
         const t1 = setTimeout(() => {
           if (sessionId !== animationSessionRef.current) return;
@@ -73,16 +83,12 @@ const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: stri
       flipNext();
     };
 
-    if (triggered) {
-      const randomOffset = Math.random() * 600; 
-      const totalDelay = delay + randomOffset;
-      initialTimeoutId = setTimeout(startAnimation, totalDelay);
-    } else {
-      startAnimation();
-    }
+    const randomOffset = Math.random() * 600; 
+    const totalDelay = delay + randomOffset;
+    const initialTimeoutId = setTimeout(startAnimation, totalDelay);
 
     return () => {
-      if (initialTimeoutId) clearTimeout(initialTimeoutId);
+      clearTimeout(initialTimeoutId);
       activeTimeouts.forEach(t => clearTimeout(t));
     };
   }, [triggered, value, isWide, delay]);
@@ -115,7 +121,7 @@ const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: stri
               key={currentValue + nextValue}
               initial={{ rotateX: 0 }}
               animate={{ rotateX: -180 }}
-              transition={{ duration: 0.3, ease: "linear" }}
+              transition={{ duration: 0.15, ease: "linear" }}
               style={{ 
                 transformOrigin: 'bottom', 
                 transformStyle: 'preserve-3d',
@@ -202,14 +208,18 @@ export default function NewmorphismCalendar({ config, isVisible }: SectionProps)
 
   const containerShadowVariants: Variants = {
     hidden: { 
+      opacity: 0,
+      y: 30,
       boxShadow: "0px 0px 0px rgba(217, 215, 210, 0), 0px 0px 0px rgba(255, 255, 255, 0)"
     },
     visible: {
+      opacity: 1,
+      y: 0,
       boxShadow: "6px 6px 12px #d1cfc9, -6px -6px 12px #ffffff",
-      transition: { 
-        delay: 2.0, 
-        duration: 1.2,
-        ease: "easeInOut"
+      transition: {
+        y: { delay: 0.95, duration: 0.8, ease: [0.215, 0.61, 0.355, 1.0] },
+        opacity: { delay: 0.95, duration: 0.8 },
+        boxShadow: { delay: 2.0, duration: 1.2, ease: "easeInOut" }
       }
     }
   };
@@ -307,7 +317,7 @@ export default function NewmorphismCalendar({ config, isVisible }: SectionProps)
           animate={isRevealed ? "visible" : "hidden"}
           variants={containerShadowVariants}
           className="p-6 rounded-3xl w-full bg-[#e8e8e8] relative overflow-hidden shrink-0"
-          style={{ willChange: "box-shadow" }}
+          style={{ willChange: "box-shadow, transform, opacity" }}
         >
           {/* Weekdays */}
           <div className="grid grid-cols-7 mb-4">
@@ -404,7 +414,7 @@ export default function NewmorphismCalendar({ config, isVisible }: SectionProps)
                       key={i} 
                       value={char} 
                       triggered={isRevealed} 
-                      delay={400 + i * 100}
+                      delay={2000 + i * 100}
                     />
                   ))
                 }

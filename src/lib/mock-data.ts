@@ -73,7 +73,9 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         type: 'bride_groom',
         variant: 'trendy',
         isVisible: true,
-        content: {}
+        content: {
+          isSticky: false
+        }
       },
       {
         id: 'sec_4',
