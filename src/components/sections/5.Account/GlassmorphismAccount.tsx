@@ -170,7 +170,7 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
   );
 }
 
-export default function MaskedAccount({ isVisible, config }: SectionProps) {
+export default function GlassmorphismAccount({ isVisible, config }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const { scrollYProgress: inViewProgress } = useScroll({
     target: scrollRef || undefined,
@@ -203,7 +203,8 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
 
   // 화면 진입 시 타이틀 등장 트랜지션 (inViewProgress 기준)
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    if (latest > 0.95) {
+    // 트리거 시점을 대폭 앞당겨서 화면 아래에서 올라올 때 바로 애니메이션 시작
+    if (latest > 0.2) {
       setIsInfo(true);
     } else {
       setIsInfo(false);
@@ -211,7 +212,7 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
       setBrideRevealed(false);
     }
 
-    if (latest > 0.5) {
+    if (latest > 0.1) {
       setShowTitle(true);
     } else {
       setShowTitle(false);
@@ -232,8 +233,8 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={scrollRef} className="relative w-full h-[100dvh]">
-      {/* Title Layer: 독립적으로 최상단에 배치하여 중앙 정렬 간섭 방지 */}
+    <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
+      {/* Title Layer */}
       <motion.div
          initial={{ opacity: 0, y: 50 }}
          animate={{ 
@@ -246,7 +247,7 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
            transformOrigin: "top center",
            willChange: "transform, opacity"
          }}
-         className="absolute top-16 inset-x-0 flex flex-col items-center z-30 pointer-events-none"
+         className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
       >
            <div className="flex flex-col items-center justify-center">
              <div className="flex items-center space-x-3 mb-4 opacity-30">
@@ -271,8 +272,8 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
            </div>
       </motion.div>
 
-      <div className="absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center bg-transparent overflow-hidden perspective-[1000px]">
-        {/* Account Info Layer */}
+      {/* Account Info Layer */}
+      <div className="w-full flex flex-col items-center justify-center min-h-[400px] z-10 shrink-0 perspective-[1000px]">
         <AnimatePresence>
           {isInfo && (
             <motion.div
@@ -280,7 +281,7 @@ export default function MaskedAccount({ isVisible, config }: SectionProps) {
               animate="info"
               exit="hidden"
               variants={contentVariants}
-              className="absolute inset-0 z-10 flex flex-col items-center justify-center pt-24 pb-8 overflow-y-auto custom-scrollbar"
+              className="w-full flex flex-col items-center justify-center"
               style={{ willChange: "transform, opacity" }}
             >
                 {/* Description */}

@@ -5,7 +5,7 @@ import { Typography } from '@/components/ui/Typography';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { cn } from '@/lib/utils';
 
-const FlipUnit = ({ label, value, triggered, delay = 0, isWide = false }: { label: string; value: string; triggered: boolean; delay?: number; isWide?: boolean }) => {
+const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: string; triggered: boolean; delay?: number; isWide?: boolean }) => {
   const [currentValue, setCurrentValue] = useState(' ');
   const [nextValue, setNextValue] = useState(' ');
   const [isAnimating, setIsAnimating] = useState(false);
@@ -159,7 +159,7 @@ const FlipUnit = ({ label, value, triggered, delay = 0, isWide = false }: { labe
   );
 };
 
-export default function CalendarDate({ config, isVisible }: SectionProps) {
+export default function NewmorphismCalendar({ config, isVisible }: SectionProps) {
   const { date: dateStr } = config;
   const weddingDate = new Date(dateStr as string);
   
@@ -173,13 +173,14 @@ export default function CalendarDate({ config, isVisible }: SectionProps) {
   const [showTitle, setShowTitle] = useState(false);
   
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    if (latest > 0.95) {
+    // 트리거 시점을 대폭 앞당겨서 화면 아래에서 올라올 때 바로 애니메이션 시작
+    if (latest > 0.2) {
       setIsRevealed(true);
     } else {
       setIsRevealed(false);
     }
 
-    if (latest > 0.5) {
+    if (latest > 0.1) {
       setShowTitle(true);
     } else {
       setShowTitle(false);
@@ -244,7 +245,7 @@ export default function CalendarDate({ config, isVisible }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={scrollRef} className="relative w-full h-[100dvh] bg-[#e8e8e8]">
+    <section ref={scrollRef} className="relative w-full min-h-[100svh] bg-[#e8e8e8] flex flex-col items-center justify-center py-20 overflow-hidden">
       {/* Title Layer */}
       <motion.div
          initial={{ opacity: 0, y: 50 }}
@@ -258,7 +259,7 @@ export default function CalendarDate({ config, isVisible }: SectionProps) {
            transformOrigin: "top center",
            willChange: "transform, opacity"
          }}
-         className="absolute top-16 inset-x-0 flex flex-col items-center z-30 pointer-events-none"
+         className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
       >
         <div className="flex flex-col items-center justify-center">
           <div className="flex items-center space-x-3 mb-4 opacity-30">
@@ -283,139 +284,136 @@ export default function CalendarDate({ config, isVisible }: SectionProps) {
         </div>
       </motion.div>
 
-      <div className="absolute top-0 left-0 w-full h-[100dvh] flex flex-col items-center justify-center overflow-hidden">
-        <div className="w-full max-w-[320px] px-4">
-          {/* Calendar Month Header */}
+      <div className="w-full max-w-[320px] px-4 flex flex-col items-center">
+        {/* Calendar Month Header */}
+        <motion.div
+          initial="hidden"
+          animate={isRevealed ? "visible" : "hidden"}
+          variants={fadeInUp}
+          custom={0}
+          className="text-center mb-8 shrink-0"
+        >
+          <Typography className="text-[1.4rem] font-serif text-black/60 italic lowercase leading-none">
+            {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(weddingDate)}
+          </Typography>
+          <Typography className="text-[0.6rem] tracking-[0.3em] text-black/30 font-bold uppercase mt-2">
+            {year}
+          </Typography>
+        </motion.div>
+
+        {/* Neumorphic Calendar Container */}
+        <motion.div
+          initial="hidden"
+          animate={isRevealed ? "visible" : "hidden"}
+          variants={containerShadowVariants}
+          className="p-6 rounded-3xl w-full bg-[#e8e8e8] relative overflow-hidden shrink-0"
+          style={{ willChange: "box-shadow" }}
+        >
+          {/* Weekdays */}
+          <div className="grid grid-cols-7 mb-4">
+            {weekDays.map((day: string, idx: number) => (
+              <div key={day} className="text-center">
+                <Typography className={cn(
+                  "text-[0.5rem] font-bold tracking-widest",
+                  idx === 0 ? "text-red-300/60" : "text-black/20"
+                )}>
+                  {day}
+                </Typography>
+              </div>
+            ))}
+          </div>
+
+          {/* Days Grid */}
+          <div className="grid grid-cols-7 gap-y-3">
+            {calendarDays.map((day: number | null, idx: number) => {
+              const isWeddingDay = day === today;
+              const isSunday = idx % 7 === 0;
+
+              return (
+                <div key={idx} className="flex items-center justify-center relative py-1">
+                  {day !== null ? (
+                    <div className="relative flex items-center justify-center w-8 h-8">
+                      {isWeddingDay && (
+                        <motion.div 
+                          initial={{ scale: 0, opacity: 0 }}
+                          animate={isRevealed ? { scale: 1.1, opacity: 1 } : { scale: 0, opacity: 0 }}
+                          transition={{ delay: 2.8, duration: 0.8, type: "spring" }}
+                          className="absolute inset-0 rounded-full bg-[#e8e8e8] shadow-[inset_4px_4px_8px_#d1cfc9,inset_-4px_-4px_8px_#ffffff]"
+                        />
+                      )}
+                      <Typography className={cn(
+                        "text-[0.75rem] font-medium relative z-10",
+                        isWeddingDay ? "text-slate-800 font-bold" : (isSunday ? "text-red-400/40" : "text-black/40")
+                      )}>
+                        {day}
+                      </Typography>
+                      {isWeddingDay && (
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={isRevealed ? { opacity: 0.1 } : { opacity: 0 }}
+                            transition={{ delay: 3.2 }}
+                            className="absolute -bottom-1 w-1 h-1 rounded-full bg-black/80"
+                          />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Time Detail & D-Day Section */}
+        <div className="mt-10 text-center space-y-8 shrink-0">
           <motion.div
             initial="hidden"
             animate={isRevealed ? "visible" : "hidden"}
             variants={fadeInUp}
-            custom={0}
-            className="text-center mb-10"
+            custom={2}
           >
-            <Typography className="text-[1.4rem] font-serif text-black/60 italic lowercase leading-none">
-              {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(weddingDate)}
-            </Typography>
-            <Typography className="text-[0.6rem] tracking-[0.3em] text-black/30 font-bold uppercase mt-2">
-              {year}
+            <Typography className="text-[0.65rem] text-black/60 font-medium tracking-widest uppercase">
+              {new Intl.DateTimeFormat('ko-KR', { 
+                weekday: 'long', 
+                hour: 'numeric', 
+                minute: 'numeric',
+                hour12: true 
+              }).format(weddingDate)}
             </Typography>
           </motion.div>
 
-          {/* Neumorphic Calendar Container */}
+          {/* D-Day Counter (Flip Board Design) */}
           <motion.div
             initial="hidden"
             animate={isRevealed ? "visible" : "hidden"}
-            variants={containerShadowVariants}
-            className="p-6 rounded-3xl w-full bg-[#e8e8e8] relative overflow-hidden"
-            style={{ willChange: "box-shadow" }}
+            variants={fadeInUp}
+            custom={3}
+            className="flex flex-col items-center"
           >
-            {/* Weekdays */}
-            <div className="grid grid-cols-7 mb-4">
-              {weekDays.map((day: string, idx: number) => (
-                <div key={day} className="text-center">
-                  <Typography className={cn(
-                    "text-[0.5rem] font-bold tracking-widest",
-                    idx === 0 ? "text-red-300/60" : "text-black/20"
-                  )}>
-                    {day}
-                  </Typography>
-                </div>
-              ))}
-            </div>
-
-            {/* Days Grid */}
-            <div className="grid grid-cols-7 gap-y-3">
-              {calendarDays.map((day: number | null, idx: number) => {
-                const isWeddingDay = day === today;
-                const isSunday = idx % 7 === 0;
-
-                return (
-                  <div key={idx} className="flex items-center justify-center relative py-1">
-                    {day !== null ? (
-                      <div className="relative flex items-center justify-center w-8 h-8">
-                        {isWeddingDay && (
-                          <motion.div 
-                            initial={{ scale: 0, opacity: 0 }}
-                            animate={isRevealed ? { scale: 1.1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                            transition={{ delay: 2.8, duration: 0.8, type: "spring" }}
-                            className="absolute inset-0 rounded-full bg-[#e8e8e8] shadow-[inset_4px_4px_8px_#d1cfc9,inset_-4px_-4px_8px_#ffffff]"
-                          />
-                        )}
-                        <Typography className={cn(
-                          "text-[0.75rem] font-medium relative z-10",
-                          isWeddingDay ? "text-slate-800 font-bold" : (isSunday ? "text-red-400/40" : "text-black/40")
-                        )}>
-                          {day}
-                        </Typography>
-                        {isWeddingDay && (
-                           <motion.div 
-                             initial={{ opacity: 0 }}
-                             animate={isRevealed ? { opacity: 0.1 } : { opacity: 0 }}
-                             transition={{ delay: 3.2 }}
-                             className="absolute -bottom-1 w-1 h-1 rounded-full bg-black/80"
-                           />
-                        )}
-                      </div>
-                    ) : (
-                      <div className="w-8 h-8" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </motion.div>
-
-          {/* Time Detail & D-Day Section */}
-          <div className="mt-12 text-center space-y-8">
-            <motion.div
-              initial="hidden"
-              animate={isRevealed ? "visible" : "hidden"}
-              variants={fadeInUp}
-              custom={2}
-            >
-              <Typography className="text-[0.65rem] text-black/60 font-medium tracking-widest uppercase">
-                {new Intl.DateTimeFormat('ko-KR', { 
-                  weekday: 'long', 
-                  hour: 'numeric', 
-                  minute: 'numeric',
-                  hour12: true 
-                }).format(weddingDate)}
+              <div className="w-8 h-[0.5px] bg-black/10 mb-6" />
+              <Typography className="text-[0.6rem] tracking-[0.4em] text-black/30 font-bold uppercase mb-4">
+                Marriage Countdown
               </Typography>
-            </motion.div>
+              
+              <div className="flex items-center gap-1.5">
+                {(dDay > 0 ? `D-${String(dDay).padStart(2, '0')}` : dDay === 0 ? 'D-DAY' : `D+${String(Math.abs(dDay)).padStart(2, '0')}`)
+                  .split('')
+                  .map((char, i) => (
+                    <FlipUnit 
+                      key={i} 
+                      value={char} 
+                      triggered={isRevealed} 
+                      delay={400 + i * 100}
+                    />
+                  ))
+                }
+              </div>
 
-            {/* D-Day Counter (Flip Board Design) */}
-            <motion.div
-              initial="hidden"
-              animate={isRevealed ? "visible" : "hidden"}
-              variants={fadeInUp}
-              custom={3}
-              className="flex flex-col items-center"
-            >
-               <div className="w-8 h-[0.5px] bg-black/10 mb-6" />
-               <Typography className="text-[0.6rem] tracking-[0.4em] text-black/30 font-bold uppercase mb-4">
-                 Marriage Countdown
-               </Typography>
-               
-               <div className="flex items-center gap-1.5">
-                 {(dDay > 0 ? `D-${String(dDay).padStart(2, '0')}` : dDay === 0 ? 'D-DAY' : `D+${String(Math.abs(dDay)).padStart(2, '0')}`)
-                   .split('')
-                   .map((char, i) => (
-                     <FlipUnit 
-                       key={i} 
-                       label="" 
-                       value={char} 
-                       triggered={isRevealed} 
-                       delay={400 + i * 100}
-                     />
-                   ))
-                 }
-               </div>
-
-               <Typography className="text-[0.65rem] text-black/20 font-serif italic mt-5 tracking-[0.1em]">
-                 Wedding Day
-               </Typography>
-            </motion.div>
-          </div>
+              <Typography className="text-[0.65rem] text-black/20 font-serif italic mt-5 tracking-[0.1em]">
+                Wedding Day
+              </Typography>
+          </motion.div>
         </div>
       </div>
     </section>

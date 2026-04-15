@@ -22,7 +22,7 @@ export function StickySection({ children, height = '800px', index, className = '
       <div 
         ref={containerRef}
         style={{ zIndex: index }} 
-        className={`relative w-full min-h-[100dvh] ${className}`}
+        className={`relative w-full min-h-[100svh] ${className}`}
       >
         <StickyScrollContext.Provider value={containerRef as unknown as React.RefObject<HTMLElement>}>
           {/* 1. 배경 레이어 (맨 뒤, z-0) */}
@@ -44,7 +44,7 @@ export function StickySection({ children, height = '800px', index, className = '
       className="relative w-full"
     >
       <StickyScrollContext.Provider value={containerRef as unknown as React.RefObject<HTMLElement>}>
-        <div className={`sticky top-0 h-[100dvh] w-full overflow-hidden ${className}`}>
+        <div className={`sticky top-0 h-[100svh] w-full overflow-hidden ${className}`}>
           {/* 1. 배경 레이어 (맨 뒤, z-0) */}
           <BackgroundRenderer config={background} />
 
