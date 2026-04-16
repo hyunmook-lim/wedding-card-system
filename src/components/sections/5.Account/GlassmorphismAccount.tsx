@@ -203,8 +203,8 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
 
   // 화면 진입 시 타이틀 등장 트랜지션 (inViewProgress 기준)
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    // 트리거 시점을 대폭 앞당겨서 화면 아래에서 올라올 때 바로 애니메이션 시작
-    if (latest > 0.2) {
+    // 트리거 시점을 0.2 -> 0.45로 늦춰서 더 자연스럽게 등장하도록 개선
+    if (latest > 0.45) {
       setIsInfo(true);
     } else {
       setIsInfo(false);
@@ -212,7 +212,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
       setBrideRevealed(false);
     }
 
-    if (latest > 0.1) {
+    if (latest > 0.25) {
       setShowTitle(true);
     } else {
       setShowTitle(false);
@@ -226,7 +226,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
     info: { 
       y: 0, 
       opacity: 1,
-      transition: { duration: 1.0, ease: "circOut", delay: 0.8 }
+      transition: { duration: 1.2, ease: "circOut", delay: 0.2 }
     }
   };
 
