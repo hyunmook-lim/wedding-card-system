@@ -18,7 +18,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       }
     },
     event: {
-      date: '2025-05-24T12:00:00',
+      date: '2026-07-25T12:00:00',
       location: {
         name: '서울 웨딩홀',
         address: '서울시 강남구 테헤란로 123',
@@ -98,7 +98,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           isSticky: false,
-          date: '2025-05-24T12:00:00', // injected from global event usually, but explicit here for clarity
+          date: '2026-07-25T12:00:00', // injected from global event usually, but explicit here for clarity
           background: { type: 'none' }
         }
       },
