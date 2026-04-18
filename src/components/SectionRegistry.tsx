@@ -94,11 +94,11 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     soft: '3200px', // 200lvh -> 2 * 800
     flipboard: '1600px',
     calendar: '1200px',
-    glass: '1600px',
+    glass: '2000px',
   },
   location: {
     memo: '1200px', // 150lvh -> 1.5 * 800
-    glass: '1600px',
+    glass: '3000px',
   },
   bride_groom: {
     card: '3200px', // 300lvh -> 3 * 800

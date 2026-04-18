@@ -25,13 +25,13 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
   });
   
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    setShowTitle(latest > 0.3);
+    setShowTitle(latest > 0.15);
     setRevealed({
-      map: latest > 0.5,
-      trans0: latest > 0.7,
-      trans1: latest > 0.8,
-      trans2: latest > 0.9,
-      buttons: latest > 0.98
+      map: latest > 0.3,
+      trans0: latest > 0.5,
+      trans1: latest > 0.6,
+      trans2: latest > 0.7,
+      buttons: latest > 0.85
     });
   });
 
@@ -146,29 +146,86 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
         </div>
 
         {/* Minimized Navigation Buttons */}
-        <motion.div 
-          initial="hidden"
-          animate={revealed.buttons ? "visible" : "hidden"}
-          variants={fadeInUp}
-          className="w-full flex justify-center gap-4 mt-2"
-        >
-          <LiquidGlassWidget 
-            variant="dock"
-            className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105"
-            scrollProgress={inViewProgress}
-            onClick={() => window.open('https://map.kakao.com')}
+        <div className="flex flex-col items-center gap-6 w-full">
+          <motion.div 
+            initial="hidden"
+            animate={revealed.buttons ? "visible" : "hidden"}
+            variants={fadeInUp}
+            className="w-full flex justify-center gap-4 mt-2"
           >
-             <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">Kakao</span>
-          </LiquidGlassWidget>
-          <LiquidGlassWidget 
-            variant="dock"
-            className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105"
-            scrollProgress={inViewProgress}
-            onClick={() => window.open('https://map.naver.com')}
+            <LiquidGlassWidget 
+              variant="dock"
+              className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105"
+              scrollProgress={inViewProgress}
+              onClick={() => window.open('https://map.kakao.com')}
+            >
+               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">Kakao</span>
+            </LiquidGlassWidget>
+            <LiquidGlassWidget 
+              variant="dock"
+              className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105"
+              scrollProgress={inViewProgress}
+              onClick={() => window.open('https://map.naver.com')}
+            >
+               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">Naver</span>
+            </LiquidGlassWidget>
+          </motion.div>
+
+          {/* Hospitality Message */}
+          <motion.div
+            initial="hidden"
+            animate={revealed.buttons ? "visible" : "hidden"}
+            variants={fadeInUp}
+            className="flex flex-col items-center w-full text-center mt-4"
           >
-             <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">Naver</span>
-          </LiquidGlassWidget>
-        </motion.div>
+            <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
+            <Typography className="text-[0.8rem] font-serif italic text-black/50 leading-relaxed">
+              시원한 <span className="relative inline-block">
+                <motion.span 
+                  initial={{ scaleX: 0 }}
+                  animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
+                  transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
+                  style={{ transformOrigin: "left" }}
+                  className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#722f37]/20 -z-10" 
+                />
+                와인 서비스
+              </span>도 준비되어 있으니<br/>
+              가급적 대중교통을 이용하셔서<br/>
+              여유로운 시간을 즐겨주시길 부탁드립니다.
+            </Typography>
+            <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-6" />
+          </motion.div>
+
+          {/* Cafe Section */}
+          <motion.div
+            initial="hidden"
+            animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
+            variants={fadeInUp}
+            className="flex flex-col items-center w-full text-center mt-12 pb-10"
+          >
+            <Typography className="text-[0.6rem] font-bold text-black/20 uppercase tracking-[0.3em] mb-4">
+              🏷️ 주변 카페 안내
+            </Typography>
+            
+            <Typography className="text-[0.75rem] text-black/50 leading-relaxed font-light break-keep mb-8 px-2">
+              더운 햇살이 내리쬐는 여름날,<br/>
+              소중한 시간을 내어 와주신 분들께 조금이나마 보답하고 싶은 마음에<br/>
+              저희가 아껴두었던 식장 근처 예쁘고 맛있는 카페들을 공유합니다.<br/>
+              더운 날씨에 건강 유의하시고, 쾌적한 곳에서 기분 좋은 오후 보내시길 바랍니다.
+            </Typography>
+
+            <LiquidGlassWidget 
+              variant="dock"
+              className="px-6 py-3 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+              scrollProgress={inViewProgress}
+              onClick={() => window.open('https://naver.me/5If4L6J7')}
+            >
+               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">
+                 ☕ 카페 지도
+               </span>
+            </LiquidGlassWidget>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
