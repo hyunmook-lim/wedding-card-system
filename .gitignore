@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # local test images
-/public/test-resources
+# /public/test-resources
 
 # vscode settings
 .vscode
