@@ -20,7 +20,7 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
 
   return (
     <section 
-      className="w-full h-[100dvh] flex flex-col items-center justify-center cursor-pointer overflow-hidden"
+      className="w-full h-[100dvh] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-black"
       onClick={onEnter}
     >
         <div className="relative w-full h-full">

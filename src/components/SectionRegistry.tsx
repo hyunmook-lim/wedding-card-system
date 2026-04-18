@@ -5,6 +5,7 @@ import { SectionConfig, BackgroundConfig } from '@/types/wedding';
 import { ComponentType, useState, useEffect, useRef } from 'react';
 import { SectionProps } from '@/types/wedding';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
@@ -196,20 +197,26 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   };
 
   return (
-    <main className="w-full max-w-md mx-auto min-h-screen bg-transparent shadow-xl relative">
+    <main className={cn(
+      "w-full max-w-md mx-auto min-h-screen shadow-xl relative transition-colors duration-500",
+      showIntro ? "bg-black" : "bg-transparent"
+    )}>
       
       {/* Render Intro Overlay */}
       {renderIntro()}
 
-      {/* Dynamic Global Background */}
-      <AdaptiveBackground 
-        fadeInTargetRef={fadeInRef} 
-        fadeOutTargetRef={fadeOutRef} 
-      />
+      {/* Dynamic Global Background (Render only after intro) */}
+      {!showIntro && (
+        <AdaptiveBackground 
+          fadeInTargetRef={fadeInRef} 
+          fadeOutTargetRef={fadeOutRef} 
+        />
+      )}
 
-      {/* Render Main Content */}
-      <div className={`${showIntro ? 'overflow-hidden h-screen' : ''}`}>
-        {otherSections.map((section, index) => {
+      {/* Render Main Content (Render only after intro) */}
+      {!showIntro && (
+        <div className="animate-in fade-in duration-1000">
+          {otherSections.map((section, index) => {
             if (!section.isVisible) return null;
 
             const componentMap = SECTION_COMPONENTS[section.type];
@@ -243,6 +250,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         );
       })}
       </div>
+      )}
 
       {/* AR Floating Button (Only visible after intro) */}
       <AnimatePresence>
