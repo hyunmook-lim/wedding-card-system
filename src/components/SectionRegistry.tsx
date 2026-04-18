@@ -2,8 +2,9 @@
 
 import dynamic from 'next/dynamic';
 import { SectionConfig, BackgroundConfig } from '@/types/wedding';
-import { ComponentType, useState, useEffect } from 'react';
+import { ComponentType, useState, useEffect, useRef } from 'react';
 import { SectionProps } from '@/types/wedding';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
@@ -35,7 +36,6 @@ const ARCardScan = dynamic(() => import('./sections/7.special/ARCardScan'));
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
 import { StickySection } from '@/components/ui/StickySection';
 import AdaptiveBackground from './backgrounds/AdaptiveBackground';
-import { useRef } from 'react';
 
 // Map types to components
 const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionProps>>> = {
@@ -153,23 +153,32 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
 
   // 2. Render Intro Overlay
   const renderIntro = () => {
-    if (!introSection || !showIntro) return null;
-    
-    // Intro logic mapping
+    if (!introSection) return null;
+
     const componentMap = SECTION_COMPONENTS[introSection.type];
     const Component = componentMap?.[introSection.variant] || componentMap?.['basic'];
     
     if (!Component) return null;
 
     return (
-      <div className="absolute inset-0 z-[100] transition-opacity duration-1000 ease-in-out">
-         <Component 
-            key={introSection.id}
-            config={introSection.content}
-            isVisible={introSection.isVisible}
-            onEnter={() => setShowIntro(false)}
-         />
-      </div>
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div 
+            key="intro-overlay"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute inset-0 z-[100]"
+          >
+             <Component 
+                key={introSection.id}
+                config={introSection.content}
+                isVisible={introSection.isVisible}
+                onEnter={() => setShowIntro(false)}
+             />
+          </motion.div>
+        )}
+      </AnimatePresence>
     );
   };
 

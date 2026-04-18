@@ -38,7 +38,7 @@ export default function AdaptiveBackground({ fadeInTargetRef, fadeOutTargetRef }
       style={{ opacity }}
     >
       <Image 
-        src="/bg/silk-bg-fixed.png" 
+        src="/bg/silk-bg-fixed-dark.jpeg" 
         alt="Adaptive Background" 
         fill 
         className="object-cover"

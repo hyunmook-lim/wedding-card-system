@@ -4,15 +4,24 @@ import Image from 'next/image';
 export default function MainIntro({ config, isVisible, onEnter }: SectionProps) {
   if (!isVisible) return null;
   
-  const { mainImage, title } = config as { mainImage?: string; title?: string };
+  const { mainImage, introVideo } = config as { mainImage?: string; introVideo?: string; title?: string };
 
   return (
     <section 
-      className="w-full h-[100dvh] flex flex-col items-center justify-center bg-[#fffdf7] cursor-pointer overflow-hidden"
+      className="w-full h-[100dvh] flex flex-col items-center justify-center cursor-pointer overflow-hidden"
       onClick={onEnter}
     >
         <div className="relative w-full h-full">
-            {mainImage ? (
+            {introVideo ? (
+                <video
+                    src={introVideo}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+            ) : mainImage ? (
                 <Image
                     src={mainImage}
                     alt="Main Cover"
@@ -21,18 +30,10 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
                     priority
                 />
             ) : (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-400">
+                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                     Wedding Photo
                 </div>
             )}
-            
-            <div className="absolute inset-0 bg-black/20" /> {/* Dim overlay */}
-
-            <div className="absolute bottom-20 left-0 w-full text-center z-10 p-6 animate-fade-in-up">
-                <h1 className="text-4xl font-serif text-white drop-shadow-lg mb-4">
-                    {title || 'The Wedding Day'}
-                </h1>
-            </div>
         </div>
     </section>
   );

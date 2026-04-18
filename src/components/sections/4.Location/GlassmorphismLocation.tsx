@@ -15,18 +15,25 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
     offset: ['start end', 'start start']
   });
   
-  const [isRevealed, setIsRevealed] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
+  const [revealed, setRevealed] = useState({
+    map: false,
+    trans0: false,
+    trans1: false,
+    trans2: false,
+    buttons: false
+  });
   
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    if (latest > 0.3) setIsRevealed(true);
-    else setIsRevealed(false);
-
-    if (latest > 0.1) setShowTitle(true);
-    else setShowTitle(false);
+    setShowTitle(latest > 0.3);
+    setRevealed({
+      map: latest > 0.5,
+      trans0: latest > 0.7,
+      trans1: latest > 0.8,
+      trans2: latest > 0.9,
+      buttons: latest > 0.98
+    });
   });
-
-
 
   const transportation = [ 
     { title: "지하철", content: "2호선 강남역 1번 출구 도보 5분", icon: "/test-resources/location/subway.svg" },
@@ -36,22 +43,20 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
 
   const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
+    visible: {
       opacity: 1, 
       y: 0,
       transition: { 
-        delay: 0.8 + i * 0.15,
         duration: 0.8, 
         ease: [0.215, 0.61, 0.355, 1.0] 
       }
-    })
+    }
   };
 
   if (!isVisible) return null;
 
   return (
     <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
-
 
       {/* Header Title Layer */}
       <motion.div
@@ -75,12 +80,11 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
       </motion.div>
 
       <div className="w-full max-w-[320px] px-8 flex flex-col items-center justify-center z-10 gap-10 shrink-0">
-        {/* Map Image Section - Added opacity adjustment */}
+        {/* Map Image Section */}
         <motion.div
           initial="hidden"
-          animate={isRevealed ? "visible" : "hidden"}
+          animate={revealed.map ? "visible" : "hidden"}
           variants={fadeInUp}
-          custom={1}
           className="w-[85%] max-w-[320px] shrink-0"
         >
           <LiquidGlassWidget 
@@ -99,53 +103,53 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
           </LiquidGlassWidget>
         </motion.div>
 
-        {/* Transportation Info Section - standardized markup */}
+        {/* Transportation Info Section */}
         <div className="w-full max-w-[320px] flex flex-col items-center justify-center space-y-6">
-          {transportation.map((info, idx) => (
-            <div key={info.title} className="flex items-center space-x-6 w-full">
-              <motion.div
-                initial="hidden"
-                animate={isRevealed ? "visible" : "hidden"}
-                variants={fadeInUp}
-                custom={2 + idx}
-              >
-                <LiquidGlassWidget 
-                  className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
-                  scrollProgress={inViewProgress}
+          {transportation.map((info, idx) => {
+            const isItemRevealed = (revealed as Record<string, boolean>)[`trans${idx}`];
+            return (
+              <div key={info.title} className="flex items-center space-x-6 w-full">
+                <motion.div
+                  initial="hidden"
+                  animate={isItemRevealed ? "visible" : "hidden"}
+                  variants={fadeInUp}
                 >
-                  <Image src={info.icon} alt={info.title} width={24} height={24} className="opacity-40" />
-                </LiquidGlassWidget>
-              </motion.div>
+                  <LiquidGlassWidget 
+                    className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
+                    scrollProgress={inViewProgress}
+                  >
+                    <Image src={info.icon} alt={info.title} width={24} height={24} className="opacity-40" />
+                  </LiquidGlassWidget>
+                </motion.div>
 
-              <motion.div 
-                initial="hidden"
-                animate={isRevealed ? "visible" : "hidden"}
-                variants={fadeInUp}
-                custom={2 + idx}
-                className="flex flex-col"
-              >
-                <Typography className="text-[0.6rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
-                  {info.title}
-                </Typography>
-                <Typography variant="body" className="text-[0.85rem] text-black/80 font-semibold leading-tight">
-                  {info.content}
-                </Typography>
-                {info.sub && (
-                  <Typography className="text-[0.65rem] text-black/40 mt-1 font-light tracking-wide italic">
-                    {info.sub}
+                <motion.div 
+                  initial="hidden"
+                  animate={isItemRevealed ? "visible" : "hidden"}
+                  variants={fadeInUp}
+                  className="flex flex-col"
+                >
+                  <Typography className="text-[0.6rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
+                    {info.title}
                   </Typography>
-                )}
-              </motion.div>
-            </div>
-          ))}
+                  <Typography variant="body" className="text-[0.85rem] text-black/80 font-semibold leading-tight">
+                    {info.content}
+                  </Typography>
+                  {info.sub && (
+                    <Typography className="text-[0.65rem] text-black/40 mt-1 font-light tracking-wide italic">
+                      {info.sub}
+                    </Typography>
+                  )}
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Minimized Navigation Buttons */}
         <motion.div 
           initial="hidden"
-          animate={isRevealed ? "visible" : "hidden"}
+          animate={revealed.buttons ? "visible" : "hidden"}
           variants={fadeInUp}
-          custom={5}
           className="w-full flex justify-center gap-4 mt-2"
         >
           <LiquidGlassWidget 

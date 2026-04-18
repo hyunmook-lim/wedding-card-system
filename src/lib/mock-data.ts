@@ -36,6 +36,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         content: {
           title: 'We Are Getting Married',
           mainImage: '', // empty for placeholder
+          introVideo: '/test-resources/intro/intro-video.mp4',
           background: { type: 'none' }
         }
       },

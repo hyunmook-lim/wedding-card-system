@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { LiquidGlassWidget } from '@/components/ui/LiquidGlassWidget';
 
-// --- (1) FlipUnit: Identical to NewmorphismCalendar.tsx ---
+// --- (1) FlipUnit ---
 const FlipUnit = ({ value, triggered, delay = 0, isWide = false }: { value: string; triggered: boolean; delay?: number; isWide?: boolean }) => {
   const [currentValue, setCurrentValue] = useState(' ');
   const [nextValue, setNextValue] = useState(' ');
@@ -178,28 +178,36 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
     offset: ['start end', 'start start']
   });
   
-  const [isRevealed, setIsRevealed] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
+  const [revealed, setRevealed] = useState({
+    month: false,
+    calendar: false,
+    dateCircle: false,
+    time: false,
+    dday: false
+  });
   
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    if (latest > 0.2) setIsRevealed(true);
-    else setIsRevealed(false);
-
-    if (latest > 0.1) setShowTitle(true);
-    else setShowTitle(false);
+    setShowTitle(latest > 0.3);
+    setRevealed({
+        month: latest > 0.45,
+        calendar: latest > 0.6,
+        dateCircle: latest > 0.75,
+        time: latest > 0.85,
+        dday: latest > 0.95
+    });
   });
 
   const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
-    visible: (i: number) => ({
+    visible: {
       opacity: 1, 
       y: 0,
       transition: { 
-        delay: 0.8 + i * 0.15,
         duration: 0.8, 
         ease: [0.215, 0.61, 0.355, 1.0] 
       }
-    })
+    }
   };
 
   // Calendar Logic
@@ -251,12 +259,11 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
 
       {/* 2. Calendar Content Section */}
       <div className="w-full max-w-[320px] px-4 flex flex-col items-center z-20">
-        {/* Month Header - EXACT replica of Newmorphism style */}
+        {/* Month Header */}
         <motion.div
           initial="hidden"
-          animate={isRevealed ? "visible" : "hidden"}
+          animate={revealed.month ? "visible" : "hidden"}
           variants={fadeInUp}
-          custom={0}
           className="text-center mb-8 shrink-0"
         >
           <Typography className="text-[1.4rem] font-serif text-black/60 italic lowercase leading-none">
@@ -267,12 +274,11 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           </Typography>
         </motion.div>
 
-        {/* Liquid Glass Calendar Widget - Now with fadeInUp reveal */}
+        {/* Liquid Glass Calendar Widget */}
         <motion.div
           initial="hidden"
-          animate={isRevealed ? "visible" : "hidden"}
+          animate={revealed.calendar ? "visible" : "hidden"}
           variants={fadeInUp}
-          custom={1}
           className="w-full"
         >
           <LiquidGlassWidget 
@@ -281,7 +287,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
             scrollProgress={inViewProgress}
           >
             <div className="flex flex-col w-full">
-              {/* Weekdays - EXACT copy from NewmorphismCalendar with BLUE point */}
+              {/* Weekdays */}
               <div className="grid grid-cols-7 mb-4 w-full">
                 {weekDays.map((day: string, idx: number) => (
                   <div key={day} className="text-center">
@@ -295,7 +301,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
                 ))}
               </div>
 
-              {/* Days Grid - EXACT copy from NewmorphismCalendar with BLUE point */}
+              {/* Days Grid */}
               <div className="grid grid-cols-7 gap-y-3 w-full">
                 {calendarDays.map((day: number | null, idx: number) => {
                   const isWeddingDay = day === today;
@@ -309,25 +315,17 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
                           {isWeddingDay && (
                             <motion.div 
                               initial={{ scale: 0, opacity: 0 }}
-                              animate={isRevealed ? { scale: 1.1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                              transition={{ delay: 2.8, duration: 0.8, type: "spring" }}
-                              className="absolute inset-0 rounded-full bg-white/20 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.05),inset_-4px_-4px_8px_rgba(255,255,255,0.5)] border border-white/20"
+                              animate={revealed.dateCircle ? { scale: 1.1, opacity: 1 } : { scale: 0, opacity: 0 }}
+                              transition={{ duration: 0.8, type: "spring" }}
+                              className="absolute inset-0 rounded-full bg-[#fb7185]/60 shadow-sm border border-white/20"
                             />
                           )}
                           <Typography className={cn(
                             "text-[0.75rem] font-medium relative z-10",
-                            isWeddingDay ? "text-slate-800 font-bold" : (isSunday ? "text-red-400/40" : isSaturday ? "text-blue-400/40" : "text-black/40")
+                            isWeddingDay ? "text-white font-bold" : (isSunday ? "text-red-400/40" : isSaturday ? "text-blue-400/40" : "text-black/40")
                           )}>
                             {day}
                           </Typography>
-                          {isWeddingDay && (
-                              <motion.div 
-                                initial={{ opacity: 0 }}
-                                animate={isRevealed ? { opacity: 0.1 } : { opacity: 0 }}
-                                transition={{ delay: 3.2 }}
-                                className="absolute -bottom-1 w-1 h-1 rounded-full bg-black/80"
-                              />
-                          )}
                         </div>
                       ) : (
                         <div className="w-8 h-8" />
@@ -340,13 +338,12 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           </LiquidGlassWidget>
         </motion.div>
 
-        {/* 3. Time & D-Day Section - 100% IDENTICAL to original Newmorphism */}
+        {/* 3. Time & D-Day Section */}
         <div className="mt-10 text-center space-y-8 shrink-0">
           <motion.div
             initial="hidden"
-            animate={isRevealed ? "visible" : "hidden"}
+            animate={revealed.time ? "visible" : "hidden"}
             variants={fadeInUp}
-            custom={2}
           >
             <Typography className="text-[0.65rem] text-black/60 font-medium tracking-widest uppercase">
               {new Intl.DateTimeFormat('ko-KR', { 
@@ -361,9 +358,8 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           {/* D-Day Counter (Flip Board Design) */}
           <motion.div
             initial="hidden"
-            animate={isRevealed ? "visible" : "hidden"}
+            animate={revealed.dday ? "visible" : "hidden"}
             variants={fadeInUp}
-            custom={3}
             className="flex flex-col items-center"
           >
               <div className="w-8 h-[0.5px] bg-black/10 mb-6" />
@@ -378,8 +374,8 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
                     <FlipUnit 
                       key={i} 
                       value={char} 
-                      triggered={isRevealed} 
-                      delay={2000 + i * 100}
+                      triggered={revealed.dday} 
+                      delay={i * 150} // Using stable index-based delay to ensure component purity
                     />
                   ))
                 }
