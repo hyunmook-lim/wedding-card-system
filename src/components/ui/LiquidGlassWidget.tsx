@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion, HTMLMotionProps, useVelocity, useSpring, useTransform, MotionValue } from 'framer-motion';
+import { motion, HTMLMotionProps, MotionValue } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import styles from './LiquidGlassWidget.module.css';
 
@@ -13,7 +13,7 @@ interface LiquidGlassWidgetProps extends Omit<HTMLMotionProps<'div'>, 'as'> {
   containerClassName?: string;
   effectClassName?: string;
   children?: React.ReactNode;
-  scrollProgress?: MotionValue<number>; // Optional scroll progress for dynamic distortion
+  scrollProgress?: MotionValue<number>; 
 }
 
 export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWidgetProps>(
@@ -24,40 +24,18 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
     className, 
     containerClassName,
     effectClassName,
-    scrollProgress,
     ...props 
   }, ref) => {
     const rawId = React.useId();
     const filterId = `glass-filter-${rawId.replace(/:/g, '')}`; 
     
-    // Dynamic 'Squishy' distortion logic - BOOSTED SENSITIVITY
-    const velocity = useVelocity(scrollProgress || new MotionValue(0));
-    // Softer spring for more 'jelly-like' rebound
-    const smoothVelocity = useSpring(velocity, { stiffness: 100, damping: 10 });
-    
-    // Significantly more sensitive mapping: even slow scrolls cause sloshing
-    const dynamicScale = useTransform(
-      smoothVelocity, 
-      [-0.05, 0, 0.05], 
-      [180, 150, 180]
-    );
-
-    const dynamicFreq = useTransform(
-      smoothVelocity,
-      [-0.05, 0, 0.05],
-      [0.012, 0.01, 0.012]
-    );
-
-    // Turbulence needs frequency as a string
-    const baseFreqString = useTransform(dynamicFreq, (f) => `${f} ${f}`);
-
     // Determine variant class
     const variantClass = variant !== 'default' ? styles[variant] : '';
     const Component = (as || motion.div) as React.ElementType<HTMLMotionProps<'div'>>;
 
     return (
       <>
-        {/* Hidden but active SVG Filter Definition */}
+        {/* Static SVG Filter Definition (No animations) */}
         <svg 
           width="0" 
           height="0" 
@@ -74,9 +52,9 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
             filterUnits="objectBoundingBox"
             colorInterpolationFilters="sRGB"
           >
-            <motion.feTurbulence
+            <feTurbulence
               type="fractalNoise"
-              baseFrequency={baseFreqString}
+              baseFrequency="0.01 0.01"
               numOctaves="1"
               seed="5"
               result="turbulence"
@@ -110,10 +88,10 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
               result="litImage"
             />
 
-            <motion.feDisplacementMap
+            <feDisplacementMap
               in="SourceGraphic"
               in2="softMap"
-              scale={dynamicScale}
+              scale="150"
               xChannelSelector="R"
               yChannelSelector="G"
             />
@@ -123,20 +101,12 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
         <Component
           ref={ref}
           className={cn(styles.wrapper, variantClass, className)}
-          whileHover={{ scale: 1.01 }}
-          whileTap={{ scale: 0.98 }}
           {...props}
         >
-          {/* Effect Layer (Liquid Distortion + Blur) */}
-          <motion.div 
+          {/* Effect Layer (Static Distortion + Blur) */}
+          <div 
             className={cn(styles.effect, effectClassName)} 
             style={{ filter: `url(#${filterId})` }}
-            variants={{
-              tap: { scale: 1.15, filter: `url(#${filterId})` },
-              default: { scale: 1, filter: `url(#${filterId})` }
-            }}
-            whileTap="tap"
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
           
           {/* Tint Layer (Color Overlay) */}

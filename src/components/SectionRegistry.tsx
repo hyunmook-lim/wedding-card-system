@@ -31,6 +31,7 @@ const FlyingGallery = dynamic(() => import('./sections/6.Gallery/FlyingGallery')
 const AlbumGallery = dynamic(() => import('./sections/6.Gallery/AlbumGallery'));
 const ARViewer = dynamic(() => import('./sections/7.special/ARViewer'));
 const ARCardScan = dynamic(() => import('./sections/7.special/ARCardScan'));
+const GlassmorphismMemories = dynamic(() => import('./sections/8.Memories/GlassmorphismMemories'));
 
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
@@ -78,6 +79,9 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     basic: ARViewer,
     card_scan: ARCardScan,
   },
+  memories: {
+    glass: GlassmorphismMemories,
+  },
   // Add other sections here as they are created
 };
 
@@ -113,28 +117,37 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     basic: '100lvh',
     card_scan: '100lvh', // Changed to 100lvh to prevent unsticking by default
   },
+  memories: {
+    glass: '2400px',
+  },
 };
 
 
 
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
+  const [isAROpen, setIsAROpen] = useState(false);
   
-  // Refs for dynamic background triggers
+  // Refs for dynamic background triggers... (omitted but I should keep them)
   const fadeInRef = useRef<HTMLDivElement>(null);
   const fadeOutRef = useRef<HTMLDivElement>(null);
 
+  // AR Overlay Config (since it's now a global feature)
+  const arConfig = {
+    targetImage: '/test-resources/ar/target-image.mind',
+    videoUrl: '/test-resources/ar/test-video.MP4',
+    title: 'AR 초대장',
+    subtitle: '명함의 뒷면을 카메라에 비춰보세요'
+  };
+
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
-    if (showIntro) {
+    if (showIntro || isAROpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [showIntro]);
+  }, [showIntro, isAROpen]);
 
   useEffect(() => {
     if (showIntro) {
@@ -194,7 +207,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         fadeOutTargetRef={fadeOutRef} 
       />
 
-      {/* Render Main Content (only visible after intro is gone, or keep it behind) */}
+      {/* Render Main Content */}
       <div className={`${showIntro ? 'overflow-hidden h-screen' : ''}`}>
         {otherSections.map((section, index) => {
             if (!section.isVisible) return null;
@@ -205,16 +218,15 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             const Component = componentMap[section.variant] || componentMap['basic'];
             if (!Component) return null;
 
-        // Define scroll heights for specific sections
-        // If it's the last visible section, force 100dvh to prevent unsticking
         const isLast = section.id === lastSectionId;
+        const definedHeight = SECTION_HEIGHTS[section.type]?.[section.variant];
         const height = isLast 
-          ? '100dvh' 
-          : (SECTION_HEIGHTS[section.type]?.[section.variant] || '800px');
+          ? (definedHeight || '100dvh') 
+          : (definedHeight || '800px');
 
         return (
           <SectionDebugWrapper key={section.id} type={section.type} index={index}>
-            <div ref={section.id === 'sec_4' ? fadeInRef : section.id === 'sec_8' ? fadeOutRef : null}>
+            <div ref={section.id === 'sec_memories' ? fadeInRef : section.id === 'sec_8' ? fadeOutRef : null}>
               <StickySection 
                   index={index} 
                   height={height}
@@ -231,6 +243,55 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         );
       })}
       </div>
+
+      {/* AR Floating Button (Only visible after intro) */}
+      <AnimatePresence>
+        {!showIntro && !isAROpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="fixed bottom-8 right-8 z-[90] cursor-pointer"
+            onClick={() => setIsAROpen(true)}
+          >
+            {/* Liquid Glass Styled Button (Smaller) */}
+            <div className="group relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-amber-200 to-amber-400 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
+              <div className="relative w-11 h-11 bg-white/40 backdrop-blur-xl border border-white/40 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 group-hover:scale-110 active:scale-95">
+                <div className="flex flex-col items-center">
+                  <span className="text-[8px] font-black text-black/60 tracking-tighter leading-none mb-0.5">AR</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black/60">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                    <circle cx="12" cy="13" r="4" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Full-screen AR Overlay */}
+      <AnimatePresence>
+        {isAROpen && (
+          <motion.div
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[200] bg-black flex flex-col"
+          >
+            {/* Render AR Component */}
+            <div className="flex-1 w-full bg-black overflow-hidden mt-0">
+               <ARCardScan 
+                 config={arConfig} 
+                 isVisible={true} 
+                 onClose={() => setIsAROpen(false)}
+               />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

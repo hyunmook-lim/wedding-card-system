@@ -82,6 +82,16 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         }
       },
       {
+        id: 'sec_memories',
+        type: 'memories',
+        variant: 'glass',
+        isVisible: true,
+        content: {
+          isSticky: false,
+          background: { type: 'none' }
+        }
+      },
+      {
         id: 'sec_4',
         type: 'date',
         variant: 'glass',
@@ -136,19 +146,6 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
           images: [] // 20 test images will be used by default
         }
       },
-      {
-        id: 'sec_ar_scan',
-        type: 'ar_viewer',
-        variant: 'card_scan',
-        isVisible: true,
-        content: {
-          background: { type: 'none' },
-          targetImage: '/test-resources/ar/target-image.mind',
-          videoUrl: '/test-resources/ar/test-video.MP4',
-          title: 'AR 초대장 스캔',
-          subtitle: '명함의 뒷면을 카메라에 비춰보세요'
-        }
-      }
     ]
   }
 };

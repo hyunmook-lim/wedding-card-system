@@ -8,7 +8,9 @@ export type SectionType =
   | 'gallery' 
   | 'guestbook'
   | 'share'
-  | 'ar_viewer';
+  | 'ar_viewer'
+  | 'memories'
+  | 'liquid_glass';
 
 export interface WeddingConfig {
   id: string;
@@ -69,4 +71,5 @@ export interface SectionProps {
   config: Record<string, unknown>;
   isVisible: boolean;
   onEnter?: () => void;
+  onClose?: () => void;
 }
