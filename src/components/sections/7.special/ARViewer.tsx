@@ -266,7 +266,7 @@ export default function ARViewer({ config }: SectionProps) {
   const { videoRef, status, errorMsg, startCamera, stopCamera } = useCameraStream();
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black">
+    <div className="relative w-full h-full overflow-hidden">
 
       {/* ── Camera Video Feed (background) ── */}
       <video

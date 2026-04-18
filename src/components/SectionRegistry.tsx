@@ -20,6 +20,9 @@ const FlipBoardDate = dynamic(() => import('./sections/3.Date/FlipBoardDate'));
 const NewmorphismCalendar = dynamic(() => import('./sections/3.Date/NewmorphismCalendar'));
 const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
 const NewmorphismLocation = dynamic(() => import('./sections/4.Location/NewmorphismLocation'));
+const GlassmorphismLocation = dynamic(() => import('./sections/4.Location/GlassmorphismLocation'));
+
+const GlassmorphismCalendar = dynamic(() => import('./sections/3.Date/GlassmorphismCalendar'));
 const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
 const GlassmorphismAccount = dynamic(() => import('./sections/5.Account/GlassmorphismAccount'));
 const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
@@ -31,6 +34,8 @@ const ARCardScan = dynamic(() => import('./sections/7.special/ARCardScan'));
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
 import { StickySection } from '@/components/ui/StickySection';
+import AdaptiveBackground from './backgrounds/AdaptiveBackground';
+import { useRef } from 'react';
 
 // Map types to components
 const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionProps>>> = {
@@ -52,10 +57,12 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
     soft: SoftTypingDate,
     flipboard: FlipBoardDate,
     calendar: NewmorphismCalendar,
+    glass: GlassmorphismCalendar,
   },
   location: {
     basic: BasicLocation,
     memo: NewmorphismLocation,
+    glass: GlassmorphismLocation,
   },
   account: {
     basic: BasicAccount,
@@ -87,9 +94,11 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
     soft: '3200px', // 200lvh -> 2 * 800
     flipboard: '1600px',
     calendar: '1200px',
+    glass: '1600px',
   },
   location: {
     memo: '1200px', // 150lvh -> 1.5 * 800
+    glass: '1600px',
   },
   bride_groom: {
     card: '3200px', // 300lvh -> 3 * 800
@@ -110,6 +119,10 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
+  
+  // Refs for dynamic background triggers
+  const fadeInRef = useRef<HTMLDivElement>(null);
+  const fadeOutRef = useRef<HTMLDivElement>(null);
 
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
@@ -161,10 +174,16 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   };
 
   return (
-    <main className="w-full max-w-md mx-auto min-h-screen bg-[#fffdf7] shadow-xl relative">
+    <main className="w-full max-w-md mx-auto min-h-screen bg-transparent shadow-xl relative">
       
       {/* Render Intro Overlay */}
       {renderIntro()}
+
+      {/* Dynamic Global Background */}
+      <AdaptiveBackground 
+        fadeInTargetRef={fadeInRef} 
+        fadeOutTargetRef={fadeOutRef} 
+      />
 
       {/* Render Main Content (only visible after intro is gone, or keep it behind) */}
       <div className={`${showIntro ? 'overflow-hidden h-screen' : ''}`}>
@@ -186,17 +205,19 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
 
         return (
           <SectionDebugWrapper key={section.id} type={section.type} index={index}>
-            <StickySection 
-                index={index} 
-                height={height}
-                background={section.content.background as BackgroundConfig}
-                isSticky={section.content.isSticky !== false}
-            >
-              <Component 
-                  config={section.content} 
-                  isVisible={section.isVisible} 
-              />
-            </StickySection>
+            <div ref={section.id === 'sec_4' ? fadeInRef : section.id === 'sec_8' ? fadeOutRef : null}>
+              <StickySection 
+                  index={index} 
+                  height={height}
+                  background={section.content.background as BackgroundConfig}
+                  isSticky={section.content.isSticky !== false}
+              >
+                <Component 
+                    config={section.content} 
+                    isVisible={section.isVisible} 
+                />
+              </StickySection>
+            </div>
           </SectionDebugWrapper>
         );
       })}

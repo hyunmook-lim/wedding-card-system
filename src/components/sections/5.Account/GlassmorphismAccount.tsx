@@ -2,10 +2,11 @@
 
 import { SectionProps } from '@/types/wedding';
 import { useState } from 'react';
-import { motion, AnimatePresence, useMotionValueEvent, Variants, useScroll } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValueEvent, Variants, useScroll, MotionValue } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { LiquidGlassWidget } from '@/components/ui/LiquidGlassWidget';
 
 type AccountType = 'groom' | 'bride';
 
@@ -22,9 +23,10 @@ interface AccountGroupProps {
   accounts: AccountItem[];
   isRevealed: boolean;
   onToggle: (revealed: boolean) => void;
+  scrollProgress?: MotionValue<number>;
 }
 
-function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGroupProps) {
+function AccountGroup({ type, label, accounts, isRevealed, onToggle, scrollProgress }: AccountGroupProps) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const handleCopy = async (text: string, index: number) => {
@@ -35,137 +37,123 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
     }
   };
 
-  // Modern Professional Palette
   const colors = {
     groom: {
       accent: 'rgb(70, 90, 110)', // Deep Steel Blue
       bg: 'rgba(70, 90, 110, 0.05)',
-      border: 'rgba(70, 90, 110, 0.1)',
-      text: 'rgb(50, 70, 90)',
+      button: 'bg-[#465a6e]',
+      text: 'text-[#465a6e]',
     },
     bride: {
       accent: 'rgb(180, 110, 130)', // Muted Rose
       bg: 'rgba(180, 110, 130, 0.05)',
-      border: 'rgba(180, 110, 130, 0.1)',
-      text: 'rgb(140, 80, 100)',
+      button: 'bg-[#b46e82]',
+      text: 'text-[#b46e82]',
     }
   };
 
   const theme = colors[type];
 
   return (
-    <div className="w-[85vw] max-w-[360px] mb-4">
+    <div className="w-[85vw] max-w-[360px] mb-6">
       {/* Group Header */}
-      <div className="flex items-center space-x-2 mb-2 px-1">
+      <div className="flex items-center space-x-2 mb-3 px-1">
         <div 
-          className="w-1 h-4 rounded-full" 
+          className="w-1.5 h-4 rounded-full" 
           style={{ backgroundColor: theme.accent }}
         />
-        <Typography variant="body" className="font-semibold text-[0.95rem] opacity-80">
+        <Typography variant="body" className="font-bold text-[0.9rem] tracking-tight opacity-70">
           {label}
         </Typography>
       </div>
 
-      <div 
-        className="relative overflow-hidden rounded-[20px] border border-white/30 w-full bg-white/10 backdrop-blur-md"
-        style={{
-          boxShadow: `
-            0 8px 32px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.5),
-            inset 0 -1px 0 rgba(255, 255, 255, 0.1)
-          `
-        }}
+      <LiquidGlassWidget 
+        className="relative h-[220px] flex items-center justify-center rounded-[2rem] overflow-hidden"
+        containerClassName="w-full h-full flex flex-col"
+        scrollProgress={scrollProgress}
       >
-        <div 
-          className="absolute top-0 left-0 right-0 h-px pointer-events-none z-10"
-          style={{ background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.8),transparent)' }}
-        />
-        <div 
-          className="absolute top-0 left-0 w-px h-full pointer-events-none z-10"
-          style={{ background: 'linear-gradient(180deg,rgba(255,255,255,0.8),transparent,rgba(255,255,255,0.3))' }}
-        />
-        
-        <motion.div 
-          className="divide-y divide-black/[0.03]"
-          animate={{ opacity: isRevealed ? 1 : 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          {accounts.map((acc, idx) => (
-            <div 
-              key={idx} 
-              className="flex items-center justify-between px-4 py-3.5 hover:bg-black/[0.01] transition-colors"
+        <AnimatePresence mode="wait">
+          {isRevealed ? (
+            <motion.div 
+              key="content"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.02 }}
+              className="w-full h-full divide-y divide-black/5 flex flex-col justify-center"
             >
-              <div className="flex flex-col space-y-0.5">
-                <div className="flex items-center space-x-2">
-                   <span className="text-[0.7rem] font-bold px-1.5 py-0.5 rounded-md bg-black/5 text-black/40 uppercase tracking-tighter">
-                      {acc.relation}
-                   </span>
-                   <span className="text-[0.85rem] font-semibold text-black/80">
-                      {acc.name}
-                   </span>
-                </div>
-                <div className="text-[0.75rem] text-black/50 font-medium">
-                  {acc.bank} | {acc.accountNumber}
-                </div>
-              </div>
-              
-              <button 
-                onClick={() => handleCopy(acc.accountNumber, idx)}
-                className={cn(
-                  "relative h-8 px-3 rounded-full text-[0.7rem] font-bold transition-all active:scale-95 shadow-sm",
-                  copiedIndex === idx 
-                    ? "bg-green-500 text-white" 
-                    : "bg-white border border-black/5 text-black/60 hover:bg-black/5"
-                )}
-              >
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={copiedIndex === idx ? 'copied' : 'copy'}
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
+              {accounts.map((acc, idx) => (
+                <div 
+                  key={idx} 
+                  className="flex items-center justify-between px-6 py-[18px] hover:bg-black/5 transition-colors flex-1"
+                >
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex items-center space-x-2.5">
+                       <span className="text-[0.6rem] font-extrabold px-1.5 py-0.5 rounded-md bg-black/5 text-black/30 uppercase tracking-widest">
+                          {acc.relation}
+                       </span>
+                       <span className="text-[0.9rem] font-bold text-black/80 tracking-tight">
+                          {acc.name}
+                       </span>
+                    </div>
+                    <div className="text-[0.75rem] text-black/40 font-medium tracking-tight">
+                      {acc.bank} <span className="opacity-20 mx-1">|</span> {acc.accountNumber}
+                    </div>
+                  </div>
+                  
+                  <button 
+                    onClick={() => handleCopy(acc.accountNumber, idx)}
+                    className={cn(
+                      "relative h-8 px-4 rounded-full text-[0.65rem] font-bold transition-all active:scale-90 shadow-sm",
+                      copiedIndex === idx 
+                        ? "bg-green-500 text-white" 
+                        : "bg-black/5 text-black/60 hover:bg-black/10"
+                    )}
                   >
-                    {copiedIndex === idx ? '성공' : '복사'}
-                  </motion.span>
-                </AnimatePresence>
-              </button>
-            </div>
-          ))}
-        </motion.div>
-
-        <AnimatePresence>
-          {!isRevealed && (
-            <motion.div
-              initial={{ opacity: 1 }}
+                    <AnimatePresence mode="wait">
+                      <motion.span
+                        key={copiedIndex === idx ? 'copied' : 'copy'}
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        {copiedIndex === idx ? '복사완료' : '복사'}
+                      </motion.span>
+                    </AnimatePresence>
+                  </button>
+                </div>
+              ))}
+            </motion.div>
+          ) : (
+            <motion.button
+              key="reveal-btn"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.4 }}
               onClick={() => onToggle(true)}
-              className="absolute inset-0 z-20 flex flex-col items-center justify-center cursor-pointer group hover:bg-black/[0.01]"
-              style={{ 
-                backgroundColor: 'transparent',
-                backdropFilter: 'blur(8px)',
-                WebkitBackdropFilter: 'blur(8px)'
-              }}
+              className="w-full h-full flex flex-col items-center justify-center space-y-2 group cursor-pointer"
             >
               <div 
-                className="text-[0.9rem] font-medium transition-colors space-x-1"
-                style={{ color: theme.accent }}
+                className={cn("text-[0.85rem] font-bold tracking-tight transition-transform group-hover:scale-105", theme.text)}
               >
                 계좌번호 확인하기
               </div>
-              <svg 
-                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
-                strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                className="opacity-50 group-hover:opacity-80 transition-all group-hover:translate-y-0.5 mt-1"
-                style={{ color: theme.accent }}
+              <motion.div
+                animate={{ y: [0, 4, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               >
-                <path d="m6 9 6 6 6-6"/>
-              </svg>
-            </motion.div>
+                <svg 
+                  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" 
+                  strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                  className={cn("opacity-40", theme.text)}
+                >
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </motion.div>
+            </motion.button>
           )}
         </AnimatePresence>
-      </div>
+      </LiquidGlassWidget>
     </div>
   );
 }
@@ -201,9 +189,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
     ]
   };
 
-  // 화면 진입 시 타이틀 등장 트랜지션 (inViewProgress 기준)
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    // 트리거 시점을 0.2 -> 0.45로 늦춰서 더 자연스럽게 등장하도록 개선
     if (latest > 0.45) {
       setIsInfo(true);
     } else {
@@ -212,7 +198,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
       setBrideRevealed(false);
     }
 
-    if (latest > 0.25) {
+    if (latest > 0.15) {
       setShowTitle(true);
     } else {
       setShowTitle(false);
@@ -220,20 +206,29 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
   });
 
   const contentVariants: Variants = {
-    hidden: { y: "40px", opacity: 0 },
-    visible: { y: "40px", opacity: 0 },
-    top: { y: "40px", opacity: 0 },
+    hidden: { 
+      y: 40, 
+      opacity: 0,
+      boxShadow: "0 0 0 rgba(0,0,0,0)"
+    },
     info: { 
       y: 0, 
       opacity: 1,
-      transition: { duration: 1.2, ease: "circOut", delay: 0.2 }
+      transition: { 
+        y: { duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 },
+        opacity: { duration: 0.8, delay: 0.1 },
+      }
     }
   };
+
+
 
   if (!isVisible) return null;
 
   return (
     <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
+
+
       {/* Title Layer */}
       <motion.div
          initial={{ opacity: 0, y: 50 }}
@@ -273,7 +268,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
       </motion.div>
 
       {/* Account Info Layer */}
-      <div className="w-full flex flex-col items-center justify-center min-h-[400px] z-10 shrink-0 perspective-[1000px]">
+      <div className="w-full flex flex-col items-center justify-center z-10 shrink-0">
         <AnimatePresence>
           {isInfo && (
             <motion.div
@@ -282,11 +277,10 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
               exit="hidden"
               variants={contentVariants}
               className="w-full flex flex-col items-center justify-center"
-              style={{ willChange: "transform, opacity" }}
             >
                 {/* Description */}
-                <div className="text-center mb-6 px-6">
-                  <Typography variant="body" className="text-[0.85rem] leading-7 text-black/60 font-medium">
+                <div className="text-center mb-10 px-8">
+                  <Typography variant="body" className="text-[0.8rem] leading-7 text-black/50 font-medium">
                     {(accountConfig.description || "").split('\n').map((line, i) => (
                       <span key={i}>
                         {line}
@@ -296,16 +290,14 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                   </Typography>
                 </div>
 
-                <motion.div 
-                  className="space-y-4"
-                  layout
-                >
+                <div className="space-y-2">
                   <AccountGroup 
                     type="groom" 
                     label="신랑측" 
                     isRevealed={groomRevealed}
                     onToggle={setGroomRevealed}
                     accounts={accountConfig.groom} 
+                    scrollProgress={inViewProgress}
                   />
 
                   <AccountGroup 
@@ -314,8 +306,9 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                     isRevealed={brideRevealed}
                     onToggle={setBrideRevealed}
                     accounts={accountConfig.bride} 
+                    scrollProgress={inViewProgress}
                   />
-                </motion.div>
+                </div>
             </motion.div>
           )}
         </AnimatePresence>

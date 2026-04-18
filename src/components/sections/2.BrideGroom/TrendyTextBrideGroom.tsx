@@ -49,7 +49,7 @@ export default function TrendyTextBrideGroom({ isVisible: sectionVisible }: Sect
   if (!sectionVisible) return null;
 
   return (
-    <section className="w-full bg-white flex flex-col items-center py-32 gap-32 overflow-hidden">
+    <section className="w-full flex flex-col items-center py-32 gap-32 overflow-hidden">
       {/* ---------- 신랑 영역 ---------- */}
       <RevealContainer>
         {(isVisible) => (

@@ -1,0 +1,93 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  font-weight: 600;
+  overflow: hidden; /* Clip internal layers to the border radius */
+  color: black;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+  
+  /* Matches original source shadow */
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.effect {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  backdrop-filter: blur(3px);
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: inherit;
+}
+
+.tint {
+  z-index: 1;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: inherit;
+}
+
+.shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+    inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+  border-radius: inherit;
+}
+
+.text {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Variant Styles - Exactly matching the provided reference */
+
+.menu {
+  padding: 0.4rem;
+  border-radius: 1.8rem;
+}
+
+.menu:hover {
+  padding: 0.6rem;
+  border-radius: 1.8rem;
+}
+
+.dock {
+  padding: 0.6rem;
+  border-radius: 2rem;
+  gap: 8px;
+}
+
+.dock:hover {
+  padding: 0.8rem;
+  border-radius: 2.5rem;
+}
+
+/* Internal dock elements rounded adjustment */
+.dock > div {
+  border-radius: 2rem;
+}
+
+.dock:hover > div {
+  border-radius: 2.5rem;
+}
+
+.button {
+  padding: 1.5rem 2.5rem;
+  border-radius: 3rem;
+}
+
+.button:hover {
+  padding: 1.8rem 2.8rem;
+}
+
+.button:hover > div {
+  border-radius: 4rem;
+}

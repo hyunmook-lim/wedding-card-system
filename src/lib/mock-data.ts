@@ -35,7 +35,8 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           title: 'We Are Getting Married',
-          mainImage: '' // empty for placeholder
+          mainImage: '', // empty for placeholder
+          background: { type: 'none' }
         }
       },
       {
@@ -56,7 +57,8 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         content: {
           title: 'Video Greeting',
           message: 'Scroll to play video',
-          images: Array.from({ length: 197 }, (_, i) => `/test-resources/video-sequence/${i + 1}.jpg`)
+          images: Array.from({ length: 197 }, (_, i) => `/test-resources/video-sequence/${i + 1}.jpg`),
+          background: { type: 'none' }
         }
       },
       {
@@ -74,28 +76,29 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'trendy',
         isVisible: true,
         content: {
-          isSticky: false
+          isSticky: false,
+          background: { type: 'none' }
         }
       },
       {
         id: 'sec_4',
         type: 'date',
-        variant: 'calendar',
+        variant: 'glass',
         isVisible: true,
         content: {
           isSticky: false,
           date: '2025-05-24T12:00:00', // injected from global event usually, but explicit here for clarity
-          background: { type: 'color', value: '#e8e8e8' }
+          background: { type: 'none' }
         }
       },
       {
         id: 'sec_5',
         type: 'location',
-        variant: 'memo',
+        variant: 'glass',
         isVisible: true,
         content: {
           isSticky: false,
-          background: { type: 'color', value: '#e8e8e8' }
+          background: { type: 'none' }
           // location injected from global event
         }
       },
@@ -106,7 +109,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           isSticky: false,
-          background: { type: 'image', value: '/bg/silk-bg.png' }, 
+          background: { type: 'none' }, 
           accounts: [
             { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
           ]
@@ -128,7 +131,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'album',
         isVisible: true,
         content: {
-          background: { type: 'color', value: '#fffdf7' },
+          background: { type: 'none' },
           images: [] // 20 test images will be used by default
         }
       },
@@ -138,7 +141,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'card_scan',
         isVisible: true,
         content: {
-          background: { type: 'color', value: '#000000' },
+          background: { type: 'none' },
           targetImage: '/test-resources/ar/target-image.mind',
           videoUrl: '/test-resources/ar/test-video.MP4',
           title: 'AR 초대장 스캔',

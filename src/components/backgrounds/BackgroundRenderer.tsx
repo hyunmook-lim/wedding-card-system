@@ -23,7 +23,7 @@ interface BackgroundRendererProps {
 
 export default function BackgroundRenderer({ config }: BackgroundRendererProps) {
   // 기본 배경색 설정이 없으면 프로젝트 기본색을 반환
-  if (!config) return <div className="absolute inset-0 z-0 bg-[#fffdf7]" />;
+  if (!config) return <div className="absolute inset-0 z-0 bg-transparent" />;
 
   // 1-1. Custom Component Layer (type === 'component' 인 경우 우선 처리)
   if (config.type === 'component' && config.componentName) {
