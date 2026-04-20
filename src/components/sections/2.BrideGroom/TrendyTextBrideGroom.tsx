@@ -45,8 +45,13 @@ function RevealContainer({
   );
 }
 
-export default function TrendyTextBrideGroom({ isVisible: sectionVisible }: SectionProps) {
+export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible }: SectionProps) {
   if (!sectionVisible) return null;
+
+  const { groom, bride } = config as { 
+    groom: { name: string; relation: string; parents: { father: string; mother: string } };
+    bride: { name: string; relation: string; parents: { father: string; mother: string } };
+  };
 
   return (
     <section className="w-full flex flex-col items-center py-32 gap-32 overflow-hidden">
@@ -59,8 +64,8 @@ export default function TrendyTextBrideGroom({ isVisible: sectionVisible }: Sect
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <p className="text-xl font-medium text-center leading-relaxed">
-                임재용 허미영의 장남<br/>
-                현묵
+                {groom?.parents.father} {groom?.parents.mother}의 {groom?.relation}<br/>
+                {groom?.name.slice(1)}
               </p>
             </div>
 
@@ -102,8 +107,8 @@ export default function TrendyTextBrideGroom({ isVisible: sectionVisible }: Sect
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <p className="text-xl font-medium text-center leading-relaxed">
-                최상욱 심재술의 장녀<br/>
-                최가람
+                {bride?.parents.father} {bride?.parents.mother}의 {bride?.relation}<br/>
+                {bride?.name.slice(1)}
               </p>
             </div>
 

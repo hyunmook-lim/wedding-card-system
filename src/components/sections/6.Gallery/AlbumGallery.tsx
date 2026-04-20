@@ -27,9 +27,9 @@ function DiagonalPhoto({
 }) {
   const offset = useTransform(globalProgress, (progress) => index - progress);
 
-  const x = useTransform(offset, (v) => v * 40); 
-  const y = useTransform(offset, (v) => v * -60);
-  const z = useTransform(offset, (v) => v * -180); 
+  const x = useTransform(offset, (v) => v * 60); 
+  const y = useTransform(offset, (v) => v * -100);
+  const z = useTransform(offset, (v) => v * -250); 
 
   // 가운데 지정석 도달 시 팝업 — useRef + imperative animate로 리렌더 제로
   const isActiveRef = useRef(false);
@@ -130,7 +130,7 @@ export default function AlbumGallery({ config, isVisible }: SectionProps) {
 
   const configImages = config?.images as string[] | undefined;
   const images = (configImages && configImages.length > 0) ? configImages : GALLERY_IMAGES;
-  const title = (config?.title as string) || 'Album Gallery';
+  const title = (config?.title as string) || 'Gallery';
 
   // 1. 완벽한 Sticky 구간에서만 스크롤이 사진 인덱스에 매핑됨
   const rawScrollOffset = useTransform(stickyProgress, [0, 1], [0, images.length - 0.5]);

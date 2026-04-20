@@ -15,8 +15,6 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   
   // Extract config
   const images = useMemo(() => (config.images as string[]) || [], [config.images]);
-  const title = (config.title as string) || '';
-  const message = (config.message as string) || '';
   
   // Height multiplier for scroll distance
 
@@ -31,8 +29,33 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     offset: ['end end', 'end start'],
   });
 
-  // Title stays visible during the main scroll, fades out with container at the end
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 1]);
+  const scriptPhrases = [
+    "어느 한 단어로 정의하기엔\n너무 예쁘고",
+    "세상에 존재하지 않는 단어일지 모를\n귀한 감정들에",
+    "차마 이름을 붙이지 못하고",
+    "8년의 시간을 흘려보내게 해준",
+    "소중한 사람을 만나 결혼합니다."
+  ];
+
+  // Map each phrase to a scroll range
+  const p1Opacity = useTransform(scrollYProgress, [0.05, 0.1, 0.2, 0.25], [0, 1, 1, 0]);
+  const p1Y = useTransform(scrollYProgress, [0.05, 0.1, 0.2, 0.25], [20, 0, 0, -20]);
+  
+  const p2Opacity = useTransform(scrollYProgress, [0.25, 0.3, 0.4, 0.45], [0, 1, 1, 0]);
+  const p2Y = useTransform(scrollYProgress, [0.25, 0.3, 0.4, 0.45], [20, 0, 0, -20]);
+
+  const p3Opacity = useTransform(scrollYProgress, [0.45, 0.5, 0.6, 0.65], [0, 1, 1, 0]);
+  const p3Y = useTransform(scrollYProgress, [0.45, 0.5, 0.6, 0.65], [20, 0, 0, -20]);
+
+  const p4Opacity = useTransform(scrollYProgress, [0.65, 0.7, 0.8, 0.85], [0, 1, 1, 0]);
+  const p4Y = useTransform(scrollYProgress, [0.65, 0.7, 0.8, 0.85], [20, 0, 0, -20]);
+
+  const p5Opacity = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [0, 1, 1, 1]);
+  const p5Y = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [20, 0, 0, 0]);
+
+  const opacities = [p1Opacity, p2Opacity, p3Opacity, p4Opacity, p5Opacity];
+  const ys = [p1Y, p2Y, p3Y, p4Y, p5Y];
+
   const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   // Effects trigger only during the exit phase
@@ -186,21 +209,31 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
            </div>
         )}
 
-        {/* Text Overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none">
-          <motion.div 
-            style={{ opacity: titleOpacity, willChange: "opacity" }}
-            className="text-center text-white px-6"
-          >
-            {title && <Typography variant="overlay-title">{title}</Typography>}
-            {message && <Typography variant="overlay-body">{message}</Typography>}
-          </motion.div>
+        {/* Chronological Script Overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none pb-20">
+          {scriptPhrases.map((phrase, idx) => (
+            <motion.div 
+              key={idx}
+              style={{ 
+                opacity: opacities[idx], 
+                y: ys[idx],
+                willChange: "opacity, transform" 
+              }}
+              className="absolute text-center text-white px-8 w-full max-w-[400px]"
+            >
+              <Typography 
+                className="font-serif text-[1.1rem] leading-relaxed tracking-[0.05em] text-white/90 break-keep drop-shadow-md whitespace-pre-line"
+              >
+                {phrase}
+              </Typography>
+            </motion.div>
+          ))}
         </div>
         
         {/* Scroll Hint */}
         <motion.div 
             style={{ opacity: scrollHintOpacity, willChange: "opacity" }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white text-sm animate-bounce"
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/60 font-serif text-[1rem] font-medium italic tracking-[0.2em] uppercase animate-bounce"
         >
             Scroll Down
         </motion.div>
