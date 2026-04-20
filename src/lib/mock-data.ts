@@ -5,20 +5,20 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
     id: 'default',
     couple: {
       groom: {
-        name: '임현묵',
+        name: '유영후',
         relation: '장남',
-        parents: { father: '임아버지', mother: '김어머니' },
+        parents: { father: '유정호', mother: '오현미' },
         contact: '010-1234-5678'
       },
       bride: {
-        name: '김신부',
+        name: '임예은',
         relation: '장녀',
-        parents: { father: '김아빠', mother: '이엄마' },
+        parents: { father: '임재용', mother: '허미영' },
         contact: '010-8765-4321'
       }
     },
     event: {
-      date: '2026-07-25T12:00:00',
+      date: '2026-07-25T11:00:00',
       location: {
         name: '서울 웨딩홀',
         address: '서울시 강남구 테헤란로 123',
@@ -98,7 +98,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           isSticky: false,
-          date: '2026-07-25T12:00:00', // injected from global event usually, but explicit here for clarity
+          date: '2026-07-25T11:00:00', // injected from global event usually, but explicit here for clarity
           background: { type: 'none' }
         }
       },

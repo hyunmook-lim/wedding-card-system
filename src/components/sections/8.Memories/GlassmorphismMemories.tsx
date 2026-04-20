@@ -6,6 +6,7 @@ import { SectionProps } from '@/types/wedding';
 import { Typography } from '@/components/ui/Typography';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { LiquidGlassWidget } from '@/components/ui/LiquidGlassWidget';
+import Image from 'next/image';
 
 /* ─────────────────────────────────────────────────────────────────────────────
    GlassmorphismMemories: Refined for Harmony.
@@ -44,26 +45,26 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
     { 
       id: 'start', 
       date: '2018년 05월 27일', 
-      title: '우리의 시작', 
-      icon: '🌱'
+      title: '설레었던 우리의 시작', 
+      image: '/test-resources/memories/1.jpeg'
     },
     { 
       id: 'period', 
       date: '연애기간 2982일', 
-      title: '이름을 붙이지 못한 채 흘려보낸\n8년간의 감정들',
-      icon: '⏳'
+      title: '울고 웃었던\n8년간의 장거리 연애',
+      image: '/test-resources/memories/2.jpeg'
     },
     { 
       id: 'promise', 
       date: '2025. 04. 12', 
-      title: '평생을 약속한 날', 
-      icon: '💍'
+      title: 'Will you marry me?', 
+      image: '/test-resources/memories/3.jpeg'
     },
     { 
       id: 'forever', 
       date: '2026. 07. 25', 
-      title: '영원을 시작하는 오늘', 
-      icon: '✨'
+      title: '평생을 약속하는 오늘', 
+      image: '/test-resources/memories/4.jpeg'
     }
   ];
 
@@ -110,7 +111,7 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
             </svg>
             <div className="w-8 h-[0.5px] bg-black" />
           </div>
-          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium italic">Memories</Typography>
+          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium italic">오늘에 닿기까지의 시간들</Typography>
           <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Our Journey & Story</Typography>
         </div>
       </motion.div>
@@ -141,9 +142,22 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
                       variants={isLeft ? fadeInLeft : fadeInRight}
                     >
                       <LiquidGlassWidget 
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm"
+                        variant="default"
+                        className="w-28 h-28 rounded-3xl flex items-center justify-center shadow-md overflow-hidden bg-white/10"
+                        containerClassName="w-full h-full"
                       >
-                        <span className="text-2xl opacity-80">{m.icon}</span>
+                        <div className="relative w-full h-full p-2">
+                          <div className="relative w-full h-full overflow-hidden rounded-2xl">
+                            <Image 
+                              src={m.image} 
+                              alt={m.title}
+                              fill
+                              sizes="(max-width: 430px) 112px, 112px"
+                              className="object-cover opacity-90 transition-opacity hover:opacity-100"
+                              priority={idx < 2}
+                            />
+                          </div>
+                        </div>
                       </LiquidGlassWidget>
                     </motion.div>
                   </div>

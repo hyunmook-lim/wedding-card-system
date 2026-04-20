@@ -36,9 +36,9 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
   });
 
   const transportation = [ 
-    { title: "지하철", content: "2호선 강남역 1번 출구 도보 5분", icon: "/test-resources/location/subway.svg" },
-    { title: "버스", content: "146, 341, 740, 421 하차", icon: "/test-resources/location/bus.svg" },
-    { title: "자가용", content: "네비게이션 '서울 웨딩홀' 검색", sub: "(주차 2시간 무료)", icon: "/test-resources/location/car.svg" }
+    { title: "지하철", content: "학동역 10번 출구", icon: "/test-resources/location/subway.svg" },
+    { title: "셔틀버스", content: "학동역 10번 출구 좌측에서 셔틀 대기", sub: "(10~15분 간격으로 탑승 가능 하시며,\n3분 정도 소요 됩니다.)", icon: "/test-resources/location/bus.svg" },
+    { title: "자가용", content: "네비게이션 '토브헤세드' 검색", sub: "(주차 3시간 무료)\n만차 시 인근주차장 정보\n- 언주로147길 노상공영주차장(4,800원)\n- 연승빌딩주차장(3,000원)", icon: "/test-resources/location/car.svg" }
   ];
 
   const fadeInUp: Variants = {
@@ -79,7 +79,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
         </div>
       </motion.div>
 
-      <div className="w-full max-w-[320px] px-8 flex flex-col items-center justify-center z-10 gap-10 shrink-0">
+      <div className="w-full max-w-[360px] px-8 flex flex-col items-center justify-center z-10 gap-10 shrink-0">
         {/* Map Image Section */}
         <motion.div
           initial="hidden"
@@ -104,7 +104,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
         </motion.div>
 
         {/* Transportation Info Section */}
-        <div className="w-full max-w-[320px] flex flex-col items-center justify-center space-y-6">
+        <div className="w-full flex flex-col items-center justify-center space-y-6">
           {transportation.map((info, idx) => {
             const isItemRevealed = (revealed as Record<string, boolean>)[`trans${idx}`];
             return (
@@ -126,16 +126,16 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                   initial="hidden"
                   animate={isItemRevealed ? "visible" : "hidden"}
                   variants={fadeInUp}
-                  className="flex flex-col"
+                  className="flex flex-col min-w-0"
                 >
                   <Typography className="text-[0.6rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
                     {info.title}
                   </Typography>
-                  <Typography variant="body" className="text-[0.85rem] text-black/80 font-semibold leading-tight">
+                  <Typography variant="body" className="text-[0.85rem] text-black/80 font-semibold leading-tight whitespace-nowrap">
                     {info.content}
                   </Typography>
                   {info.sub && (
-                    <Typography className="text-[0.65rem] text-black/40 mt-1 font-light tracking-wide italic">
+                    <Typography className="text-[0.65rem] text-black/40 mt-1 font-light tracking-wide italic whitespace-pre-line">
                       {info.sub}
                     </Typography>
                   )}
@@ -155,19 +155,28 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
           >
             <LiquidGlassWidget 
               variant="dock"
-              className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105"
+              className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
+              containerClassName="gap-3"
               scrollProgress={inViewProgress}
-              onClick={() => window.open('https://map.kakao.com')}
+              onClick={() => window.open('https://kko.to/Yg1DMuL-SL')}
             >
-               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">Kakao</span>
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#FEE500] drop-shadow-sm">
+                 <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.558 1.712 4.8 4.32 6.098l-.81 2.952c-.094.338.1.682.438.772.116.031.245.02.351-.03l3.35-2.233c.43.048.87.073 1.31.073 4.97 0 9-3.185 9-7.115S16.97 3 12 3z" />
+               </svg>
+               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.1em] uppercase">Kakao</span>
             </LiquidGlassWidget>
+
             <LiquidGlassWidget 
               variant="dock"
-              className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105"
+              className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
+              containerClassName="gap-3"
               scrollProgress={inViewProgress}
-              onClick={() => window.open('https://map.naver.com')}
+              onClick={() => window.open('https://naver.me/53lKcqqR')}
             >
-               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">Naver</span>
+               <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" className="text-[#03C75A] drop-shadow-sm">
+                 <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
+               </svg>
+               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.1em] uppercase">Naver</span>
             </LiquidGlassWidget>
           </motion.div>
 
@@ -197,22 +206,49 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
           </motion.div>
 
           {/* Cafe Section */}
-          <motion.div
-            initial="hidden"
-            animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
-            variants={fadeInUp}
-            className="flex flex-col items-center w-full text-center mt-12 pb-10"
-          >
-            <Typography className="text-[0.6rem] font-bold text-black/20 uppercase tracking-[0.3em] mb-4">
-              🏷️ 주변 카페 안내
-            </Typography>
+          <div className="flex flex-col items-center w-full mt-12 pb-10">
+            {/* Styled Cafe Header */}
+            <motion.div
+              initial="hidden"
+              animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
+              variants={fadeInUp}
+              style={{ scale: 0.55, transformOrigin: "center" }}
+              className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
+            >
+              <div className="flex flex-col items-center justify-center">
+                <div className="flex items-center space-x-3 mb-4 opacity-30">
+                  <div className="w-8 h-[0.5px] bg-black" />
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" className="text-black/80">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                  <div className="w-8 h-[0.5px] bg-black" />
+                </div>
+                <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">주변 카페 안내</Typography>
+                <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Nearby Cafe Guide</Typography>
+              </div>
+            </motion.div>
             
-            <Typography className="text-[0.75rem] text-black/50 leading-relaxed font-light break-keep mb-8 px-2">
-              더운 햇살이 내리쬐는 여름날,<br/>
-              소중한 시간을 내어 와주신 분들께 조금이나마 보답하고 싶은 마음에<br/>
-              저희가 아껴두었던 식장 근처 예쁘고 맛있는 카페들을 공유합니다.<br/>
-              더운 날씨에 건강 유의하시고, 쾌적한 곳에서 기분 좋은 오후 보내시길 바랍니다.
-            </Typography>
+            <motion.div
+              initial="hidden"
+              animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
+              variants={fadeInUp}
+              className="flex flex-col items-center"
+            >
+              <Typography className="text-[0.8rem] font-serif italic text-black/50 leading-relaxed mb-8 px-4 text-center">
+                더운 햇살이 내리쬐는 여름 날<br/>
+                소중한 시간을 내어 와주신 하객분들을 위해<br/>
+                식장 근처 <span className="relative inline-block">
+                  <motion.span 
+                    initial={{ scaleX: 0 }}
+                    animate={inViewProgress.get() > 0.95 ? { scaleX: 1 } : { scaleX: 0 }}
+                    transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+                    style={{ transformOrigin: "left" }}
+                    className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#6F4E37]/15 -z-10" 
+                  />
+                  예쁘고 맛있는 카페들
+                </span>을 공유합니다.
+              </Typography>
+            </motion.div>
 
             <LiquidGlassWidget 
               variant="dock"
@@ -224,7 +260,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                  ☕ 카페 지도
                </span>
             </LiquidGlassWidget>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

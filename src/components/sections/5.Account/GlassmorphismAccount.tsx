@@ -178,14 +178,14 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
   } || {
     description: "참석이 어려우신 분들을 위해\n계좌번호를 기재하였습니다.\n너그러운 마음으로 양해 부탁드립니다.",
     groom: [
-      { relation: '신랑', name: '임현묵', bank: '카카오뱅크', accountNumber: '3333-27-9074957' },
-      { relation: '신랑 아버지', name: '임재용', bank: '신한은행', accountNumber: '110-164-865100' },
-      { relation: '신랑 어머니', name: '허미영', bank: '신한은행', accountNumber: '356-02-308641' }
+      { relation: '신랑', name: '유영후', bank: '우리은행', accountNumber: '1002 747 550750' },
+      { relation: '신랑 아버지', name: '유정호', bank: '국민은행', accountNumber: '286 21 0073 941' },
+      { relation: '신랑 어머니', name: '오현미', bank: '국민은행', accountNumber: '655202 01 018442' }
     ],
     bride: [
-       { relation: '신부', name: '최가람', bank: '카카오뱅크', accountNumber: '3333-11-9485874' },
-       { relation: '신부 아버지', name: '최상욱', bank: '하나은행', accountNumber: '443-910174-15307' },
-       { relation: '신부 어머니', name: '심재술', bank: '하나은행', accountNumber: '251-910133-22707' }
+       { relation: '신부', name: '임예은', bank: '우리은행', accountNumber: '1002 547 570441' },
+       { relation: '신부 아버지', name: '임재용', bank: '신한은행', accountNumber: '110 164 865100' },
+       { relation: '신부 어머니', name: '허미영', bank: '신한은행', accountNumber: '356 02 308641' }
     ]
   };
 
@@ -205,12 +205,20 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
     }
   });
 
+  const fadeInUp: Variants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        duration: 0.8, 
+        ease: [0.215, 0.61, 0.355, 1.0] 
+      }
+    }
+  };
+
   const contentVariants: Variants = {
-    hidden: { 
-      y: 40, 
-      opacity: 0,
-      boxShadow: "0 0 0 rgba(0,0,0,0)"
-    },
+    hidden: { y: 40, opacity: 0 },
     info: { 
       y: 0, 
       opacity: 1,
@@ -221,8 +229,6 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
     }
   };
 
-
-
   if (!isVisible) return null;
 
   return (
@@ -231,12 +237,9 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
 
       {/* Title Layer */}
       <motion.div
-         initial={{ opacity: 0, y: 50 }}
-         animate={{ 
-           opacity: showTitle ? 1 : 0, 
-           y: showTitle ? 0 : 50 
-         }}
-         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+         initial="hidden"
+         animate={showTitle ? "visible" : "hidden"}
+         variants={fadeInUp}
          style={{ 
            scale: 0.55, 
            transformOrigin: "top center",

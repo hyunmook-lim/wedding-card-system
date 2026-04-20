@@ -344,10 +344,14 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
             initial="hidden"
             animate={revealed.time ? "visible" : "hidden"}
             variants={fadeInUp}
+            className="flex flex-col items-center"
           >
-            <Typography className="text-[0.65rem] text-black/60 font-medium tracking-widest uppercase">
+            <Typography className="text-[0.95rem] text-black/60 font-semibold tracking-[0.2em] uppercase">
               {new Intl.DateTimeFormat('ko-KR', { 
-                weekday: 'long', 
+                weekday: 'long'
+              }).format(weddingDate)}
+              <span className="mx-2 opacity-30 text-[0.7rem]|">|</span>
+              {new Intl.DateTimeFormat('ko-KR', { 
                 hour: 'numeric', 
                 minute: 'numeric',
                 hour12: true 
