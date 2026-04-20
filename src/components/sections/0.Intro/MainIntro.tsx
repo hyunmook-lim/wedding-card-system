@@ -7,10 +7,25 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
 
   useEffect(() => {
     if (isVisible && videoRef.current) {
-      // Force play for mobile browsers that might block standard autoPlay attributes
-      videoRef.current.play().catch((error) => {
-        console.warn("Video auto-play failed. This is usually due to browser policy or low power mode:", error);
-      });
+      const playVideo = async () => {
+        try {
+          if (videoRef.current) {
+            await videoRef.current.play();
+          }
+        } catch (error) {
+          console.warn("Video auto-play failed. Retrying on interaction:", error);
+          // Standard fallback: Wait for user interaction
+          const handleFirstClick = () => {
+            videoRef.current?.play().catch(() => {});
+            window.removeEventListener('click', handleFirstClick);
+            window.removeEventListener('touchstart', handleFirstClick);
+          };
+          window.addEventListener('click', handleFirstClick);
+          window.addEventListener('touchstart', handleFirstClick);
+        }
+      };
+
+      playVideo();
     }
   }, [isVisible]);
 
@@ -32,6 +47,8 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
                     loop
                     muted
                     playsInline
+                    preload="auto"
+                    onLoadedData={() => videoRef.current?.play().catch(() => {})}
                     className="absolute inset-0 w-full h-full object-cover"
                 />
             ) : mainImage ? (

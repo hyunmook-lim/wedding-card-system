@@ -6,6 +6,7 @@ import { useScroll, useMotionValueEvent } from 'framer-motion';
 export default function SectionDebugWrapper({ children, type, index }: { children: React.ReactNode; type: string; index: number }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
+  const isDev = process.env.NODE_ENV === 'development';
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -13,6 +14,8 @@ export default function SectionDebugWrapper({ children, type, index }: { childre
   });
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (!isDev) return;
+    
     if (progressRef.current) {
       if (latest > 0 && latest < 1) {
         progressRef.current.style.opacity = '1';
@@ -25,6 +28,10 @@ export default function SectionDebugWrapper({ children, type, index }: { childre
 
   // Base top offset + index * 30px
   const topOffset = 80 + (index * 30);
+
+  if (!isDev) {
+    return <div className="relative w-full">{children}</div>;
+  }
 
   return (
     <div ref={containerRef} className="relative w-full">
