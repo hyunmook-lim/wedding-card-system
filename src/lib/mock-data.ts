@@ -6,13 +6,13 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
     couple: {
       groom: {
         name: '유영후',
-        relation: '장남',
+        relation: '아들',
         parents: { father: '유정호', mother: '오현미' },
         contact: '010-1234-5678'
       },
       bride: {
         name: '임예은',
-        relation: '장녀',
+        relation: '딸',
         parents: { father: '임재용', mother: '허미영' },
         contact: '010-8765-4321'
       }

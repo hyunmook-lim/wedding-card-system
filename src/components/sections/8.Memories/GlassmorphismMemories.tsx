@@ -117,7 +117,7 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
       </motion.div>
 
       {/* ── Timeline Container ── */}
-      <div className="w-full max-w-[340px] px-6 flex flex-col items-center justify-center z-10">
+      <div className="w-full max-w-[360px] px-6 flex flex-col items-center justify-center z-10">
         
         {/* Central Vertical Line */}
         <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[1px] bg-black/[0.03] z-0" />
@@ -182,13 +182,8 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
                       <Typography className="text-[0.6rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
                         {m.date}
                       </Typography>
-                      <Typography className="text-[0.85rem] text-black/80 font-semibold leading-tight break-keep">
-                        {m.title.split('\n').map((line, i) => (
-                          <React.Fragment key={i}>
-                            {line}
-                            <br />
-                          </React.Fragment>
-                        ))}
+                      <Typography className="text-[0.85rem] text-black/80 font-semibold leading-tight break-keep whitespace-pre-line">
+                        {m.title}
                       </Typography>
                     </motion.div>
                   </div>

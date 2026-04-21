@@ -39,7 +39,7 @@ function RevealContainer({
   }, []);
 
   return (
-    <div ref={ref} className="w-full flex flex-col items-center px-8 gap-40">
+    <div ref={ref} className="w-full flex flex-col items-center px-8 gap-24">
       {children(isVisible)}
     </div>
   );

@@ -63,7 +63,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
          initial={{ opacity: 0, y: 50 }}
          animate={{ opacity: showTitle ? 1 : 0, y: showTitle ? 0 : 50 }}
          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-         style={{ scale: 0.55, transformOrigin: "top center" }}
+         style={{ scale: 0.65, transformOrigin: "top center" }}
          className="w-full flex flex-col items-center z-30 pointer-events-none mb-10 shrink-0"
       >
         <div className="flex flex-col items-center justify-center">
@@ -128,14 +128,14 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                   variants={fadeInUp}
                   className="flex flex-col min-w-0"
                 >
-                  <Typography className="text-[0.6rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
+                  <Typography className="text-[0.7rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
                     {info.title}
                   </Typography>
-                  <Typography variant="body" className="text-[0.85rem] text-black/80 font-semibold leading-tight whitespace-nowrap">
+                  <Typography variant="body" className="text-[0.95rem] text-black/80 font-semibold leading-tight whitespace-nowrap">
                     {info.content}
                   </Typography>
                   {info.sub && (
-                    <Typography className="text-[0.65rem] text-black/40 mt-1 font-light tracking-wide italic whitespace-pre-line">
+                    <Typography className="text-[0.7rem] text-black/40 mt-1 font-light tracking-wide italic whitespace-pre-line">
                       {info.sub}
                     </Typography>
                   )}
@@ -160,10 +160,10 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               scrollProgress={inViewProgress}
               onClick={() => window.open('https://kko.to/Yg1DMuL-SL')}
             >
-               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-[#FEE500] drop-shadow-sm">
+               <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="text-[#FEE500] drop-shadow-sm">
                  <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.558 1.712 4.8 4.32 6.098l-.81 2.952c-.094.338.1.682.438.772.116.031.245.02.351-.03l3.35-2.233c.43.048.87.073 1.31.073 4.97 0 9-3.185 9-7.115S16.97 3 12 3z" />
                </svg>
-               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.1em] uppercase">Kakao</span>
+               <span className="text-[0.7rem] font-black text-black/40 tracking-[0.1em] uppercase">Kakao</span>
             </LiquidGlassWidget>
 
             <LiquidGlassWidget 
@@ -173,10 +173,10 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               scrollProgress={inViewProgress}
               onClick={() => window.open('https://naver.me/53lKcqqR')}
             >
-               <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" className="text-[#03C75A] drop-shadow-sm">
+               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-[#03C75A] drop-shadow-sm">
                  <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
                </svg>
-               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.1em] uppercase">Naver</span>
+               <span className="text-[0.7rem] font-black text-black/40 tracking-[0.1em] uppercase">Naver</span>
             </LiquidGlassWidget>
           </motion.div>
 
@@ -188,7 +188,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
             className="flex flex-col items-center w-full text-center mt-4"
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-            <Typography className="text-[0.8rem] font-serif italic text-black/50 leading-relaxed">
+            <Typography className="text-[0.9rem] font-serif italic text-black/50 leading-relaxed">
               시원한 <span className="relative inline-block">
                 <motion.span 
                   initial={{ scaleX: 0 }}
@@ -212,7 +212,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               initial="hidden"
               animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
               variants={fadeInUp}
-              style={{ scale: 0.55, transformOrigin: "center" }}
+              style={{ scale: 0.65, transformOrigin: "center" }}
               className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
             >
               <div className="flex flex-col items-center justify-center">
@@ -234,7 +234,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               variants={fadeInUp}
               className="flex flex-col items-center"
             >
-              <Typography className="text-[0.8rem] font-serif italic text-black/50 leading-relaxed mb-8 px-4 text-center">
+              <Typography className="text-[0.9rem] font-serif italic text-black/50 leading-relaxed mb-8 px-4 text-center">
                 더운 햇살이 내리쬐는 여름 날<br/>
                 소중한 시간을 내어 와주신 하객분들을 위해<br/>
                 식장 근처 <span className="relative inline-block">
@@ -252,11 +252,11 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
 
             <LiquidGlassWidget 
               variant="dock"
-              className="px-6 py-3 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+              className="px-8 py-3.5 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-lg"
               scrollProgress={inViewProgress}
               onClick={() => window.open('https://naver.me/5If4L6J7')}
             >
-               <span className="text-[0.6rem] font-black text-black/40 tracking-[0.2em] uppercase">
+               <span className="text-[0.8rem] font-black text-black/50 tracking-[0.1em] uppercase">
                  ☕ 카페 지도
                </span>
             </LiquidGlassWidget>

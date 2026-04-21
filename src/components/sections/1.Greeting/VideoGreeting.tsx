@@ -32,8 +32,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const scriptPhrases = [
     "어느 한 단어로 정의하기엔\n너무 예쁘고",
     "세상에 존재하지 않는 단어일지 모를\n귀한 감정들에",
-    "차마 이름을 붙이지 못하고",
-    "8년의 시간을 흘려보내게 해준",
+    "차마 이름을 붙이지 못하고\n8년의 시간을 흘려보내게 해준",
     "소중한 사람을 만나 결혼합니다."
   ];
 
@@ -44,17 +43,14 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const p2Opacity = useTransform(scrollYProgress, [0.25, 0.3, 0.4, 0.45], [0, 1, 1, 0]);
   const p2Y = useTransform(scrollYProgress, [0.25, 0.3, 0.4, 0.45], [20, 0, 0, -20]);
 
-  const p3Opacity = useTransform(scrollYProgress, [0.45, 0.5, 0.6, 0.65], [0, 1, 1, 0]);
-  const p3Y = useTransform(scrollYProgress, [0.45, 0.5, 0.6, 0.65], [20, 0, 0, -20]);
+  const p3Opacity = useTransform(scrollYProgress, [0.45, 0.5, 0.8, 0.85], [0, 1, 1, 0]);
+  const p3Y = useTransform(scrollYProgress, [0.45, 0.5, 0.8, 0.85], [20, 0, 0, -20]);
 
-  const p4Opacity = useTransform(scrollYProgress, [0.65, 0.7, 0.8, 0.85], [0, 1, 1, 0]);
-  const p4Y = useTransform(scrollYProgress, [0.65, 0.7, 0.8, 0.85], [20, 0, 0, -20]);
+  const p4Opacity = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [0, 1, 1, 1]);
+  const p4Y = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [20, 0, 0, 0]);
 
-  const p5Opacity = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [0, 1, 1, 1]);
-  const p5Y = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [20, 0, 0, 0]);
-
-  const opacities = [p1Opacity, p2Opacity, p3Opacity, p4Opacity, p5Opacity];
-  const ys = [p1Y, p2Y, p3Y, p4Y, p5Y];
+  const opacities = [p1Opacity, p2Opacity, p3Opacity, p4Opacity];
+  const ys = [p1Y, p2Y, p3Y, p4Y];
 
   const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
