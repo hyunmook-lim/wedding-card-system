@@ -79,7 +79,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
         </div>
       </motion.div>
 
-      <div className="w-full max-w-[360px] px-8 flex flex-col items-center justify-center z-10 gap-10 shrink-0">
+      <div className="w-full max-w-[400px] px-8 flex flex-col items-center justify-center z-10 gap-10 shrink-0">
         {/* Map Image Section */}
         <motion.div
           initial="hidden"
@@ -234,7 +234,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               variants={fadeInUp}
               className="flex flex-col items-center"
             >
-              <Typography className="text-[0.9rem] font-serif italic text-black/50 leading-relaxed mb-8 px-4 text-center">
+              <Typography className="text-[0.9rem] font-serif italic text-black/50 leading-relaxed mb-8 text-center">
                 더운 햇살이 내리쬐는 여름 날<br/>
                 소중한 시간을 내어 와주신 하객분들을 위해<br/>
                 식장 근처 <span className="relative inline-block">
