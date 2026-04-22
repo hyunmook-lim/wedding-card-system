@@ -266,7 +266,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           variants={fadeInUp}
           className="text-center mb-8 shrink-0"
         >
-          <Typography className="text-[1.4rem] font-serif text-black/60 italic lowercase leading-none">
+          <Typography className="text-[1.4rem] font-serif text-black/60 italic leading-none">
             {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(weddingDate)}
           </Typography>
           <Typography className="text-[0.6rem] tracking-[0.3em] text-black/30 font-bold uppercase mt-2">

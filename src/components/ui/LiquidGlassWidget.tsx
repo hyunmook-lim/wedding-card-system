@@ -24,6 +24,7 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
     className, 
     containerClassName,
     effectClassName,
+    scrollProgress,
     ...props 
   }, ref) => {
     const rawId = React.useId();

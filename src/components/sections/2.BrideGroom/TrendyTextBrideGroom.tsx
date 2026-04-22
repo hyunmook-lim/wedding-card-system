@@ -81,7 +81,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
                 priority
               />
               {/* 인물 이미지는 살짝 왼쪽에서 시작해서 제자리(0)로 이동 */}
-              <div className={`absolute inset-0 z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              <div className={`absolute top-0 left-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isVisible ? 'translate-x-0' : '-translate-x-6'
               }`}>
                 <Image 
@@ -124,11 +124,11 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
                 priority
               />
               {/* 인물 이미지는 살짝 오른쪽에서 시작해서 제자리(0)로 이동 */}
-              <div className={`absolute inset-0 z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              <div className={`absolute top-0 right-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isVisible ? 'translate-x-0' : 'translate-x-6'
               }`}>
                 <Image 
-                  src="/test-resources/bride-groom/bride-full.png"
+                  src="/test-resources/bride-groom/bride-full-changed.png"
                   alt="Bride Full"
                   fill
                   className="object-contain"
