@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { motion, HTMLMotionProps, MotionValue } from 'framer-motion';
+import React, { useEffect, useRef, useCallback } from 'react';
+import { motion, HTMLMotionProps, MotionValue, useAnimate } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import styles from './LiquidGlassWidget.module.css';
 
@@ -13,7 +13,126 @@ interface LiquidGlassWidgetProps extends Omit<HTMLMotionProps<'div'>, 'as'> {
   containerClassName?: string;
   effectClassName?: string;
   children?: React.ReactNode;
-  scrollProgress?: MotionValue<number>; 
+  scrollProgress?: MotionValue<number>;
+  /** Disable the scroll-stop jiggle animation */
+  disableJiggle?: boolean;
+}
+
+/**
+ * Hook that detects scroll-stop events and triggers the jiggle animation.
+ * Uses a debounce to detect when the user stops scrolling,
+ * then measures scroll velocity to determine jiggle intensity.
+ */
+function useScrollStopJiggle(
+  scope: React.RefObject<HTMLElement | null>,
+  disabled: boolean
+) {
+  const [, animate] = useAnimate();
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastScrollYRef = useRef(0);
+  const lastScrollTimeRef = useRef(0);
+  const isAnimatingRef = useRef(false);
+
+  const triggerJiggle = useCallback(
+    async (velocity: number) => {
+      if (!scope.current || isAnimatingRef.current) return;
+      isAnimatingRef.current = true;
+
+      // Clamp velocity influence: higher velocity = more pronounced jiggle
+      const intensity = Math.min(Math.abs(velocity) / 3000, 1);
+      // Minimum threshold — don't animate for very slow/gentle stops
+      if (intensity < 0.05) {
+        isAnimatingRef.current = false;
+        return;
+      }
+
+      const scaleAmplitude = 0.015 + intensity * 0.025; // 1.5% ~ 4% squeeze
+
+      try {
+        // Squash phase: compress Y, expand X (like a soft jelly landing)
+        await animate(
+          scope.current,
+          {
+            scaleX: 1 + scaleAmplitude,
+            scaleY: 1 - scaleAmplitude,
+          },
+          {
+            duration: 0.15,
+            ease: [0.22, 1, 0.36, 1],
+          }
+        );
+        // Stretch bounce back (overshoot slightly)
+        await animate(
+          scope.current,
+          {
+            scaleX: 1 - scaleAmplitude * 0.5,
+            scaleY: 1 + scaleAmplitude * 0.5,
+          },
+          {
+            duration: 0.2,
+            ease: [0.22, 1, 0.36, 1],
+          }
+        );
+        // Settle back to normal
+        await animate(
+          scope.current,
+          {
+            scaleX: 1,
+            scaleY: 1,
+          },
+          {
+            type: 'spring',
+            stiffness: 400,
+            damping: 15,
+            mass: 0.8,
+          }
+        );
+      } catch {
+        // Animation interrupted — that's fine
+      } finally {
+        isAnimatingRef.current = false;
+      }
+    },
+    [scope, animate]
+  );
+
+  useEffect(() => {
+    if (disabled) return;
+
+    const SCROLL_STOP_DELAY = 100; // ms to wait before considering scroll "stopped"
+
+    const handleScroll = () => {
+      const now = performance.now();
+      const currentY = window.scrollY;
+
+      // Calculate velocity (px/ms -> px/s)
+      const dt = now - lastScrollTimeRef.current;
+      const dy = currentY - lastScrollYRef.current;
+      const velocity = dt > 0 ? (dy / dt) * 1000 : 0;
+
+      lastScrollYRef.current = currentY;
+      lastScrollTimeRef.current = now;
+
+      // Clear existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      // Set a new timeout — fires when scrolling stops
+      scrollTimeoutRef.current = setTimeout(() => {
+        triggerJiggle(velocity);
+      }, SCROLL_STOP_DELAY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [disabled, triggerJiggle]);
 }
 
 export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWidgetProps>(
@@ -25,10 +144,29 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
     containerClassName,
     effectClassName,
     scrollProgress,
+    disableJiggle = false,
     ...props 
   }, ref) => {
     const rawId = React.useId();
-    const filterId = `glass-filter-${rawId.replace(/:/g, '')}`; 
+    const filterId = `glass-filter-${rawId.replace(/:/g, '')}`;
+    
+    // Internal ref for scroll-stop jiggle animation
+    const internalRef = useRef<HTMLDivElement>(null);
+    // Merge external ref with internal ref
+    const mergedRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        (internalRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        if (typeof ref === 'function') {
+          ref(node);
+        } else if (ref) {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+        }
+      },
+      [ref]
+    );
+
+    // Scroll-stop jiggle effect
+    useScrollStopJiggle(internalRef, disableJiggle);
     
     // Determine variant class
     const variantClass = variant !== 'default' ? styles[variant] : '';
@@ -100,7 +238,7 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
         </svg>
 
         <Component
-          ref={ref}
+          ref={mergedRef}
           className={cn(styles.wrapper, variantClass, className)}
           {...props}
         >
