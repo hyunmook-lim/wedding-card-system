@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useCallback } from 'react';
-import { motion, HTMLMotionProps, MotionValue, useAnimate } from 'framer-motion';
+import { motion, HTMLMotionProps, useAnimate } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import styles from './LiquidGlassWidget.module.css';
 
@@ -13,7 +13,7 @@ interface LiquidGlassWidgetProps extends Omit<HTMLMotionProps<'div'>, 'as'> {
   containerClassName?: string;
   effectClassName?: string;
   children?: React.ReactNode;
-  scrollProgress?: MotionValue<number>;
+
   /** Disable the scroll-stop jiggle animation */
   disableJiggle?: boolean;
 }
@@ -143,7 +143,7 @@ export const LiquidGlassWidget = React.forwardRef<HTMLDivElement, LiquidGlassWid
     className, 
     containerClassName,
     effectClassName,
-    scrollProgress,
+
     disableJiggle = false,
     ...props 
   }, ref) => {

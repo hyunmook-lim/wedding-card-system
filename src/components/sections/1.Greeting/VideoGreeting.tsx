@@ -110,8 +110,8 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
       const canvasHeight = canvas.height;
       if (canvasWidth === 0 || canvasHeight === 0) return;
 
-      // Use object-fit: contain logic to ensure the whole image is visible
-      const scale = Math.min(canvasWidth / img.width, canvasHeight / img.height);
+      // Use object-fit: cover logic to fill the entire canvas (may crop edges)
+      const scale = Math.max(canvasWidth / img.width, canvasHeight / img.height);
       
       const drawWidth = img.width * scale;
       const drawHeight = img.height * scale;

@@ -82,7 +82,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
               />
               {/* 인물 이미지는 살짝 왼쪽에서 시작해서 제자리(0)로 이동 */}
               <div className={`absolute top-0 left-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                isVisible ? 'translate-x-0' : '-translate-x-6'
+                isVisible ? 'translate-x-4' : '-translate-x-2'
               }`}>
                 <Image 
                   src="/test-resources/bride-groom/groom-full.png"
