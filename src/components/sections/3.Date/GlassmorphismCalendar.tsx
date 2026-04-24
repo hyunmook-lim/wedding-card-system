@@ -284,7 +284,6 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           <LiquidGlassWidget 
             className="p-6 rounded-[2.5rem] w-full"
             containerClassName="w-full"
-            scrollProgress={inViewProgress}
           >
             <div className="flex flex-col w-full">
               {/* Weekdays */}

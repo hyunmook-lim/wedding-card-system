@@ -58,7 +58,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         content: {
           title: 'Video Greeting',
           message: 'Scroll to play video',
-          images: Array.from({ length: 100 }, (_, i) => `/test-resources/running_frames/running_${String(i + 1).padStart(3, '0')}.png`),
+          images: Array.from({ length: 100 }, (_, i) => `/test-resources/running_frames/running_${String(i + 1).padStart(3, '0')}.jpg`),
           background: { type: 'none' }
         }
       },

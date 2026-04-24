@@ -2,7 +2,7 @@
 
 import { SectionProps } from '@/types/wedding';
 import { useState } from 'react';
-import { motion, AnimatePresence, useMotionValueEvent, Variants, useScroll, MotionValue } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValueEvent, Variants, useScroll } from 'framer-motion';
 import { Typography } from '@/components/ui/Typography';
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
@@ -23,10 +23,9 @@ interface AccountGroupProps {
   accounts: AccountItem[];
   isRevealed: boolean;
   onToggle: (revealed: boolean) => void;
-  scrollProgress?: MotionValue<number>;
 }
 
-function AccountGroup({ type, label, accounts, isRevealed, onToggle, scrollProgress }: AccountGroupProps) {
+function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGroupProps) {
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const handleCopy = async (text: string, index: number) => {
@@ -70,7 +69,6 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle, scrollProgr
       <LiquidGlassWidget 
         className="relative h-[220px] flex items-center justify-center rounded-[2rem] overflow-hidden"
         containerClassName="w-full h-full flex flex-col"
-        scrollProgress={scrollProgress}
       >
         <AnimatePresence mode="wait">
           {isRevealed ? (
@@ -300,7 +298,6 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                     isRevealed={groomRevealed}
                     onToggle={setGroomRevealed}
                     accounts={accountConfig.groom} 
-                    scrollProgress={inViewProgress}
                   />
 
                   <AccountGroup 
@@ -309,7 +306,6 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                     isRevealed={brideRevealed}
                     onToggle={setBrideRevealed}
                     accounts={accountConfig.bride} 
-                    scrollProgress={inViewProgress}
                   />
                 </div>
             </motion.div>

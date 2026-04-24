@@ -89,7 +89,6 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
         >
           <LiquidGlassWidget 
             className="p-2.5 rounded-2xl w-full"
-            scrollProgress={inViewProgress}
           >
             <div className="relative w-full overflow-hidden rounded-xl bg-transparent opacity-80 transition-opacity hover:opacity-100">
               <Image 
@@ -116,7 +115,6 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                 >
                   <LiquidGlassWidget 
                     className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
-                    scrollProgress={inViewProgress}
                   >
                     <Image src={info.icon} alt={info.title} width={24} height={24} className="opacity-40" />
                   </LiquidGlassWidget>
@@ -157,7 +155,6 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               variant="dock"
               className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
               containerClassName="gap-3"
-              scrollProgress={inViewProgress}
               onClick={() => window.open('https://kko.to/Yg1DMuL-SL')}
             >
                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="text-[#FEE500] drop-shadow-sm">
@@ -170,7 +167,6 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               variant="dock"
               className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
               containerClassName="gap-3"
-              scrollProgress={inViewProgress}
               onClick={() => window.open('https://naver.me/53lKcqqR')}
             >
                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-[#03C75A] drop-shadow-sm">
@@ -253,7 +249,6 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
             <LiquidGlassWidget 
               variant="dock"
               className="px-8 py-3.5 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-lg"
-              scrollProgress={inViewProgress}
               onClick={() => window.open('https://naver.me/5If4L6J7')}
             >
                <span className="text-[0.8rem] font-black text-black/50 tracking-[0.1em] uppercase">
