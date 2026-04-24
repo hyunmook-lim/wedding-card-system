@@ -159,6 +159,55 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     }
   }, [showIntro]);
 
+  // Preload all section images while intro is playing
+  useEffect(() => {
+    const imageUrls: string[] = [];
+
+    // Recursively collect image URLs from section configs
+    const collectImages = (obj: unknown) => {
+      if (!obj || typeof obj !== 'object') return;
+      if (Array.isArray(obj)) {
+        obj.forEach(item => {
+          if (typeof item === 'string' && /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(item)) {
+            imageUrls.push(item);
+          } else {
+            collectImages(item);
+          }
+        });
+        return;
+      }
+      for (const value of Object.values(obj as Record<string, unknown>)) {
+        if (typeof value === 'string' && /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(value)) {
+          imageUrls.push(value);
+        } else {
+          collectImages(value);
+        }
+      }
+    };
+
+    sections.forEach(s => collectImages(s.content));
+
+    if (imageUrls.length === 0) return;
+
+    // Preload in batches to avoid overwhelming the network
+    const BATCH_SIZE = 6;
+    let currentIndex = 0;
+
+    const loadBatch = () => {
+      const batch = imageUrls.slice(currentIndex, currentIndex + BATCH_SIZE);
+      batch.forEach(url => {
+        const img = new window.Image();
+        img.src = url;
+      });
+      currentIndex += BATCH_SIZE;
+      if (currentIndex < imageUrls.length) {
+        setTimeout(loadBatch, 100);
+      }
+    };
+
+    loadBatch();
+  }, [sections]);
+
   // 1. Separate 'intro' from other sections
   const introSection = sections.find(s => s.type === 'intro');
   const otherSections = sections.filter(s => s.type !== 'intro');
