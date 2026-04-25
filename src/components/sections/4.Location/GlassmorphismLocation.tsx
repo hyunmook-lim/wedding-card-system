@@ -56,15 +56,15 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
   if (!isVisible) return null;
 
   return (
-    <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
+    <section ref={scrollRef} className="relative w-full flex flex-col items-center justify-center py-20 overflow-hidden">
 
       {/* Header Title Layer */}
       <motion.div
          initial={{ opacity: 0, y: 50 }}
          animate={{ opacity: showTitle ? 1 : 0, y: showTitle ? 0 : 50 }}
          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-         style={{ scale: 0.65, transformOrigin: "top center" }}
-         className="w-full flex flex-col items-center z-30 pointer-events-none mb-10 shrink-0"
+         style={{ scale: 0.55, transformOrigin: "top center" }}
+         className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
       >
         <div className="flex flex-col items-center justify-center">
           <div className="flex items-center space-x-3 mb-4 opacity-30">
@@ -208,7 +208,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               initial="hidden"
               animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
               variants={fadeInUp}
-              style={{ scale: 0.65, transformOrigin: "center" }}
+              style={{ scale: 0.55, transformOrigin: "center" }}
               className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
             >
               <div className="flex flex-col items-center justify-center">

@@ -234,7 +234,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
   if (!isVisible) return null;
 
   return (
-    <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
+    <section ref={scrollRef} className="relative w-full flex flex-col items-center justify-center py-20 overflow-hidden">
 
       {/* 1. Header Title Layer */}
       <motion.div

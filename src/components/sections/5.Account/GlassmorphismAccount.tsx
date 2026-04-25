@@ -230,8 +230,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
   if (!isVisible) return null;
 
   return (
-    <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
-
+    <section ref={scrollRef} className="relative w-full flex flex-col items-center justify-center py-20 overflow-hidden">
 
       {/* Title Layer */}
       <motion.div

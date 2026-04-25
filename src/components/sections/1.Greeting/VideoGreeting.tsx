@@ -1,17 +1,19 @@
 'use client';
 
 import { useRef, useEffect, useState, useMemo } from 'react';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useScroll, useTransform, motion, useMotionValueEvent } from 'framer-motion';
 import { SectionProps } from '@/types/wedding';
 import { cn } from '@/lib/utils';
 import { Typography } from '@/components/ui/Typography';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
+import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
 import Image from 'next/image';
 
 export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const currentIndexRef = useRef(0);
   
   // Extract config
   const images = useMemo(() => (config.images as string[]) || [], [config.images]);
@@ -21,6 +23,12 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   const { scrollYProgress } = useScroll({
     target: scrollRef || undefined,
     offset: ['start start', 'end end'],
+  });
+
+  // Entry phase: When the sticky container enters the view
+  const { scrollYProgress: scrollYEnter } = useScroll({
+    target: scrollRef || undefined,
+    offset: ['start end', 'start start'],
   });
 
   // Exit phase: When the sticky container scrolls out of view (after 'end end')
@@ -36,27 +44,54 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     "소중한 사람을 만나 결혼합니다."
   ];
 
-  // Map each phrase to a scroll range
-  const p1Opacity = useTransform(scrollYProgress, [0.05, 0.1, 0.2, 0.25], [0, 1, 1, 0]);
-  const p1Y = useTransform(scrollYProgress, [0.05, 0.1, 0.2, 0.25], [20, 0, 0, -20]);
-  
-  const p2Opacity = useTransform(scrollYProgress, [0.25, 0.3, 0.4, 0.45], [0, 1, 1, 0]);
-  const p2Y = useTransform(scrollYProgress, [0.25, 0.3, 0.4, 0.45], [20, 0, 0, -20]);
+  const [activePhraseIndex, setActivePhraseIndex] = useState<number | null>(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
 
-  const p3Opacity = useTransform(scrollYProgress, [0.45, 0.5, 0.8, 0.85], [0, 1, 1, 0]);
-  const p3Y = useTransform(scrollYProgress, [0.45, 0.5, 0.8, 0.85], [20, 0, 0, -20]);
+  // Trigger animations based on specific scroll points
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setScrollPosition(latest);
+    if (latest >= 0.05 && latest < 0.20) setActivePhraseIndex(0);
+    else if (latest >= 0.20 && latest < 0.35) setActivePhraseIndex(1);
+    else if (latest >= 0.35 && latest < 0.60) setActivePhraseIndex(2);
+    else if (latest >= 0.60 && latest < 0.95) setActivePhraseIndex(3);
+    else setActivePhraseIndex(null);
+  });
 
-  const p4Opacity = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [0, 1, 1, 1]);
-  const p4Y = useTransform(scrollYProgress, [0.85, 0.9, 0.98, 1.0], [20, 0, 0, 0]);
+  const getPhraseState = (idx: number) => {
+    if (activePhraseIndex === null) {
+      return scrollPosition < 0.05 ? 'upcoming' : 'past';
+    }
+    if (activePhraseIndex === idx) return 'visible';
+    if (activePhraseIndex < idx) return 'upcoming';
+    return 'past';
+  };
 
-  const opacities = [p1Opacity, p2Opacity, p3Opacity, p4Opacity];
-  const ys = [p1Y, p2Y, p3Y, p4Y];
+  const phraseVariants = {
+    upcoming: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+    past: { opacity: 0, y: -20 }
+  };
 
   const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
-  // Effects trigger only during the exit phase
-  const containerOpacity = useTransform(scrollYExit, [0, 1], [1, 0]);
-  const containerBlur = useTransform(scrollYExit, [0, 1], ["blur(0px)", "blur(10px)"]);
+  // Effects trigger during both entry and exit phases
+  const containerOpacity = useTransform(
+    [scrollYEnter, scrollYExit],
+    ([enter, exit]: number[]) => {
+      if (enter < 1) return enter;
+      if (exit > 0) return 1 - exit;
+      return 1;
+    }
+  );
+
+  const containerBlur = useTransform(
+    [scrollYEnter, scrollYExit],
+    ([enter, exit]: number[]) => {
+      if (enter < 1) return `blur(${(1 - enter) * 10}px)`;
+      if (exit > 0) return `blur(${exit * 10}px)`;
+      return "blur(0px)";
+    }
+  );
 
   const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -94,7 +129,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     setLoadedImages(imgElements);
   }, [images]);
 
-  // Render loop
+  // Render loop & Resize
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || loadedImages.length === 0) return;
@@ -103,6 +138,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     if (!ctx) return;
 
     const render = (index: number) => {
+      currentIndexRef.current = index;
       const img = loadedImages[index];
       if (!img) return;
 
@@ -110,7 +146,6 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
       const canvasHeight = canvas.height;
       if (canvasWidth === 0 || canvasHeight === 0) return;
 
-      // Use object-fit: cover logic to fill the entire canvas (may crop edges)
       const scale = Math.max(canvasWidth / img.width, canvasHeight / img.height);
       
       const drawWidth = img.width * scale;
@@ -122,25 +157,43 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
       ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
     };
 
-    // Initial render attempt
-    render(0);
+    const handleResize = () => {
+      if (canvas) {
+        canvas.width = window.innerWidth * window.devicePixelRatio;
+        canvas.height = window.innerHeight * window.devicePixelRatio;
+        render(currentIndexRef.current);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    const initialProgress = scrollYProgress.get();
+    const initialIndex = Math.min(
+      Math.floor(initialProgress * (loadedImages.length - 1)),
+      loadedImages.length - 1
+    );
+    render(initialIndex);
 
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      // Play video across the full sticky duration (0 -> 1)
-      const playbackProgress = latest;
-      
       const index = Math.min(
-        Math.floor(playbackProgress * (loadedImages.length - 1)),
+        Math.floor(latest * (loadedImages.length - 1)),
         loadedImages.length - 1
       );
       requestAnimationFrame(() => render(index));
     });
 
-    return () => unsubscribe();
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      unsubscribe();
+    };
   }, [loadedImages, scrollYProgress]);
 
   // 스크롤 시작 감지
   useEffect(() => {
+    if (scrollYProgress.get() > 0.01 && !hasScrolled) {
+      setHasScrolled(true);
+    }
     const unsubscribe = scrollYProgress.on("change", (latest) => {
       if (latest > 0.01 && !hasScrolled) {
         setHasScrolled(true);
@@ -149,25 +202,12 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     return () => unsubscribe();
   }, [scrollYProgress, hasScrolled]);
 
-  // Handle Resize
-  useEffect(() => {
-    const handleResize = () => {
-      if (canvasRef.current) {
-        canvasRef.current.width = window.innerWidth * window.devicePixelRatio;
-        canvasRef.current.height = window.innerHeight * window.devicePixelRatio;
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
   if (!isVisible) return null;
 
   return (
     <div ref={containerRef} className={cn("relative w-full h-full")}>
       <motion.div 
-        className="absolute top-0 left-0 w-full h-full overflow-hidden bg-black"
+        className="absolute top-0 left-0 w-full h-full overflow-hidden bg-white"
         style={{ 
           opacity: containerOpacity,
           filter: containerBlur,
@@ -206,19 +246,18 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         )}
 
         {/* Chronological Script Overlay */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none pb-20">
+        <div className="absolute inset-0 flex flex-col items-center justify-center z-10 pointer-events-none pb-40">
           {scriptPhrases.map((phrase, idx) => (
             <motion.div 
               key={idx}
-              style={{ 
-                opacity: opacities[idx], 
-                y: ys[idx],
-                willChange: "opacity, transform" 
-              }}
+              variants={phraseVariants}
+              initial={false}
+              animate={getPhraseState(idx)}
+              transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               className="absolute text-center text-white px-8 w-full max-w-[400px]"
             >
               <Typography 
-                className="font-serif text-[1.1rem] leading-relaxed tracking-[0.05em] text-white/90 break-keep drop-shadow-md whitespace-pre-line"
+                className="font-serif italic text-[1.1rem] leading-relaxed tracking-[0.05em] text-white/90 break-keep drop-shadow-md whitespace-pre-line"
               >
                 {phrase}
               </Typography>
@@ -229,9 +268,9 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         {/* Scroll Hint */}
         <motion.div 
             style={{ opacity: scrollHintOpacity, willChange: "opacity" }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/60 font-serif text-[1rem] font-medium italic tracking-[0.2em] uppercase animate-bounce"
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
         >
-            Scroll Down
+            <ScrollIndicator color="#ffffff" text="Scroll Down" />
         </motion.div>
       </motion.div>
     </div>

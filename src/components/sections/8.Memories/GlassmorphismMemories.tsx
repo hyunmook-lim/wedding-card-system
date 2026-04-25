@@ -93,15 +93,15 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
   };
 
   return (
-    <section ref={scrollRef} className="relative w-full min-h-[100svh] py-24 flex flex-col items-center justify-center overflow-hidden bg-transparent">
+    <section ref={scrollRef} className="relative w-full py-24 flex flex-col items-center justify-center overflow-hidden bg-transparent">
       
       {/* ── Header Title Layer (Harmonized) ── */}
       <motion.div
          initial={{ opacity: 0, y: 50 }}
          animate={{ opacity: showTitle ? 1 : 0, y: showTitle ? 0 : 50 }}
          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-         style={{ scale: 0.6, transformOrigin: "top center" }}
-         className="w-full flex flex-col items-center z-30 pointer-events-none mb-16 shrink-0"
+         style={{ scale: 0.55, transformOrigin: "top center" }}
+         className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
       >
         <div className="flex flex-col items-center justify-center">
           <div className="flex items-center space-x-3 mb-4 opacity-30">
@@ -111,7 +111,7 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
             </svg>
             <div className="w-8 h-[0.5px] bg-black" />
           </div>
-          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium italic">오늘에 닿기까지의 시간들</Typography>
+          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">오늘에 닿기까지의 시간들</Typography>
           <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Our Journey & Story</Typography>
         </div>
       </motion.div>
