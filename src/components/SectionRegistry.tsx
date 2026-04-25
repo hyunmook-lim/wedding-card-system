@@ -128,6 +128,8 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
   const [isAROpen, setIsAROpen] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   
   // Refs for dynamic background triggers... (omitted but I should keep them)
   const fadeInRef = useRef<HTMLDivElement>(null);
@@ -151,13 +153,13 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   }, [showIntro, isAROpen]);
 
   useEffect(() => {
-    if (showIntro) {
+    if (showIntro && !isPreloading) {
       const timer = setTimeout(() => {
         setShowIntro(false);
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [showIntro]);
+  }, [showIntro, isPreloading]);
 
   // Preload all section images while intro is playing
   useEffect(() => {
@@ -187,25 +189,39 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
 
     sections.forEach(s => collectImages(s.content));
 
-    if (imageUrls.length === 0) return;
+    if (imageUrls.length === 0) {
+      setIsPreloading(false);
+      return;
+    }
+
+    let loadedCount = 0;
+    const totalImages = imageUrls.length;
 
     // Preload in batches to avoid overwhelming the network
-    const BATCH_SIZE = 6;
-    let currentIndex = 0;
-
-    const loadBatch = () => {
-      const batch = imageUrls.slice(currentIndex, currentIndex + BATCH_SIZE);
-      batch.forEach(url => {
-        const img = new window.Image();
-        img.src = url;
-      });
-      currentIndex += BATCH_SIZE;
-      if (currentIndex < imageUrls.length) {
-        setTimeout(loadBatch, 100);
+    const BATCH_SIZE = 10;
+    
+    const loadImages = async () => {
+      for (let i = 0; i < imageUrls.length; i += BATCH_SIZE) {
+        const batch = imageUrls.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(url => new Promise(resolve => {
+          const img = new window.Image();
+          img.onload = () => {
+            loadedCount++;
+            setLoadingProgress(Math.round((loadedCount / totalImages) * 100));
+            resolve(true);
+          };
+          img.onerror = () => {
+            loadedCount++;
+            setLoadingProgress(Math.round((loadedCount / totalImages) * 100));
+            resolve(true); // Ignore errors and continue
+          };
+          img.src = url;
+        })));
       }
+      setIsPreloading(false);
     };
 
-    loadBatch();
+    loadImages();
   }, [sections]);
 
   // 1. Separate 'intro' from other sections
@@ -238,6 +254,8 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
                 config={introSection.content}
                 isVisible={introSection.isVisible}
                 onEnter={() => setShowIntro(false)}
+                isPreloading={isPreloading}
+                loadingProgress={loadingProgress}
              />
           </motion.div>
         )}

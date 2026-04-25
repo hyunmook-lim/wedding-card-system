@@ -72,4 +72,6 @@ export interface SectionProps {
   isVisible: boolean;
   onEnter?: () => void;
   onClose?: () => void;
+  isPreloading?: boolean;
+  loadingProgress?: number;
 }
