@@ -10,6 +10,8 @@ import { cn } from '@/lib/utils';
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
 const VideoGreeting = dynamic(() => import('./sections/1.Greeting/VideoGreeting'));
+const PolaroidGreeting = dynamic(() => import('./sections/1.Greeting/PolaroidGreeting'));
+const PolaroidGreeting2 = dynamic(() => import('./sections/1.Greeting/PolaroidGreeting2'));
 const BasicBrideGroom = dynamic(() => import('./sections/2.BrideGroom/BasicBrideGroom'));
 const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGroom'));
 const TrendyTextBrideGroom = dynamic(() => import('./sections/2.BrideGroom/TrendyTextBrideGroom'));
@@ -44,6 +46,8 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   greeting: {
     basic: BasicGreeting,
     video: VideoGreeting,
+    polaroid: PolaroidGreeting,
+    polaroid2: PolaroidGreeting2,
   },
   intro: {
     basic: MainIntro,
@@ -90,6 +94,8 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
 const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   greeting: {
     video: '4000px', // 500lvh -> 5 * 800
+    polaroid: '4000px',
+    polaroid2: '5000px',
   },
   account: {
     masked: '1200px', // 150lvh -> 1.5 * 800
@@ -127,7 +133,6 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
-  const [isAROpen, setIsAROpen] = useState(false);
   const [isPreloading, setIsPreloading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   
@@ -135,22 +140,15 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   const fadeInRef = useRef<HTMLDivElement>(null);
   const fadeOutRef = useRef<HTMLDivElement>(null);
 
-  // AR Overlay Config (since it's now a global feature)
-  const arConfig = {
-    targetImage: '/test-resources/ar/target-image.mind',
-    videoUrl: '/test-resources/ar/test-video.MP4',
-    title: 'AR 초대장',
-    subtitle: '명함의 뒷면을 카메라에 비춰보세요'
-  };
 
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
-    if (showIntro || isAROpen) {
+    if (showIntro) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-  }, [showIntro, isAROpen]);
+  }, [showIntro]);
 
   useEffect(() => {
     if (showIntro && !isPreloading) {
@@ -319,54 +317,6 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       </div>
       )}
 
-      {/* AR Floating Button (Only visible after intro) */}
-      <AnimatePresence>
-        {!showIntro && !isAROpen && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-8 right-8 z-[90] cursor-pointer"
-            onClick={() => setIsAROpen(true)}
-          >
-            {/* Liquid Glass Styled Button (Smaller) */}
-            <div className="group relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-amber-200 to-amber-400 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200" />
-              <div className="relative w-11 h-11 bg-white/40 backdrop-blur-xl border border-white/40 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 group-hover:scale-110 active:scale-95">
-                <div className="flex flex-col items-center">
-                  <span className="text-[8px] font-black text-black/60 tracking-tighter leading-none mb-0.5">AR</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black/60">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                    <circle cx="12" cy="13" r="4" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Full-screen AR Overlay */}
-      <AnimatePresence>
-        {isAROpen && (
-          <motion.div
-            initial={{ opacity: 0, y: '100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[200] bg-black flex flex-col"
-          >
-            {/* Render AR Component */}
-            <div className="flex-1 w-full bg-black overflow-hidden mt-0">
-               <ARCardScan 
-                 config={arConfig} 
-                 isVisible={true} 
-                 onClose={() => setIsAROpen(false)}
-               />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </main>
   );
 }

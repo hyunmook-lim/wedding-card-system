@@ -54,11 +54,42 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         id: 'sec_greeting_video',
         type: 'greeting',
         variant: 'video',
-        isVisible: true,
+        isVisible: false,
         content: {
           title: 'Video Greeting',
           message: 'Scroll to play video',
           images: Array.from({ length: 100 }, (_, i) => `/test-resources/running_new_frames/${String(i + 1).padStart(3, '0')}.jpg`),
+          background: { type: 'none' }
+        }
+      },
+      {
+        id: 'sec_greeting_polaroid',
+        type: 'greeting',
+        variant: 'polaroid2',
+        isVisible: true,
+        content: {
+          images: [
+            '/test-resources/polar2/1.jpeg',
+            '/test-resources/polar2/2.jpeg',
+            '/test-resources/polar2/3.jpeg',
+            '/test-resources/polar2/4.jpeg',
+            '/test-resources/polar2/5.jpeg',
+            '/test-resources/polar2/6.jpeg',
+            '/test-resources/polar2/7.jpeg',
+            '/test-resources/polar2/8.jpeg',
+            '/test-resources/polar2/9.jpeg'
+          ],
+          captions: [
+            "We're",
+            "getting",
+            "married!",
+            "We",
+            "invite",
+            "you",
+            "to",
+            "our",
+            "wedding."
+          ],
           background: { type: 'none' }
         }
       },

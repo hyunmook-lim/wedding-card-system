@@ -316,7 +316,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
                               initial={{ scale: 0, opacity: 0 }}
                               animate={revealed.dateCircle ? { scale: 1.1, opacity: 1 } : { scale: 0, opacity: 0 }}
                               transition={{ duration: 0.8, type: "spring" }}
-                              className="absolute inset-0 rounded-full bg-[#fb7185]/60 shadow-sm border border-white/20"
+                              className="absolute inset-0 rounded-full bg-[#a3e635]/60 shadow-sm border border-white/20"
                             />
                           )}
                           <Typography className={cn(
@@ -347,9 +347,14 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           >
             <Typography className="text-[0.95rem] text-black/60 font-semibold tracking-[0.2em] uppercase">
               {new Intl.DateTimeFormat('ko-KR', { 
+                month: 'long', 
+                day: 'numeric' 
+              }).format(weddingDate)}
+              <span className="mx-2 opacity-30 text-[0.7rem]">|</span>
+              {new Intl.DateTimeFormat('ko-KR', { 
                 weekday: 'long'
               }).format(weddingDate)}
-              <span className="mx-2 opacity-30 text-[0.7rem]|">|</span>
+              <br/>
               {new Intl.DateTimeFormat('ko-KR', { 
                 hour: 'numeric', 
                 minute: 'numeric',

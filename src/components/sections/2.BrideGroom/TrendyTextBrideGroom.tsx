@@ -59,13 +59,12 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
       <RevealContainer>
         {(isVisible) => (
           <>
-            {/* 텍스트 영역 */}
             <div className={`w-full flex flex-col items-end transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <p className="text-xl font-medium text-center leading-relaxed">
                 {groom?.parents.father} {groom?.parents.mother}의 {groom?.relation}<br/>
-                {groom?.name.slice(1)}
+                <span className="text-3xl font-bold">{groom?.name.slice(1)}</span>
               </p>
             </div>
 
@@ -82,7 +81,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
               />
               {/* 인물 이미지는 살짝 왼쪽에서 시작해서 제자리(0)로 이동 */}
               <div className={`absolute top-0 left-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                isVisible ? 'translate-x-4' : '-translate-x-2'
+                isVisible ? 'translate-x-12' : '-translate-x-4'
               }`}>
                 <Image 
                   src="/test-resources/bride-groom/groom-full.png"
@@ -108,7 +107,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
             }`}>
               <p className="text-xl font-medium text-center leading-relaxed">
                 {bride?.parents.father} {bride?.parents.mother}의 {bride?.relation}<br/>
-                {bride?.name.slice(1)}
+                <span className="text-3xl font-bold">{bride?.name.slice(1)}</span>
               </p>
             </div>
 
@@ -125,7 +124,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
               />
               {/* 인물 이미지는 살짝 오른쪽에서 시작해서 제자리(0)로 이동 */}
               <div className={`absolute top-0 right-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                isVisible ? 'translate-x-0' : 'translate-x-6'
+                isVisible ? 'translate-x-0' : 'translate-x-16'
               }`}>
                 <Image 
                   src="/test-resources/bride-groom/bride-full-changed.png"

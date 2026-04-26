@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Serif_KR } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Serif_KR, Pacifico } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+
+const pacifico = Pacifico({
+  variable: "--font-pacifico",
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const freesentation = localFont({
   src: "../../public/font/freesentation/Freesentation-9Black.ttf",
@@ -38,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${freesentation.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${freesentation.variable} ${pacifico.variable} antialiased`}
       >
         {children}
       </body>

@@ -12,7 +12,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const { scrollYProgress: inViewProgress } = useScroll({
     target: scrollRef || undefined,
-    offset: ['start end', 'start start']
+    offset: ['start end', 'end start']
   });
   
   const [showTitle, setShowTitle] = useState(false);
@@ -21,17 +21,21 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
     trans0: false,
     trans1: false,
     trans2: false,
-    buttons: false
+    buttons: false,
+    cafe: false,
+    hospitality: false
   });
   
   useMotionValueEvent(inViewProgress, "change", (latest) => {
-    setShowTitle(latest > 0.15);
+    setShowTitle(latest > 0.05);
     setRevealed({
-      map: latest > 0.3,
-      trans0: latest > 0.5,
-      trans1: latest > 0.6,
-      trans2: latest > 0.7,
-      buttons: latest > 0.85
+      map: latest > 0.12,
+      trans0: latest > 0.18,
+      trans1: latest > 0.25,
+      trans2: latest > 0.32,
+      buttons: latest > 0.42,
+      cafe: latest > 0.55,
+      hospitality: latest > 0.65
     });
   });
 
@@ -191,7 +195,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                   animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
                   transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
                   style={{ transformOrigin: "left" }}
-                  className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#722f37]/20 -z-10" 
+                  className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
                 />
                 와인 서비스
               </span>도 준비되어 있으니<br/>
@@ -206,7 +210,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
             {/* Styled Cafe Header */}
             <motion.div
               initial="hidden"
-              animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
+              animate={revealed.cafe ? "visible" : "hidden"}
               variants={fadeInUp}
               style={{ scale: 0.55, transformOrigin: "center" }}
               className="w-full flex flex-col items-center z-30 pointer-events-none mb-6 shrink-0"
@@ -226,7 +230,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
             
             <motion.div
               initial="hidden"
-              animate={inViewProgress.get() > 0.95 ? "visible" : "hidden"}
+              animate={revealed.cafe ? "visible" : "hidden"}
               variants={fadeInUp}
               className="flex flex-col items-center"
             >
@@ -236,26 +240,48 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                 식장 근처 <span className="relative inline-block">
                   <motion.span 
                     initial={{ scaleX: 0 }}
-                    animate={inViewProgress.get() > 0.95 ? { scaleX: 1 } : { scaleX: 0 }}
+                    animate={revealed.cafe ? { scaleX: 1 } : { scaleX: 0 }}
                     transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
                     style={{ transformOrigin: "left" }}
-                    className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#6F4E37]/15 -z-10" 
+                    className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
                   />
                   예쁘고 맛있는 카페들
                 </span>을 공유합니다.
               </Typography>
             </motion.div>
 
-            <LiquidGlassWidget 
-              variant="dock"
-              className="px-8 py-3.5 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-lg"
-              onClick={() => window.open('https://naver.me/5If4L6J7')}
+            <motion.div
+              initial="hidden"
+              animate={revealed.cafe ? "visible" : "hidden"}
+              variants={fadeInUp}
             >
-               <span className="text-[0.8rem] font-black text-black/50 tracking-[0.1em] uppercase">
-                 ☕ 카페 지도
-               </span>
-            </LiquidGlassWidget>
+              <LiquidGlassWidget 
+                variant="dock"
+                className="px-8 py-3.5 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-lg"
+                onClick={() => window.open('https://naver.me/5If4L6J7')}
+              >
+                 <span className="text-[0.8rem] font-black text-black/50 tracking-[0.1em] uppercase">
+                   ☕️ 신랑신부의 추천 카페
+                 </span>
+              </LiquidGlassWidget>
+            </motion.div>
           </div>
+
+          {/* Hospitality Message (Moved from Memories) */}
+          <motion.div
+            initial="hidden"
+            animate={revealed.hospitality ? "visible" : "hidden"}
+            variants={fadeInUp}
+            className="flex flex-col items-center w-full text-center mt-12 pb-20 px-6 opacity-60"
+          >
+            <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
+            <Typography className="text-[0.75rem] font-serif italic text-black/50 leading-relaxed break-keep">
+              아끼는 마음들을 모아<br/>
+              함께하는 발걸음마다 축복을 더해주시는<br/>
+              모든 분들께 감사의 인사를 전합니다.
+            </Typography>
+            <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-6" />
+          </motion.div>
         </div>
       </div>
     </section>

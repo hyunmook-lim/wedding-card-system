@@ -195,21 +195,6 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
         </div>
       </div>
 
-      {/* Hospitality Message (Harmonized pattern) */}
-      <motion.div
-        initial="hidden"
-        animate={revealed.m3 ? "visible" : "hidden"}
-        variants={fadeInLeft}
-        className="flex flex-col items-center w-full text-center mt-20 px-6 opacity-60"
-      >
-        <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-        <Typography className="text-[0.75rem] font-serif italic text-black/50 leading-relaxed break-keep">
-          아끼는 마음들을 모아<br/>
-          함께하는 발걸음마다 축복을 더해주시는<br/>
-          모든 분들께 감사의 인사를 전합니다.
-        </Typography>
-        <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-6" />
-      </motion.div>
 
     </section>
   );
