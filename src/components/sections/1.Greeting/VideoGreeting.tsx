@@ -202,12 +202,19 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
     return () => unsubscribe();
   }, [scrollYProgress, hasScrolled]);
 
+  const [isExiting, setIsExiting] = useState(false);
+  
+  useMotionValueEvent(scrollYExit, "change", (latest) => {
+    if (latest > 0) setIsExiting(true);
+    else setIsExiting(false);
+  });
+
   if (!isVisible) return null;
 
   return (
-    <div ref={containerRef} className={cn("relative w-full h-full")}>
+    <div ref={containerRef} className={cn("relative w-full h-full bg-neutral-100")}>
       <motion.div 
-        className="absolute top-0 left-0 w-full h-full overflow-hidden bg-white"
+        className="absolute top-0 left-0 w-full h-full overflow-hidden bg-neutral-100"
         style={{ 
           opacity: containerOpacity,
           filter: containerBlur,
@@ -268,11 +275,18 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
         {/* Scroll Hint */}
         <motion.div 
             style={{ opacity: scrollHintOpacity, willChange: "opacity" }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20"
         >
             <ScrollIndicator color="#ffffff" text="Scroll Down" />
         </motion.div>
       </motion.div>
+
+      {/* Exit transition gradient - becomes fully themed color as the section scrolls away */}
+      <motion.div 
+        animate={{ opacity: isExiting ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-neutral-100 via-neutral-100/80 to-transparent z-30 pointer-events-none"
+      />
     </div>
   );
 }
