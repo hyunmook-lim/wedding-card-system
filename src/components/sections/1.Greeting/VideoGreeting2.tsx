@@ -211,7 +211,7 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
               <Typography 
                 className={cn(
                   "font-serif text-[0.85rem] leading-[1.8] text-gray-800 break-keep whitespace-pre-line",
-                  idx === 3 ? "mt-4 font-medium" : ""
+                  idx === 3 ? "mt-4 font-normal" : ""
                 )}
               >
                 {phrase}

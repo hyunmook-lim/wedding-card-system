@@ -78,7 +78,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
             </svg>
             <div className="w-8 h-[0.5px] bg-black" />
           </div>
-          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">오시는 길</Typography>
+          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-normal">오시는 길</Typography>
           <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Location Details</Typography>
         </div>
       </motion.div>
@@ -133,7 +133,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                   <Typography className="text-[0.7rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
                     {info.title}
                   </Typography>
-                  <Typography variant="body" className="text-[0.95rem] text-black/80 font-semibold leading-tight whitespace-nowrap">
+                  <Typography variant="body" className="text-[0.95rem] text-black/80 font-medium leading-tight whitespace-nowrap">
                     {info.content}
                   </Typography>
                   {info.sub && (
@@ -192,7 +192,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               저희의 예식은 두 곳의 복층 공간에서 진행됩니다.<br/>
               하객분들의 편의에 맞춰<br/> 편안한 자리를 선택해 주세요.<br/><br/>
               
-              <span className="font-bold opacity-80">1층 메인홀:</span> 예식에 오롯이 집중하며 온전히 즐긴 후<br/>
+              <span className="font-semibold opacity-80">1층 메인홀:</span> 예식에 오롯이 집중하며 온전히 즐긴 후<br/>
               <span className="relative inline-block font-medium text-black/80">
                 <motion.span 
                   initial={{ scaleX: 0 }}
@@ -204,7 +204,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                 예식이 끝난 후 식사
               </span>를 하실 분들을 위한 장소입니다.<br/><br/>
 
-              <span className="font-bold opacity-80">2층 테라스홀:</span> <span className="relative inline-block font-medium text-black/80">
+              <span className="font-semibold opacity-80">2층 테라스홀:</span> <span className="relative inline-block font-normal text-black/80">
                 <motion.span 
                   initial={{ scaleX: 0 }}
                   animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
@@ -237,7 +237,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                   </svg>
                   <div className="w-8 h-[0.5px] bg-black" />
                 </div>
-                <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">주변 카페 안내</Typography>
+                <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-normal">주변 카페 안내</Typography>
                 <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Nearby Cafe Guide</Typography>
               </div>
             </motion.div>

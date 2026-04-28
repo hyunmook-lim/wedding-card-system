@@ -9,10 +9,9 @@ const pacifico = Pacifico({
   weight: "400",
 });
 
-const freesentation = localFont({
-  src: "../../public/font/freesentation/Freesentation-9Black.ttf",
-  variable: "--font-freesentation",
-  weight: "900",
+const pretendard = localFont({
+  src: "../../public/font/Pretendard-1.3.9/public/variable/PretendardVariable.ttf",
+  variable: "--font-pretendard",
 });
 
 const geistSans = Geist({
@@ -44,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${freesentation.variable} ${pacifico.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${pretendard.variable} ${pacifico.variable} antialiased`}
       >
         {children}
       </body>

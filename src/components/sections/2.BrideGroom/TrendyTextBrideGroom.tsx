@@ -63,10 +63,10 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <div className="flex flex-col items-center">
-                <span className="text-xl font-bold tracking-widest">{groom?.name?.slice(1)}</span>
+                <span className="text-xl font-semibold tracking-widest">{groom?.name?.slice(1)}</span>
                 <span className="text-sm font-light text-gray-400 tracking-[0.3em] mt-2 uppercase">{groom?.nameEng || 'YOUNG HOO'}</span>
                 
-                <div className="mt-6 text-lg font-medium tracking-widest flex items-center justify-center gap-2">
+                <div className="mt-6 text-lg font-normal tracking-widest flex items-center justify-center gap-2">
                   {groom?.parents.father} <span className="text-gray-300 font-light">ㅣ</span> {groom?.parents.mother}
                 </div>
                 <span className="text-base text-gray-500 mt-1 tracking-widest">{groom?.relation}</span>
@@ -111,10 +111,10 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <div className="flex flex-col items-center">
-                <span className="text-xl font-bold tracking-widest">{bride?.name?.slice(1)}</span>
+                <span className="text-xl font-semibold tracking-widest">{bride?.name?.slice(1)}</span>
                 <span className="text-sm font-light text-gray-400 tracking-[0.3em] mt-2 uppercase">{bride?.nameEng || 'YE EUN'}</span>
                 
-                <div className="mt-6 text-lg font-medium tracking-widest flex items-center justify-center gap-2">
+                <div className="mt-6 text-lg font-normal tracking-widest flex items-center justify-center gap-2">
                   {bride?.parents.father} <span className="text-gray-300 font-light">ㅣ</span> {bride?.parents.mother}
                 </div>
                 <span className="text-base text-gray-500 mt-1 tracking-widest">{bride?.relation}</span>

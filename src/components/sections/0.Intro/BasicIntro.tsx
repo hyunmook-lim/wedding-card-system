@@ -68,7 +68,7 @@ export default function BasicIntro({ config, isVisible, onEnter, isPreloading, l
             variants={container}
           >
             {/* Animated Text */}
-            <div className="flex flex-wrap justify-center mb-12 overflow-hidden text-xl md:text-2xl font-light text-gray-800 tracking-wider text-center leading-relaxed whitespace-pre-wrap">
+            <div className="flex flex-wrap justify-center mb-12 overflow-hidden text-xl md:text-2xl font-extralight text-gray-800 tracking-wider text-center leading-relaxed whitespace-pre-wrap">
               {Array.from(text).map((letter, index) => {
                 if (letter === '\n') {
                   return <div key={index} className="w-full h-2" />;
