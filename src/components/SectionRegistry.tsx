@@ -16,8 +16,8 @@ const PolaroidGreeting2 = dynamic(() => import('./sections/1.Greeting/PolaroidGr
 const BasicBrideGroom = dynamic(() => import('./sections/2.BrideGroom/BasicBrideGroom'));
 const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGroom'));
 const TrendyTextBrideGroom = dynamic(() => import('./sections/2.BrideGroom/TrendyTextBrideGroom'));
-const MainIntro = dynamic(() => import('./sections/0.Intro/MainIntro'));
-const BasicIntro = dynamic(() => import('./sections/0.Intro/BasicIntro'));
+import MainIntro from './sections/0.Intro/MainIntro';
+import BasicIntro from './sections/0.Intro/BasicIntro';
 
 const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
 const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
@@ -269,7 +269,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   return (
     <main className={cn(
       "w-full max-w-md mx-auto min-h-screen shadow-xl relative transition-colors duration-500",
-      showIntro ? "bg-black" : "bg-transparent"
+      showIntro ? "bg-white" : "bg-transparent"
     )}>
       
       {/* Render Intro Overlay */}
