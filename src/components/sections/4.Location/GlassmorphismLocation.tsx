@@ -180,16 +180,20 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
             </LiquidGlassWidget>
           </motion.div>
 
-          {/* Hospitality Message */}
+          {/* Hall Info Message */}
           <motion.div
             initial="hidden"
             animate={revealed.buttons ? "visible" : "hidden"}
             variants={fadeInUp}
-            className="flex flex-col items-center w-full text-center mt-4"
+            className="flex flex-col items-center w-full text-center mt-8 px-2"
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-            <Typography className="text-[0.9rem] font-serif italic text-black/50 leading-relaxed">
-              시원한 <span className="relative inline-block">
+            <Typography className="text-[0.85rem] font-serif text-black/60 leading-[1.8] break-keep">
+              저희의 예식은 두 곳의 복층 공간에서 진행됩니다.<br/>
+              하객분들의 편의에 맞춰<br/> 편안한 자리를 선택해 주세요.<br/><br/>
+              
+              <span className="font-bold opacity-80">1층 메인홀:</span> 예식에 오롯이 집중하며 온전히 즐긴 후<br/>
+              <span className="relative inline-block font-medium text-black/80">
                 <motion.span 
                   initial={{ scaleX: 0 }}
                   animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
@@ -197,12 +201,22 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
                   style={{ transformOrigin: "left" }}
                   className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
                 />
-                와인 서비스
-              </span>도 준비되어 있으니<br/>
-              가급적 대중교통을 이용하셔서<br/>
-              여유로운 시간을 즐겨주시길 부탁드립니다.
+                예식이 끝난 후 식사
+              </span>를 하실 분들을 위한 장소입니다.<br/><br/>
+
+              <span className="font-bold opacity-80">2층 테라스홀:</span> <span className="relative inline-block font-medium text-black/80">
+                <motion.span 
+                  initial={{ scaleX: 0 }}
+                  animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
+                  transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
+                  style={{ transformOrigin: "left" }}
+                  className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
+                />
+                예식과 식사를 동시
+              </span>에 편안하고<br/>
+              여유롭게 즐기실 분들을 위한 자리입니다.
             </Typography>
-            <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-6" />
+            <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-8" />
           </motion.div>
 
           {/* Cafe Section */}

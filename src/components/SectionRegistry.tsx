@@ -10,12 +10,14 @@ import { cn } from '@/lib/utils';
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
 const VideoGreeting = dynamic(() => import('./sections/1.Greeting/VideoGreeting'));
+const VideoGreeting2 = dynamic(() => import('./sections/1.Greeting/VideoGreeting2'));
 const PolaroidGreeting = dynamic(() => import('./sections/1.Greeting/PolaroidGreeting'));
 const PolaroidGreeting2 = dynamic(() => import('./sections/1.Greeting/PolaroidGreeting2'));
 const BasicBrideGroom = dynamic(() => import('./sections/2.BrideGroom/BasicBrideGroom'));
 const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGroom'));
 const TrendyTextBrideGroom = dynamic(() => import('./sections/2.BrideGroom/TrendyTextBrideGroom'));
 const MainIntro = dynamic(() => import('./sections/0.Intro/MainIntro'));
+const BasicIntro = dynamic(() => import('./sections/0.Intro/BasicIntro'));
 
 const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
 const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
@@ -46,11 +48,13 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
   greeting: {
     basic: BasicGreeting,
     video: VideoGreeting,
+    video2: VideoGreeting2,
     polaroid: PolaroidGreeting,
     polaroid2: PolaroidGreeting2,
   },
   intro: {
-    basic: MainIntro,
+    basic: BasicIntro,
+    video: MainIntro,
   },
   bride_groom: {
     basic: BasicBrideGroom,
@@ -94,6 +98,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
 const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   greeting: {
     video: '4000px', // 500lvh -> 5 * 800
+    video2: '4000px',
     polaroid: '4000px',
     polaroid2: '5000px',
   },
@@ -154,7 +159,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     if (showIntro && !isPreloading) {
       const timer = setTimeout(() => {
         setShowIntro(false);
-      }, 3000);
+      }, 6000); // 6초로 늘려 BasicIntro 애니메이션이 잘리지 않도록 보호
       return () => clearTimeout(timer);
     }
   }, [showIntro, isPreloading]);

@@ -49,8 +49,8 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
   if (!sectionVisible) return null;
 
   const { groom, bride } = config as { 
-    groom: { name: string; relation: string; parents: { father: string; mother: string } };
-    bride: { name: string; relation: string; parents: { father: string; mother: string } };
+    groom: { name: string; nameEng?: string; relation: string; parents: { father: string; mother: string } };
+    bride: { name: string; nameEng?: string; relation: string; parents: { father: string; mother: string } };
   };
 
   return (
@@ -59,13 +59,18 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
       <RevealContainer>
         {(isVisible) => (
           <>
-            <div className={`w-full flex flex-col items-end transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            <div className={`w-full flex flex-col items-end text-center transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
-              <p className="text-xl font-medium text-center leading-relaxed">
-                {groom?.parents.father} {groom?.parents.mother}의 {groom?.relation}<br/>
-                <span className="text-3xl font-bold">{groom?.name.slice(1)}</span>
-              </p>
+              <div className="flex flex-col items-center">
+                <span className="text-xl font-bold tracking-widest">{groom?.name?.slice(1)}</span>
+                <span className="text-sm font-light text-gray-400 tracking-[0.3em] mt-2 uppercase">{groom?.nameEng || 'YOUNG HOO'}</span>
+                
+                <div className="mt-6 text-lg font-medium tracking-widest flex items-center justify-center gap-2">
+                  {groom?.parents.father} <span className="text-gray-300 font-light">ㅣ</span> {groom?.parents.mother}
+                </div>
+                <span className="text-base text-gray-500 mt-1 tracking-widest">{groom?.relation}</span>
+              </div>
             </div>
 
             {/* 이미지 영역 */}
@@ -102,13 +107,18 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
         {(isVisible) => (
           <>
             {/* 텍스트 영역 */}
-            <div className={`w-full flex flex-col items-start transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            <div className={`w-full flex flex-col items-start text-center transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
-              <p className="text-xl font-medium text-center leading-relaxed">
-                {bride?.parents.father} {bride?.parents.mother}의 {bride?.relation}<br/>
-                <span className="text-3xl font-bold">{bride?.name.slice(1)}</span>
-              </p>
+              <div className="flex flex-col items-center">
+                <span className="text-xl font-bold tracking-widest">{bride?.name?.slice(1)}</span>
+                <span className="text-sm font-light text-gray-400 tracking-[0.3em] mt-2 uppercase">{bride?.nameEng || 'YE EUN'}</span>
+                
+                <div className="mt-6 text-lg font-medium tracking-widest flex items-center justify-center gap-2">
+                  {bride?.parents.father} <span className="text-gray-300 font-light">ㅣ</span> {bride?.parents.mother}
+                </div>
+                <span className="text-base text-gray-500 mt-1 tracking-widest">{bride?.relation}</span>
+              </div>
             </div>
 
             {/* 이미지 영역 */}

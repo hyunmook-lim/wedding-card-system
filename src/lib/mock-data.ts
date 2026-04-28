@@ -30,13 +30,10 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
     sections: [
       {
         id: 'sec_1',
-        type: 'intro', // Cover Photo
+        type: 'intro',
         variant: 'basic',
         isVisible: true,
         content: {
-          title: 'We Are Getting Married',
-          mainImage: '', // empty for placeholder
-          introVideo: '/test-resources/intro/intro-video.mp4',
           background: { type: 'none' }
         }
       },
@@ -53,12 +50,9 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       {
         id: 'sec_greeting_video',
         type: 'greeting',
-        variant: 'video',
-        isVisible: false,
+        variant: 'video2',
+        isVisible: true,
         content: {
-          title: 'Video Greeting',
-          message: 'Scroll to play video',
-          images: Array.from({ length: 100 }, (_, i) => `/test-resources/running_new_frames/${String(i + 1).padStart(3, '0')}.jpg`),
           background: { type: 'none' }
         }
       },
@@ -66,7 +60,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         id: 'sec_greeting_polaroid',
         type: 'greeting',
         variant: 'polaroid2',
-        isVisible: true,
+        isVisible: false,
         content: {
           images: [
             '/test-resources/polar2/1.jpeg',

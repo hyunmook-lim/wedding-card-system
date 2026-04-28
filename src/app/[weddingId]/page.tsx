@@ -59,6 +59,16 @@ export default async function WeddingPage({ params }: PageProps) {
         }
       };
     }
+    if (section.type === 'intro') {
+      return {
+        ...section,
+        content: {
+          ...section.content,
+          groom: wedding.couple.groom.name,
+          bride: wedding.couple.bride.name
+        }
+      };
+    }
     return section;
   });
 
