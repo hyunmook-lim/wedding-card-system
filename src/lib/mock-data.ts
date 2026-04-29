@@ -171,6 +171,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
           images: [] // 20 test images will be used by default
         }
       },
-    ]
+    ],
+    ogImage: '/test-resources/openimage.jpeg',
   }
 };

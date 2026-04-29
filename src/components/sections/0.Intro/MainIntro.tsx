@@ -1,9 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { SectionProps } from '@/types/wedding';
-import { cn } from '@/lib/utils';
 import Image from 'next/image';
 
-export default function MainIntro({ config, isVisible, onEnter, isPreloading, loadingProgress }: SectionProps) {
+export default function MainIntro({ config, isVisible, onEnter }: SectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {

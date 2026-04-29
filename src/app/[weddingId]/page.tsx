@@ -15,7 +15,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
-    description: `${wedding.event.location.name}에서`,
+    description: `${wedding.event.location.name}에서 열리는 아름다운 예식에 초대합니다.`,
+    openGraph: {
+      title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
+      description: `${wedding.event.location.name}에서 열리는 아름다운 예식에 초대합니다.`,
+      url: `https://wedding-card.vercel.app/${weddingId}`, // TODO: Use actual base URL
+      siteName: 'Interactive Wedding Card',
+      locale: 'ko_KR',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
+      description: `${wedding.event.location.name}에서 열리는 아름다운 예식에 초대합니다.`,
+    },
   };
 }
 

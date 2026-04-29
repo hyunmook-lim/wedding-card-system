@@ -45,20 +45,21 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     "소중한 사람을 만나 결혼합니다."
   ];
 
-  // 각 문장이 순차적으로 나타나도록
-  const opacities = [
-    useTransform(scrollYProgress, [0.1, 0.25], [0, 1]),
-    useTransform(scrollYProgress, [0.25, 0.4], [0, 1]),
-    useTransform(scrollYProgress, [0.4, 0.55], [0, 1]),
-    useTransform(scrollYProgress, [0.55, 0.7], [0, 1]),
-  ];
+  const thresholds = [0.15, 0.3, 0.45, 0.6];
+  const [visibleIdx, setVisibleIdx] = useState(-1);
 
-  const yPositions = [
-    useTransform(scrollYProgress, [0.1, 0.25], [15, 0]),
-    useTransform(scrollYProgress, [0.25, 0.4], [15, 0]),
-    useTransform(scrollYProgress, [0.4, 0.55], [15, 0]),
-    useTransform(scrollYProgress, [0.55, 0.7], [15, 0]),
-  ];
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    let currentIdx = -1;
+    for (let i = thresholds.length - 1; i >= 0; i--) {
+      if (latest >= thresholds[i]) {
+        currentIdx = i;
+        break;
+      }
+    }
+    if (currentIdx !== visibleIdx) {
+      setVisibleIdx(currentIdx);
+    }
+  });
 
   const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
@@ -205,7 +206,12 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
           {scriptPhrases.map((phrase, idx) => (
             <motion.div 
               key={idx}
-              style={{ opacity: opacities[idx], y: yPositions[idx] }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ 
+                opacity: visibleIdx >= idx ? 1 : 0,
+                y: visibleIdx >= idx ? 0 : 10
+              }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="w-full text-center"
             >
               <Typography 

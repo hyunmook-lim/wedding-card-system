@@ -45,6 +45,7 @@ export interface WeddingConfig {
     };
   };
   sections: SectionConfig[];
+  ogImage?: string;
 }
 
 export interface BackgroundConfig {
