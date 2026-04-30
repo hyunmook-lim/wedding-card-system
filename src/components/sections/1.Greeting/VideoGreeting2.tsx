@@ -19,8 +19,8 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     if (config.images && (config.images as string[]).length > 0) {
       return config.images as string[];
     }
-    // 기본적으로 video-intro_frames 사용
-    return Array.from({ length: 100 }, (_, i) => `/test-resources/video-intro_frames/video-intro_${String(i + 1).padStart(3, '0')}.jpg`);
+    // 기본적으로 intro-video-2_frames 사용
+    return Array.from({ length: 100 }, (_, i) => `/test-resources/intro-video-2_frames/intro-video-2_${String(i + 1).padStart(3, '0')}.jpg`);
   }, [config.images]);
   
   const { scrollYProgress } = useScroll({

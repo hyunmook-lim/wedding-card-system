@@ -42,7 +42,7 @@ export function Typography({
 }
 
 function getVariantClasses(variant: TypographyVariant): string {
-  const baseFont = "font-pretendard";
+  const baseFont = "font-freesentation";
   
   switch (variant) {
     case "h1":
