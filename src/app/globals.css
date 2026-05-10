@@ -14,17 +14,19 @@
   --foreground: #171717;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-freesentation);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-noto-serif);
-  --font-freesentation: var(--font-freesentation);
+  --font-sans: 'GowunDodum', ui-sans-serif, system-ui, sans-serif;
+  --font-gowun: 'GowunDodum', sans-serif;
+}
+
+@utility font-gowun {
+  font-family: 'GowunDodum', sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-freesentation), 'GowunDodum', Arial, Helvetica, sans-serif;
+  font-family: 'GowunDodum', Arial, Helvetica, sans-serif;
 }

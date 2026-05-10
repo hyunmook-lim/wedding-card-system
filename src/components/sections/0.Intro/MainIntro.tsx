@@ -1,8 +1,9 @@
 import { useRef, useEffect } from 'react';
 import { SectionProps } from '@/types/wedding';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function MainIntro({ config, isVisible, onEnter }: SectionProps) {
+export default function MainIntro({ config, isVisible, onEnter, isPreloading, loadingProgress }: SectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -31,11 +32,11 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
 
   if (!isVisible) return null;
   
-  const { mainImage, introVideo } = config as { mainImage?: string; introVideo?: string; title?: string };
+  const { mainImage, introVideo = '/test-resources/intro.mp4' } = config as { mainImage?: string; introVideo?: string; title?: string };
 
   return (
     <section 
-      className="w-full h-[100dvh] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-black"
+      className="w-full h-[100lvh] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-white"
       onClick={onEnter}
     >
         <div className="relative w-full h-full">
@@ -44,7 +45,6 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
                     ref={videoRef}
                     src={introVideo}
                     autoPlay
-                    loop
                     muted
                     playsInline
                     preload="auto"
@@ -59,12 +59,46 @@ export default function MainIntro({ config, isVisible, onEnter }: SectionProps) 
                     className="object-cover"
                     priority
                 />
-            ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                    Wedding Photo
-                </div>
-            )}
+            ) : null}
 
+            {/* Loading Overlay */}
+            <AnimatePresence mode="wait">
+                {isPreloading ? (
+                    <motion.div 
+                        key="loading"
+                        className="absolute bottom-20 left-0 right-0 flex flex-col items-center justify-center z-10"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div 
+                            className="w-48 h-[2px] bg-white/30 rounded-full overflow-hidden"
+                        >
+                            <motion.div
+                                className="h-full bg-white rounded-full"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${loadingProgress || 0}%` }}
+                                transition={{ ease: "easeOut", duration: 0.3 }}
+                            />
+                        </motion.div>
+                        <div className="mt-4 text-[10px] text-white/80 font-light tracking-[0.2em] drop-shadow-md">
+                            초대장을 준비하고 있습니다
+                        </div>
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="ready"
+                        className="absolute bottom-20 left-0 right-0 flex flex-col items-center justify-center z-10"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <div className="px-6 py-2 border border-white/50 rounded-full bg-black/20 backdrop-blur-sm text-sm text-white font-light tracking-[0.2em] drop-shadow-md animate-pulse">
+                            입장하기
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     </section>
   );

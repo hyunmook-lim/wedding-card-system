@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Serif_KR, Pacifico } from "next/font/google";
-import localFont from "next/font/local";
 import "./globals.css";
 
 const pacifico = Pacifico({
@@ -8,58 +7,6 @@ const pacifico = Pacifico({
   subsets: ["latin"],
   weight: "400",
 });
-
-const freesentation = localFont({
-  src: [
-    {
-      path: "../../public/font/freesentation/Freesentation-1Thin.ttf",
-      weight: "100",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-2ExtraLight.ttf",
-      weight: "200",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-3Light.ttf",
-      weight: "300",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-4Regular.ttf",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-5Medium.ttf",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-6SemiBold.ttf",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-7Bold.ttf",
-      weight: "700",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-8ExtraBold.ttf",
-      weight: "800",
-      style: "normal",
-    },
-    {
-      path: "../../public/font/freesentation/Freesentation-9Black.ttf",
-      weight: "900",
-      style: "normal",
-    },
-  ],
-  variable: "--font-freesentation",
-});
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -89,9 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${freesentation.variable} ${pacifico.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${pacifico.variable} antialiased`}>
         {children}
       </body>
     </html>

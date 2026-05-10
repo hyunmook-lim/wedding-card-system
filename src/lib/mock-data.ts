@@ -31,7 +31,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
       {
         id: 'sec_1',
         type: 'intro',
-        variant: 'basic',
+        variant: 'video',
         isVisible: true,
         content: {
           background: { type: 'none' }

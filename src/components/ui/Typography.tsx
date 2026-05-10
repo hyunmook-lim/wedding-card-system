@@ -42,7 +42,7 @@ export function Typography({
 }
 
 function getVariantClasses(variant: TypographyVariant): string {
-  const baseFont = "font-freesentation";
+  const baseFont = "font-gowun";
   
   switch (variant) {
     case "h1":

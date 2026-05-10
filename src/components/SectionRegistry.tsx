@@ -98,7 +98,7 @@ const SECTION_COMPONENTS: Record<string, Record<string, ComponentType<SectionPro
 const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
   greeting: {
     video: '4000px', // 500lvh -> 5 * 800
-    video2: '4000px',
+    video2: '150lvh', // scroll animation for blur effect
     polaroid: '4000px',
     polaroid2: '5000px',
   },
@@ -138,13 +138,12 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
-  const [isPreloading, setIsPreloading] = useState(true);
-  const [loadingProgress, setLoadingProgress] = useState(0);
+  const isPreloading = false;
+  const loadingProgress = 100;
   
   // Refs for dynamic background triggers... (omitted but I should keep them)
   const fadeInRef = useRef<HTMLDivElement>(null);
   const fadeOutRef = useRef<HTMLDivElement>(null);
-
 
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
@@ -164,68 +163,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     }
   }, [showIntro, isPreloading]);
 
-  // Preload all section images while intro is playing
-  useEffect(() => {
-    const imageUrls: string[] = [];
-
-    // Recursively collect image URLs from section configs
-    const collectImages = (obj: unknown) => {
-      if (!obj || typeof obj !== 'object') return;
-      if (Array.isArray(obj)) {
-        obj.forEach(item => {
-          if (typeof item === 'string' && /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(item)) {
-            imageUrls.push(item);
-          } else {
-            collectImages(item);
-          }
-        });
-        return;
-      }
-      for (const value of Object.values(obj as Record<string, unknown>)) {
-        if (typeof value === 'string' && /\.(png|jpe?g|webp|gif|svg|avif)$/i.test(value)) {
-          imageUrls.push(value);
-        } else {
-          collectImages(value);
-        }
-      }
-    };
-
-    sections.forEach(s => collectImages(s.content));
-
-    if (imageUrls.length === 0) {
-      setIsPreloading(false);
-      return;
-    }
-
-    let loadedCount = 0;
-    const totalImages = imageUrls.length;
-
-    // Preload in batches to avoid overwhelming the network
-    const BATCH_SIZE = 10;
-    
-    const loadImages = async () => {
-      for (let i = 0; i < imageUrls.length; i += BATCH_SIZE) {
-        const batch = imageUrls.slice(i, i + BATCH_SIZE);
-        await Promise.all(batch.map(url => new Promise(resolve => {
-          const img = new window.Image();
-          img.onload = () => {
-            loadedCount++;
-            setLoadingProgress(Math.round((loadedCount / totalImages) * 100));
-            resolve(true);
-          };
-          img.onerror = () => {
-            loadedCount++;
-            setLoadingProgress(Math.round((loadedCount / totalImages) * 100));
-            resolve(true); // Ignore errors and continue
-          };
-          img.src = url;
-        })));
-      }
-      setIsPreloading(false);
-    };
-
-    loadImages();
-  }, [sections]);
+  // Preloading is completely disabled. State is initialized as false/100 and left unchanged.
 
   // 1. Separate 'intro' from other sections
   const introSection = sections.find(s => s.type === 'intro');

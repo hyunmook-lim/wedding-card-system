@@ -22,6 +22,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
     trans1: false,
     trans2: false,
     buttons: false,
+    hall_info: false,
     cafe: false,
     hospitality: false
   });
@@ -33,7 +34,8 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
       trans0: latest > 0.18,
       trans1: latest > 0.25,
       trans2: latest > 0.32,
-      buttons: latest > 0.42,
+      buttons: latest > 0.38,
+      hall_info: latest > 0.44,
       cafe: latest > 0.55,
       hospitality: latest > 0.65
     });
@@ -183,12 +185,12 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
           {/* Hall Info Message */}
           <motion.div
             initial="hidden"
-            animate={revealed.buttons ? "visible" : "hidden"}
+            animate={revealed.hall_info ? "visible" : "hidden"}
             variants={fadeInUp}
             className="flex flex-col items-center w-full text-center mt-8 px-2"
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-            <Typography className="text-[0.85rem] font-serif text-black/60 leading-[1.8] break-keep">
+            <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep">
               저희의 예식은 두 곳의 복층 공간에서 진행됩니다.<br/>
               하객분들의 편의에 맞춰<br/> 편안한 자리를 선택해 주세요.<br/><br/>
               
@@ -196,7 +198,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               <span className="relative inline-block font-medium text-black/80">
                 <motion.span 
                   initial={{ scaleX: 0 }}
-                  animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
+                  animate={revealed.hall_info ? { scaleX: 1 } : { scaleX: 0 }}
                   transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
                   style={{ transformOrigin: "left" }}
                   className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
@@ -207,7 +209,7 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               <span className="font-semibold opacity-80">2층 테라스홀:</span> <span className="relative inline-block font-normal text-black/80">
                 <motion.span 
                   initial={{ scaleX: 0 }}
-                  animate={revealed.buttons ? { scaleX: 1 } : { scaleX: 0 }}
+                  animate={revealed.hall_info ? { scaleX: 1 } : { scaleX: 0 }}
                   transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
                   style={{ transformOrigin: "left" }}
                   className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
@@ -246,12 +248,13 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
               initial="hidden"
               animate={revealed.cafe ? "visible" : "hidden"}
               variants={fadeInUp}
-              className="flex flex-col items-center"
+              className="flex flex-col items-center w-full text-center px-2 mb-8"
             >
-              <Typography className="text-[0.9rem] font-serif italic text-black/50 leading-relaxed mb-8 text-center">
+              <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
+              <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep">
                 더운 햇살이 내리쬐는 여름 날<br/>
-                소중한 시간을 내어 와주신 하객분들을 위해<br/>
-                식장 근처 <span className="relative inline-block">
+                소중한 시간을 내어 와주신 하객분들을 위해<br/><br/>
+                식장 근처 <span className="relative inline-block font-medium text-black/80">
                   <motion.span 
                     initial={{ scaleX: 0 }}
                     animate={revealed.cafe ? { scaleX: 1 } : { scaleX: 0 }}
