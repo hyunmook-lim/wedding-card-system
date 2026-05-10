@@ -4,12 +4,12 @@ import { useRef, useEffect, useState } from 'react';
 import { SectionProps } from '@/types/wedding';
 import { cn } from '@/lib/utils';
 import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate } from 'framer-motion';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 export default function VideoGreeting2({ isVisible }: SectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasEnded, setHasEnded] = useState(false);
   const scrollRef = useStickyScrollRef();
 
   const { scrollYProgress } = useScroll({
@@ -17,20 +17,33 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
     offset: ['start start', 'end start'],
   });
 
-  // 스크롤 시 빠른 속도로 투명도 및 블러 처리
-  const videoOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const videoBlur = useTransform(scrollYProgress, [0, 0.3], ['blur(0px)', 'blur(20px)']);
-  
-  // 스크롤 다운 힌트는 스크롤 시작 즉시(더 빨리) 사라짐
+  // 영상 종료 시 0 → 1로 애니메이션되는 MotionValue
+  const endProgress = useMotionValue(0);
+
+  // 스크롤 진행도(0~0.3)와 영상 종료 진행도(0~1)의 최댓값으로 투명도/블러 결정
+  const videoOpacity = useTransform(
+    [scrollYProgress, endProgress],
+    ([s, e]: number[]) => Math.max(0.10, 1 - Math.max((s as number) / 0.3, e as number))
+  );
+  const videoBlur = useTransform(
+    [scrollYProgress, endProgress],
+    ([s, e]: number[]) => `blur(${Math.min(Math.max((s as number) / 0.3, e as number) * 20, 20)}px)`
+  );
+
+  // 스크롤 다운 힌트는 스크롤 시작 즉시 사라짐
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handlePlay = () => setHasStarted(true);
+    const handleEnded = () => {
+      setHasEnded(true);
+      // 스크롤 효과와 동일한 blur + 투명도를 영상 종료 시 재생
+      animate(endProgress, 1, { duration: 1.0, ease: 'easeInOut' });
+    };
 
-    video.addEventListener('play', handlePlay);
+    video.addEventListener('ended', handleEnded);
 
     // MainIntro가 페이드아웃(1.2초)으로 완전히 사라진 후 재생되도록 딜레이 추가
     const timer = setTimeout(() => {
@@ -38,10 +51,10 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
     }, 1200);
 
     return () => {
-      video.removeEventListener('play', handlePlay);
+      video.removeEventListener('ended', handleEnded);
       clearTimeout(timer);
     };
-  }, []);
+  }, [endProgress]);
 
   if (!isVisible) return null;
 
@@ -66,7 +79,7 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
         style={{ opacity: hintOpacity, willChange: 'opacity' }}
       >
         <AnimatePresence>
-          {hasStarted && (
+          {hasEnded && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
