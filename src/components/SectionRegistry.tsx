@@ -138,12 +138,8 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 
 export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
   const [showIntro, setShowIntro] = useState(true);
-  const isPreloading = false;
-  const loadingProgress = 100;
-  
-  // Refs for dynamic background triggers... (omitted but I should keep them)
-  const fadeInRef = useRef<HTMLDivElement>(null);
-  const fadeOutRef = useRef<HTMLDivElement>(null);
+  const [isPreloading, setIsPreloading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
@@ -154,6 +150,63 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     }
   }, [showIntro]);
 
+  // Preloading Logic
+  useEffect(() => {
+    const resources = new Set<string>();
+
+    const extractUrls = (obj: any) => {
+      if (!obj) return;
+      if (typeof obj === 'string') {
+        if (obj.match(/\.(jpeg|jpg|gif|png|webp|svg|mp4|webm|mp3)$/i) || obj.startsWith('http')) {
+          resources.add(obj);
+        }
+      } else if (typeof obj === 'object') {
+        Object.values(obj).forEach(extractUrls);
+      }
+    };
+
+    sections.forEach(s => extractUrls(s.content));
+
+    const resourceArray = Array.from(resources);
+    if (resourceArray.length === 0) {
+      setLoadingProgress(100);
+      setIsPreloading(false);
+      return;
+    }
+
+    let loadedCount = 0;
+    const total = resourceArray.length;
+
+    const onLoad = () => {
+      loadedCount++;
+      setLoadingProgress(Math.round((loadedCount / total) * 100));
+      if (loadedCount >= total) {
+        setTimeout(() => setIsPreloading(false), 500);
+      }
+    };
+
+    resourceArray.forEach(url => {
+      if (url.match(/\.(mp4|webm)$/i)) {
+        const video = document.createElement('video');
+        video.onloadeddata = onLoad;
+        video.onerror = onLoad;
+        video.src = url;
+        video.load();
+      } else if (url.match(/\.(mp3|wav)$/i)) {
+        const audio = new Audio();
+        audio.oncanplaythrough = onLoad;
+        audio.onerror = onLoad;
+        audio.src = url;
+        audio.load();
+      } else {
+        const img = new window.Image();
+        img.onload = onLoad;
+        img.onerror = onLoad;
+        img.src = url;
+      }
+    });
+  }, [sections]);
+
   useEffect(() => {
     if (showIntro && !isPreloading) {
       const timer = setTimeout(() => {
@@ -163,7 +216,8 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     }
   }, [showIntro, isPreloading]);
 
-  // Preloading is completely disabled. State is initialized as false/100 and left unchanged.
+  const fadeInRef = useRef<HTMLDivElement>(null);
+  const fadeOutRef = useRef<HTMLDivElement>(null);
 
   // 1. Separate 'intro' from other sections
   const introSection = sections.find(s => s.type === 'intro');
