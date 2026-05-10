@@ -53,6 +53,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         variant: 'video2',
         isVisible: true,
         content: {
+          src: '/test-resources/video.mp4',
           background: { type: 'none' }
         }
       },

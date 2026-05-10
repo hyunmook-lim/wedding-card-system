@@ -6,6 +6,7 @@ import { ComponentType, useState, useEffect, useRef } from 'react';
 import { SectionProps } from '@/types/wedding';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { PreloadedMediaContext, PreloadedMediaMap } from '@/lib/preloaded-media-context';
 
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
@@ -140,6 +141,12 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   const [showIntro, setShowIntro] = useState(true);
   const [isPreloading, setIsPreloading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  /**
+   * 프리로딩 중 누적용 ref (리렌더 없이 빠르게 쌓음)
+   * 완료 시 preloadedMedia state로 한 번만 스냅샷
+   */
+  const preloadedMediaRef = useRef<PreloadedMediaMap>(new Map());
+  const [preloadedMedia, setPreloadedMedia] = useState<PreloadedMediaMap>(new Map());
 
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
@@ -150,21 +157,32 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     }
   }, [showIntro]);
 
-  // Preloading Logic — intro video + font first, others in background
+  // Preloading Logic — track ALL resources so isPreloading stays true until everything is ready
   useEffect(() => {
     const introSection = sections.find(s => s.type === 'intro');
     const introContent = introSection?.content as Record<string, unknown> | undefined;
     const introVideo: string | undefined =
       (typeof introContent?.introVideo === 'string' ? introContent.introVideo : undefined) ?? '/test-resources/intro.mp4';
 
-    const FONT_URL =
-      'https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff';
+    // --- Collect every URL from all section configs ---
+    const allUrls = new Set<string>();
+    const extractUrls = (obj: unknown) => {
+      if (!obj) return;
+      if (typeof obj === 'string') {
+        if (obj.match(/\.(jpeg|jpg|gif|png|webp|svg|mp4|webm|mp3|wav)$/i)) {
+          allUrls.add(obj);
+        }
+      } else if (typeof obj === 'object') {
+        Object.values(obj as Record<string, unknown>).forEach(extractUrls);
+      }
+    };
+    sections.forEach(s => extractUrls(s.content));
 
-    // --- Priority resources: intro video + font ---
-    const priorityResources: Array<() => Promise<void>> = [];
+    // --- Build unified task list ---
+    const tasks: Array<() => Promise<void>> = [];
 
-    // Font
-    priorityResources.push(
+    // 1. Font
+    tasks.push(
       () =>
         new Promise<void>((resolve) => {
           if (document.fonts) {
@@ -175,23 +193,78 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         })
     );
 
-    // Intro video
+    // 2. Intro video (highest priority — but still counted in the same list)
     if (introVideo) {
-      priorityResources.push(
+      tasks.push(
         () =>
           new Promise<void>((resolve) => {
             const video = document.createElement('video');
-            video.onloadeddata = () => resolve();
+            video.oncanplaythrough = () => resolve();
             video.onerror = () => resolve();
+            video.preload = 'auto';
             video.src = introVideo;
             video.load();
           })
       );
     }
 
+    // 3. All other media from sections
+    allUrls.forEach(url => {
+      if (url === introVideo) return; // already added above
+      if (url.match(/\.(mp4|webm)$/i)) {
+        tasks.push(
+          () =>
+            new Promise<void>((resolve) => {
+              const v = document.createElement('video');
+              v.muted = true;
+              v.playsInline = true;
+              v.preload = 'auto';
+              // 스타일을 미리 설정 → VideoGreeting2에서 뮤테이션 불필요
+              v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+              v.oncanplaythrough = () => {
+                preloadedMediaRef.current.set(url, v);
+                resolve();
+              };
+              v.onerror = () => resolve();
+              v.src = url;
+              v.load();
+            })
+        );
+      } else if (url.match(/\.(mp3|wav)$/i)) {
+        tasks.push(
+          () =>
+            new Promise<void>((resolve) => {
+              const a = new Audio();
+              a.oncanplaythrough = () => resolve();
+              a.onerror = () => resolve();
+              a.preload = 'auto';
+              a.src = url;
+              a.load();
+            })
+        );
+      } else {
+        tasks.push(
+          () =>
+            new Promise<void>((resolve) => {
+              const img = new window.Image();
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+              img.src = url;
+            })
+        );
+      }
+    });
+
+    // --- Run all tasks in parallel and track progress ---
+    const total = tasks.length;
+    if (total === 0) {
+      setLoadingProgress(100);
+      setTimeout(() => setIsPreloading(false), 300);
+      return;
+    }
+
     let completed = 0;
-    const total = priorityResources.length;
-    const onOnePriorityDone = () => {
+    const onOneDone = () => {
       completed++;
       setLoadingProgress(Math.round((completed / total) * 100));
       if (completed >= total) {
@@ -199,34 +272,15 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       }
     };
 
-    priorityResources.forEach(task => task().then(onOnePriorityDone));
+    tasks.forEach(task => task().then(onOneDone));
 
-    // --- Background resources: everything else ---
-    const allUrls = new Set<string>();
-    const extractUrls = (obj: unknown) => {
-      if (!obj) return;
-      if (typeof obj === 'string') {
-        if (obj.match(/\.(jpeg|jpg|gif|png|webp|svg|mp4|webm|mp3)$/i) || obj.startsWith('http')) {
-          allUrls.add(obj);
-        }
-      } else if (typeof obj === 'object') {
-        Object.values(obj).forEach(extractUrls);
-      }
-    };
-    sections.forEach(s => extractUrls(s.content));
-
-    allUrls.forEach(url => {
-      if (url === introVideo || url === FONT_URL) return; // already handled
-      if (url.match(/\.(mp4|webm)$/i)) {
-        const v = document.createElement('video');
-        v.src = url; v.load();
-      } else if (url.match(/\.(mp3|wav)$/i)) {
-        const a = new Audio(); a.src = url; a.load();
-      } else {
-        const img = new window.Image(); img.src = url;
-      }
+    // 프리로딩 완료 시 ref → state 스냅샷 (Provider에 새 Map 인스턴스 전달)
+    // setIsPreloading 이후에 실행되도록 tasks 완료 후 동일 타이밍에 실행
+    Promise.all(tasks.map(t => t())).catch(() => {}).finally(() => {
+      setPreloadedMedia(new Map(preloadedMediaRef.current));
     });
   }, [sections]);
+
 
   useEffect(() => {
     if (showIntro && !isPreloading) {
@@ -284,62 +338,64 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   };
 
   return (
-    <main className={cn(
-      "w-full max-w-md mx-auto min-h-screen shadow-xl relative transition-colors duration-500",
-      showIntro ? "bg-white" : "bg-transparent"
-    )}>
-      
-      {/* Render Intro Overlay */}
-      {renderIntro()}
+    <PreloadedMediaContext.Provider value={preloadedMedia}>
+      <main className={cn(
+        "w-full max-w-md mx-auto min-h-screen shadow-xl relative transition-colors duration-500",
+        showIntro ? "bg-white" : "bg-transparent"
+      )}>
 
-      {/* Dynamic Global Background (Render only after intro) */}
-      {!showIntro && (
-        <AdaptiveBackground 
-          fadeInTargetRef={fadeInRef} 
-          fadeOutTargetRef={fadeOutRef} 
-        />
-      )}
+        {/* Render Intro Overlay */}
+        {renderIntro()}
 
-      {/* Render Main Content (Render only after intro) */}
-      {!showIntro && (
-        <div className="animate-in fade-in duration-1000">
-          {otherSections.map((section, index) => {
-            if (!section.isVisible) return null;
+        {/* Dynamic Global Background (Render only after intro) */}
+        {!showIntro && (
+          <AdaptiveBackground
+            fadeInTargetRef={fadeInRef}
+            fadeOutTargetRef={fadeOutRef}
+          />
+        )}
 
-            const componentMap = SECTION_COMPONENTS[section.type];
-            if (!componentMap) return null;
+        {/* Render Main Content (only after intro) */}
+        {!showIntro && (
+          <div className="animate-in fade-in duration-1000">
+            {otherSections.map((section, index) => {
+              if (!section.isVisible) return null;
 
-            const Component = componentMap[section.variant] || componentMap['basic'];
-            if (!Component) return null;
+              const componentMap = SECTION_COMPONENTS[section.type];
+              if (!componentMap) return null;
 
-        const isLast = section.id === lastSectionId;
-        const definedHeight = SECTION_HEIGHTS[section.type]?.[section.variant];
-        const height = isLast 
-          ? (definedHeight || '100dvh') 
-          : (definedHeight || '800px');
+              const Component = componentMap[section.variant] || componentMap['basic'];
+              if (!Component) return null;
 
-        return (
-          <SectionDebugWrapper key={section.id} type={section.type} index={index}>
-            <div ref={section.id === 'sec_memories' ? fadeInRef : section.id === 'sec_8' ? fadeOutRef : null}>
-              <StickySection 
-                  index={index} 
-                  height={height}
-                  background={section.content.background as BackgroundConfig}
-                  isSticky={section.content.isSticky !== false}
-              >
-                <Component 
-                    config={section.content} 
-                    isVisible={section.isVisible} 
-                />
-              </StickySection>
-            </div>
-          </SectionDebugWrapper>
-        );
-      })}
-      </div>
-      )}
+              const isLast = section.id === lastSectionId;
+              const definedHeight = SECTION_HEIGHTS[section.type]?.[section.variant];
+              const height = isLast
+                ? (definedHeight || '100dvh')
+                : (definedHeight || '800px');
 
-    </main>
+              return (
+                <SectionDebugWrapper key={section.id} type={section.type} index={index}>
+                  <div ref={section.id === 'sec_memories' ? fadeInRef : section.id === 'sec_8' ? fadeOutRef : null}>
+                    <StickySection
+                      index={index}
+                      height={height}
+                      background={section.content.background as BackgroundConfig}
+                      isSticky={section.content.isSticky !== false}
+                    >
+                      <Component
+                        config={section.content}
+                        isVisible={section.isVisible}
+                      />
+                    </StickySection>
+                  </div>
+                </SectionDebugWrapper>
+              );
+            })}
+          </div>
+        )}
+
+      </main>
+    </PreloadedMediaContext.Provider>
   );
 }
 
