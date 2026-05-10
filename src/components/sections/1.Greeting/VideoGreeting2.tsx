@@ -6,20 +6,21 @@ import { cn } from '@/lib/utils';
 import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate } from 'framer-motion';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
-import { usePreloadedVideo } from '@/lib/preloaded-media-context';
+import { usePreloadedVideo, useIntroFaded } from '@/lib/preloaded-media-context';
 
 export default function VideoGreeting2({ config, isVisible }: SectionProps) {
   const { src: videoSrc = '/test-resources/video.mp4' } = config as { src?: string };
 
-  // Context에서 프리로드된 HTMLVideoElement 객체를 가져옴
+  // Context: 프리로드된 video 객체 + MainIntro 페이드아웃 완료 여부
   const preloadedVideo = usePreloadedVideo(videoSrc);
+  const introFadedOut = useIntroFaded();
 
-  // 프리로드 객체가 없을 때 fallback으로 사용하는 <video> 태그 ref
-  const fallbackVideoRef = useRef<HTMLVideoElement>(null);
-  // 실제로 제어에 사용하는 ref (preloaded or fallback)
+  // 실제 제어용 ref (preloaded or fallback 모두 이걸로 접근)
   const videoRef = useRef<HTMLVideoElement | null>(null);
   // 프리로드된 video 엘리먼트를 삽입할 컨테이너
   const videoContainerRef = useRef<HTMLDivElement>(null);
+  // 프리로드 없을 때 fallback <video> 태그 ref
+  const fallbackVideoRef = useRef<HTMLVideoElement>(null);
 
   const [hasEnded, setHasEnded] = useState(false);
   const scrollRef = useStickyScrollRef();
@@ -39,29 +40,23 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     [scrollYProgress, endProgress],
     ([s, e]: number[]) => `blur(${Math.min(Math.max((s as number) / 0.3, e as number) * 20, 20)}px)`
   );
-
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
-  // ── 케이스 A: 프리로드된 video 객체가 있을 때 ──────────────────────────
-  // 직접 DOM에 appendChild → 버퍼가 그대로 유지되어 즉시 재생 가능
+  // ── Effect A: 프리로드 객체를 DOM에 마운트 + ended 핸들러 등록 ──────────
+  // play()는 여기서 호출하지 않음 — introFadedOut이 true가 될 때까지 대기
   useEffect(() => {
     const container = videoContainerRef.current;
     const video = preloadedVideo;
     if (!container || !video) return;
 
-    // videoRef를 프리로드 객체로 연결
     videoRef.current = video;
     container.appendChild(video);
 
-    // ended 이벤트 핸들러
     const handleEnded = () => {
       setHasEnded(true);
       animate(endProgress, 1, { duration: 1.0, ease: 'easeInOut' });
     };
     video.addEventListener('ended', handleEnded);
-
-    // 버퍼가 이미 채워져 있으므로 딜레이 없이 즉시 재생
-    video.play().catch((err) => console.warn('VideoGreeting2 preloaded play error:', err));
 
     return () => {
       video.removeEventListener('ended', handleEnded);
@@ -71,9 +66,9 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     };
   }, [preloadedVideo, endProgress]);
 
-  // ── 케이스 B: 프리로드 없을 때 fallback <video> 태그로 재생 ─────────────
+  // ── Effect B: fallback <video> 태그 설정 (프리로드 없을 때) ────────────
   useEffect(() => {
-    if (preloadedVideo) return; // 케이스 A가 처리
+    if (preloadedVideo) return; // Effect A가 처리
     const video = fallbackVideoRef.current;
     if (!video) return;
 
@@ -85,16 +80,19 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     };
     video.addEventListener('ended', handleEnded);
 
-    // fallback은 네트워크 요청이 필요하므로 약간의 여유 딜레이
-    const timer = setTimeout(() => {
-      video.play().catch((err) => console.warn('VideoGreeting2 fallback play error:', err));
-    }, 300);
-
     return () => {
       video.removeEventListener('ended', handleEnded);
-      clearTimeout(timer);
     };
   }, [preloadedVideo, endProgress]);
+
+  // ── Effect C: MainIntro가 완전히 사라진 후 재생 ────────────────────────
+  // introFadedOut이 true가 되는 시점 = AnimatePresence onExitComplete 콜백
+  useEffect(() => {
+    if (!introFadedOut) return;
+    const video = videoRef.current;
+    if (!video) return;
+    video.play().catch((err) => console.warn('VideoGreeting2 play error:', err));
+  }, [introFadedOut]);
 
   if (!isVisible) return null;
 
@@ -107,7 +105,7 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
         {/* 프리로드 객체 삽입 컨테이너 */}
         <div ref={videoContainerRef} className="absolute inset-0 w-full h-full" />
 
-        {/* 프리로드 객체가 없을 때 fallback <video> 태그 */}
+        {/* fallback: 프리로드 객체가 없을 때 */}
         {!preloadedVideo && (
           <video
             ref={fallbackVideoRef}

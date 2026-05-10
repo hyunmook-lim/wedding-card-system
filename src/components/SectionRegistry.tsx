@@ -6,7 +6,7 @@ import { ComponentType, useState, useEffect, useRef } from 'react';
 import { SectionProps } from '@/types/wedding';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { PreloadedMediaContext, PreloadedMediaMap } from '@/lib/preloaded-media-context';
+import { PreloadedMediaContext, PreloadedMediaMap, IntroFadedContext } from '@/lib/preloaded-media-context';
 
 // Lazy load components
 const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
@@ -147,6 +147,8 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
    */
   const preloadedMediaRef = useRef<PreloadedMediaMap>(new Map());
   const [preloadedMedia, setPreloadedMedia] = useState<PreloadedMediaMap>(new Map());
+  /** MainIntro exit 애니메이션 완전 종료 여부 */
+  const [introFadedOut, setIntroFadedOut] = useState(false);
 
   // Intro 표시 중일 때 body 스크롤 차단
   useEffect(() => {
@@ -314,23 +316,23 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     if (!Component) return null;
 
     return (
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={() => setIntroFadedOut(true)}>
         {showIntro && (
-          <motion.div 
+          <motion.div
             key="intro-overlay"
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
             className="absolute inset-0 z-[100]"
           >
-             <Component 
-                key={introSection.id}
-                config={introSection.content}
-                isVisible={introSection.isVisible}
-                onEnter={() => setShowIntro(false)}
-                isPreloading={isPreloading}
-                loadingProgress={loadingProgress}
-             />
+            <Component
+              key={introSection.id}
+              config={introSection.content}
+              isVisible={introSection.isVisible}
+              onEnter={() => setShowIntro(false)}
+              isPreloading={isPreloading}
+              loadingProgress={loadingProgress}
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -338,8 +340,9 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   };
 
   return (
-    <PreloadedMediaContext.Provider value={preloadedMedia}>
-      <main className={cn(
+    <IntroFadedContext.Provider value={introFadedOut}>
+      <PreloadedMediaContext.Provider value={preloadedMedia}>
+        <main className={cn(
         "w-full max-w-md mx-auto min-h-screen shadow-xl relative transition-colors duration-500",
         showIntro ? "bg-white" : "bg-transparent"
       )}>
@@ -395,7 +398,8 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         )}
 
       </main>
-    </PreloadedMediaContext.Provider>
+      </PreloadedMediaContext.Provider>
+    </IntroFadedContext.Provider>
   );
 }
 
