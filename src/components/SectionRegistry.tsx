@@ -150,71 +150,96 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     }
   }, [showIntro]);
 
-  // Preloading Logic
+  // Preloading Logic — intro video + font first, others in background
   useEffect(() => {
-    const resources = new Set<string>();
+    const introSection = sections.find(s => s.type === 'intro');
+    const introContent = introSection?.content as Record<string, unknown> | undefined;
+    const introVideo: string | undefined =
+      (typeof introContent?.introVideo === 'string' ? introContent.introVideo : undefined) ?? '/test-resources/intro.mp4';
 
-    const extractUrls = (obj: any) => {
+    const FONT_URL =
+      'https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff';
+
+    // --- Priority resources: intro video + font ---
+    const priorityResources: Array<() => Promise<void>> = [];
+
+    // Font
+    priorityResources.push(
+      () =>
+        new Promise<void>((resolve) => {
+          if (document.fonts) {
+            document.fonts.load('16px GowunDodum').then(() => resolve()).catch(() => resolve());
+          } else {
+            resolve();
+          }
+        })
+    );
+
+    // Intro video
+    if (introVideo) {
+      priorityResources.push(
+        () =>
+          new Promise<void>((resolve) => {
+            const video = document.createElement('video');
+            video.onloadeddata = () => resolve();
+            video.onerror = () => resolve();
+            video.src = introVideo;
+            video.load();
+          })
+      );
+    }
+
+    let completed = 0;
+    const total = priorityResources.length;
+    const onOnePriorityDone = () => {
+      completed++;
+      setLoadingProgress(Math.round((completed / total) * 100));
+      if (completed >= total) {
+        setTimeout(() => setIsPreloading(false), 300);
+      }
+    };
+
+    priorityResources.forEach(task => task().then(onOnePriorityDone));
+
+    // --- Background resources: everything else ---
+    const allUrls = new Set<string>();
+    const extractUrls = (obj: unknown) => {
       if (!obj) return;
       if (typeof obj === 'string') {
         if (obj.match(/\.(jpeg|jpg|gif|png|webp|svg|mp4|webm|mp3)$/i) || obj.startsWith('http')) {
-          resources.add(obj);
+          allUrls.add(obj);
         }
       } else if (typeof obj === 'object') {
         Object.values(obj).forEach(extractUrls);
       }
     };
-
     sections.forEach(s => extractUrls(s.content));
 
-    const resourceArray = Array.from(resources);
-    if (resourceArray.length === 0) {
-      setLoadingProgress(100);
-      setIsPreloading(false);
-      return;
-    }
-
-    let loadedCount = 0;
-    const total = resourceArray.length;
-
-    const onLoad = () => {
-      loadedCount++;
-      setLoadingProgress(Math.round((loadedCount / total) * 100));
-      if (loadedCount >= total) {
-        setTimeout(() => setIsPreloading(false), 500);
-      }
-    };
-
-    resourceArray.forEach(url => {
+    allUrls.forEach(url => {
+      if (url === introVideo || url === FONT_URL) return; // already handled
       if (url.match(/\.(mp4|webm)$/i)) {
-        const video = document.createElement('video');
-        video.onloadeddata = onLoad;
-        video.onerror = onLoad;
-        video.src = url;
-        video.load();
+        const v = document.createElement('video');
+        v.src = url; v.load();
       } else if (url.match(/\.(mp3|wav)$/i)) {
-        const audio = new Audio();
-        audio.oncanplaythrough = onLoad;
-        audio.onerror = onLoad;
-        audio.src = url;
-        audio.load();
+        const a = new Audio(); a.src = url; a.load();
       } else {
-        const img = new window.Image();
-        img.onload = onLoad;
-        img.onerror = onLoad;
-        img.src = url;
+        const img = new window.Image(); img.src = url;
       }
     });
   }, [sections]);
 
   useEffect(() => {
     if (showIntro && !isPreloading) {
+      const introSection = sections.find(s => s.type === 'intro');
+      const isVideoIntro = introSection?.variant === 'video';
+      // 비디오 인트로: 로딩 완료 직후 전환 / 기본 인트로: 6초 애니메이션 대기
+      const delay = isVideoIntro ? 1500 : 6000;
       const timer = setTimeout(() => {
         setShowIntro(false);
-      }, 6000); // 6초로 늘려 BasicIntro 애니메이션이 잘리지 않도록 보호
+      }, delay);
       return () => clearTimeout(timer);
     }
-  }, [showIntro, isPreloading]);
+  }, [showIntro, isPreloading, sections]);
 
   const fadeInRef = useRef<HTMLDivElement>(null);
   const fadeOutRef = useRef<HTMLDivElement>(null);

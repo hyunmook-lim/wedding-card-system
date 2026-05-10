@@ -1,10 +1,28 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { SectionProps } from '@/types/wedding';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const LOADING_MESSAGES = [
+    "신부가 드레스를 고르는 중...",
+    "신랑이 정장을 맞추는 중...",
+    "웨딩홀에 꽃장식을 하는 중...",
+    "신부가 메이크업을 받는 중...",
+    "맛있는 식사를 준비하는 중..."
+];
+
 export default function MainIntro({ config, isVisible, onEnter, isPreloading, loadingProgress }: SectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [messageIndex, setMessageIndex] = useState(0);
+
+  useEffect(() => {
+    if (isPreloading) {
+      const interval = setInterval(() => {
+        setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isPreloading]);
 
   useEffect(() => {
     if (isVisible && videoRef.current) {
@@ -81,8 +99,19 @@ export default function MainIntro({ config, isVisible, onEnter, isPreloading, lo
                                 transition={{ ease: "easeOut", duration: 0.3 }}
                             />
                         </motion.div>
-                        <div className="mt-4 text-[10px] text-white/80 font-light tracking-[0.2em] drop-shadow-md">
-                            초대장을 준비하고 있습니다
+                        <div className="mt-6 h-8 relative overflow-hidden flex items-center justify-center w-full">
+                            <AnimatePresence mode="popLayout">
+                                <motion.div
+                                    key={messageIndex}
+                                    initial={{ y: 15, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: -15, opacity: 0 }}
+                                    transition={{ duration: 0.5, ease: "easeOut" }}
+                                    className="absolute text-[11px] text-white font-medium tracking-[0.1em] whitespace-nowrap px-4 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 shadow-lg"
+                                >
+                                    {LOADING_MESSAGES[messageIndex]}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 )}
