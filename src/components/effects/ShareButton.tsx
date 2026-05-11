@@ -22,10 +22,11 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    const currentUrl = typeof window !== 'undefined' ? `${window.location.origin}/${weddingId}` : '';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const currentUrl = `${baseUrl}/${weddingId}`;
     
     // Set requested image
-    const imageUrl = `${window.location.origin}/test-resources/openimage.jpeg`;
+    const imageUrl = `${baseUrl}/test-resources/openimage.jpeg`;
 
     // Format date and time (e.g. 2026.07.25 11:00)
     const dateObj = new Date(weddingData.event.date);
