@@ -210,6 +210,34 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       );
     }
 
+    // 2.5. Image Sequence Frames (MainIntro & VideoGreeting2)
+    // MainIntro frames
+    for (let i = 1; i <= 45; i++) {
+      const frameNum = String(i).padStart(4, '0');
+      const url = `/test-resources/ImageToStl.com_intro/frame_${frameNum}.jpg`;
+      tasks.push(
+        () => new Promise<void>((resolve) => {
+          const img = new window.Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+          img.src = url;
+        })
+      );
+    }
+    // VideoGreeting2 frames
+    for (let i = 1; i <= 73; i++) {
+      const frameNum = String(i).padStart(4, '0');
+      const url = `/test-resources/ImageToStl.com_video/frame_${frameNum}.jpg`;
+      tasks.push(
+        () => new Promise<void>((resolve) => {
+          const img = new window.Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+          img.src = url;
+        })
+      );
+    }
+
     // 3. All other media from sections
     allUrls.forEach(url => {
       if (url === introVideo) return; // already added above

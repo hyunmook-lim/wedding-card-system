@@ -2,7 +2,6 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { SectionProps } from '@/types/wedding';
-import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const LOADING_MESSAGES = [
@@ -13,11 +12,17 @@ const LOADING_MESSAGES = [
     "맛있는 식사를 준비하는 중..."
 ];
 
-export default function MainIntro({ config, isVisible, onEnter, isPreloading, loadingProgress }: SectionProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [messageIndex, setMessageIndex] = useState(0);
+const TOTAL_FRAMES = 45;
+const FRAME_RATE = 20; // 45프레임 -> 약 2.2초
+const FRAME_PATH = '/test-resources/ImageToStl.com_intro';
 
+export default function MainIntro({ isVisible, onEnter, isPreloading, loadingProgress }: SectionProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const framesRef = useRef<HTMLImageElement[]>([]);
+  const [messageIndex, setMessageIndex] = useState(0);
+  const [isIntroLoaded, setIsIntroLoaded] = useState(false);
+
+  // 1. 메시지 루프
   useEffect(() => {
     if (isPreloading) {
       const interval = setInterval(() => {
@@ -27,100 +32,109 @@ export default function MainIntro({ config, isVisible, onEnter, isPreloading, lo
     }
   }, [isPreloading]);
 
-  // Canvas Rendering Loop
   useEffect(() => {
-    const video = videoRef.current;
+    let loadedCount = 0;
+    const handleLoad = () => {
+      loadedCount++;
+      if (loadedCount === TOTAL_FRAMES) {
+        setIsIntroLoaded(true);
+      }
+    };
+
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      const img = new window.Image();
+      const frameNum = String(i).padStart(4, '0');
+      img.onload = handleLoad;
+      img.onerror = handleLoad; // 에러 발생 시에도 카운트 올려서 멈춤 방지
+      img.src = `${FRAME_PATH}/frame_${frameNum}.jpg`;
+      framesRef.current[i] = img;
+    }
+  }, []);
+
+  // 3. 첫 프레임 미리 그리기 (Poster 역할)
+  useEffect(() => {
+    if (!isVisible) return;
     const canvas = canvasRef.current;
-    if (!video || !canvas) return;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+
+    const drawFirst = () => {
+      // 애니메이션이 이미 시작되었거나 로딩이 완료되어 루프가 돌 예정이면 중단
+      if (isIntroLoaded) return;
+      
+      const firstImg = framesRef.current[1];
+      if (firstImg && firstImg.complete) {
+        if (canvas.width !== firstImg.naturalWidth || canvas.height !== firstImg.naturalHeight) {
+          canvas.width = firstImg.naturalWidth;
+          canvas.height = firstImg.naturalHeight;
+        }
+        ctx.drawImage(firstImg, 0, 0);
+      }
+    };
+
+    const timer = setInterval(drawFirst, 100);
+    return () => clearInterval(timer);
+  }, [isVisible, isIntroLoaded]);
+
+  // 4. 캔버스 렌더링 루프 (Image Sequence)
+  useEffect(() => {
+    if (!isVisible || !isIntroLoaded) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     let animationFrameId: number;
+    let startTime: number | null = null;
 
-    const render = () => {
-      if (video.readyState >= 2) {
-        const vWidth = video.videoWidth;
-        const vHeight = video.videoHeight;
-
-        if (vWidth > 0 && vHeight > 0) {
-          // 캔버스 내부 해상도를 비디오 원본 크기에 맞춤
-          if (canvas.width !== vWidth || canvas.height !== vHeight) {
-            canvas.width = vWidth;
-            canvas.height = vHeight;
-          }
-          ctx.drawImage(video, 0, 0, vWidth, vHeight);
+    const render = (time: number) => {
+      if (!startTime) startTime = time;
+      const elapsed = time - startTime;
+      
+      const frameIndex = Math.min(
+        Math.floor((elapsed / 1000) * FRAME_RATE) + 1, 
+        TOTAL_FRAMES
+      );
+      
+      const img = framesRef.current[frameIndex];
+      if (img && img.complete) {
+        if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
         }
+        ctx.drawImage(img, 0, 0);
       }
-      animationFrameId = requestAnimationFrame(render);
+
+      if (frameIndex < TOTAL_FRAMES) {
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        // 마지막 프레임에서 정지
+        cancelAnimationFrame(animationFrameId);
+      }
     };
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [isVisible]);
-
-  useEffect(() => {
-    if (isVisible && videoRef.current) {
-      const playVideo = async () => {
-        try {
-          if (videoRef.current) {
-            await videoRef.current.play();
-          }
-        } catch (error) {
-          console.warn("Video auto-play failed. Retrying on interaction:", error);
-          const handleFirstClick = () => {
-            videoRef.current?.play().catch(() => {});
-            window.removeEventListener('click', handleFirstClick);
-            window.removeEventListener('touchstart', handleFirstClick);
-          };
-          window.addEventListener('click', handleFirstClick);
-          window.addEventListener('touchstart', handleFirstClick);
-        }
-      };
-
-      playVideo();
-    }
-  }, [isVisible]);
+  }, [isVisible, isIntroLoaded]);
 
   if (!isVisible) return null;
   
-  const { mainImage, introVideo = '/test-resources/intro.mp4' } = config as { mainImage?: string; introVideo?: string; title?: string };
-
   return (
     <section 
       className="w-full h-[100lvh] flex flex-col items-center justify-center cursor-pointer overflow-hidden bg-white"
       onClick={onEnter}
     >
         <div className="relative w-full h-full">
-            {introVideo ? (
-                <>
-                    <video
-                        ref={videoRef}
-                        src={introVideo}
-                        autoPlay
-                        muted
-                        playsInline
-                        preload="auto"
-                        onLoadedData={() => videoRef.current?.play().catch(() => {})}
-                        className="opacity-0 absolute pointer-events-none w-0 h-0" // display: none 대신 opacity-0 사용하여 브라우저 최적화 방지
-                    />
-                    <canvas 
-                        ref={canvasRef}
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                </>
-            ) : mainImage ? (
-                <Image
-                    src={mainImage}
-                    alt="Main Cover"
-                    fill
-                    className="object-cover"
-                    priority
-                />
-            ) : null}
+            <canvas 
+                ref={canvasRef}
+                className="absolute inset-0 w-full h-full object-cover"
+            />
 
             {/* Loading Overlay */}
             <AnimatePresence mode="wait">

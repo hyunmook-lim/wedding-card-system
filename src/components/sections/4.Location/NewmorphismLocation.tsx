@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 // Icons object removed as we are now using external SVG assets.
 
-export default function NewmorphismLocation({ isVisible }: SectionProps) {
+export default function NewmorphismLocation({ config, isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const { scrollYProgress: inViewProgress } = useScroll({
     target: scrollRef || undefined,
@@ -79,6 +79,7 @@ export default function NewmorphismLocation({ isVisible }: SectionProps) {
   };
 
   if (!isVisible) return null;
+  const { location } = config as { location: { name: string; address: string; mapUrl?: string } };
 
   return (
     <section ref={scrollRef} className="relative w-full min-h-[100svh] flex flex-col items-center justify-center py-20 overflow-hidden">
@@ -157,7 +158,7 @@ export default function NewmorphismLocation({ isVisible }: SectionProps) {
             {[ 
               { title: "지하철", content: "2호선 강남역 1번 출구 도보 5분", icon: "/test-resources/location/subway.svg" },
               { title: "버스", content: "146, 341, 740, 421 하차", icon: "/test-resources/location/bus.svg" },
-              { title: "자가용", content: "네비게이션 '서울 웨딩홀' 검색", sub: "(주차 2시간 무료)", icon: "/test-resources/location/car.svg" }
+              { title: "자가용", content: `네비게이션 '${location?.name || "식장"}' 검색`, sub: "(주차 2시간 무료)", icon: "/test-resources/location/car.svg" }
             ].map((info, idx) => (
               <div
                 key={info.title}

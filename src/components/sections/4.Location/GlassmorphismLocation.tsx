@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { LiquidGlassWidget } from '@/components/ui/LiquidGlassWidget';
 
-export default function GlassmorphismLocation({ isVisible }: SectionProps) {
+export default function GlassmorphismLocation({ config, isVisible }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const { scrollYProgress: inViewProgress } = useScroll({
     target: scrollRef || undefined,
@@ -41,10 +41,14 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
     });
   });
 
+  if (!isVisible) return null;
+
+  const { location } = config as { location: { name: string; address: string; mapUrl?: string } };
+
   const transportation = [ 
     { title: "지하철", content: "학동역 10번 출구", icon: "/test-resources/location/subway.svg" },
     { title: "셔틀버스", content: "학동역 10번 출구 좌측에서 셔틀 대기", sub: "(10~15분 간격으로 탑승 가능 하시며,\n3분 정도 소요 됩니다.)", icon: "/test-resources/location/bus.svg" },
-    { title: "자가용", content: "네비게이션 '토브헤세드' 검색", sub: "(주차 3시간 무료)\n만차 시 인근주차장 정보\n- 언주로147길 노상공영주차장(4,800원)\n- 연승빌딩주차장(3,000원)", icon: "/test-resources/location/car.svg" }
+    { title: "자가용", content: `네비게이션 '${location?.name || "토브헤세드"}' 검색`, sub: "(주차 3시간 무료)\n만차 시 인근주차장 정보\n- 언주로147길 노상공영주차장(4,800원)\n- 연승빌딩주차장(3,000원)", icon: "/test-resources/location/car.svg" }
   ];
 
   const fadeInUp: Variants = {
@@ -58,8 +62,6 @@ export default function GlassmorphismLocation({ isVisible }: SectionProps) {
       }
     }
   };
-
-  if (!isVisible) return null;
 
   return (
     <section ref={scrollRef} className="relative w-full flex flex-col items-center justify-center py-20 overflow-hidden">

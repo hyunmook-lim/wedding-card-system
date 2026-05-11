@@ -6,22 +6,20 @@ import { cn } from '@/lib/utils';
 import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate } from 'framer-motion';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
-import { usePreloadedVideo, useIntroFaded } from '@/lib/preloaded-media-context';
+import { useIntroFaded } from '@/lib/preloaded-media-context';
 
-export default function VideoGreeting2({ config, isVisible }: SectionProps) {
-  const { src: videoSrc = '/test-resources/video.mp4' } = config as { src?: string };
+const TOTAL_FRAMES = 73;
+const FRAME_RATE = 25; // 약 3초 분량 (73프레임 / 25fps)
+const FRAME_PATH = '/test-resources/ImageToStl.com_video';
 
-  const preloadedVideo = usePreloadedVideo(videoSrc);
+export default function VideoGreeting2({ isVisible }: SectionProps) {
   const introFadedOut = useIntroFaded();
-
-  const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const videoContainerRef = useRef<HTMLDivElement>(null);
-  const fallbackVideoRef = useRef<HTMLVideoElement>(null);
-
+  const framesRef = useRef<HTMLImageElement[]>([]);
   const [hasEnded, setHasEnded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  
   const scrollRef = useStickyScrollRef();
-
   const { scrollYProgress } = useScroll({
     target: scrollRef as React.RefObject<HTMLElement> | undefined,
     offset: ['start start', 'end start'],
@@ -39,8 +37,55 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
   );
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
-  // Canvas Rendering Loop
   useEffect(() => {
+    let loadedCount = 0;
+    const handleLoad = () => {
+      loadedCount++;
+      if (loadedCount === TOTAL_FRAMES) {
+        setIsLoaded(true);
+      }
+    };
+
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      const img = new window.Image();
+      const frameNum = String(i).padStart(4, '0');
+      img.onload = handleLoad;
+      img.onerror = handleLoad;
+      img.src = `${FRAME_PATH}/frame_${frameNum}.jpg`;
+      framesRef.current[i] = img;
+    }
+  }, []);
+
+  // 1.5 첫 프레임 미리 그리기 (Poster 역할)
+  useEffect(() => {
+    if (!isVisible) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+
+    const drawFirst = () => {
+      // 로딩이 완료되고 인트로가 끝나서 재생 루프가 시작될 상황이면 중단
+      if (isLoaded && introFadedOut) return;
+
+      const firstImg = framesRef.current[1];
+      if (firstImg && firstImg.complete) {
+        if (canvas.width !== firstImg.naturalWidth || canvas.height !== firstImg.naturalHeight) {
+          canvas.width = firstImg.naturalWidth;
+          canvas.height = firstImg.naturalHeight;
+        }
+        ctx.drawImage(firstImg, 0, 0);
+      }
+    };
+
+    const timer = setInterval(drawFirst, 100);
+    return () => clearInterval(timer);
+  }, [isVisible, isLoaded, introFadedOut]);
+
+  // 2. 캔버스 렌더링 루프 (Image Sequence)
+  useEffect(() => {
+    if (!introFadedOut || !isLoaded) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -48,80 +93,43 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     if (!ctx) return;
 
     let animationFrameId: number;
+    let startTime: number | null = null;
 
-    const render = () => {
-      const video = videoRef.current;
-      if (video && video.readyState >= 2) {
-        const vWidth = video.videoWidth;
-        const vHeight = video.videoHeight;
-
-        if (vWidth > 0 && vHeight > 0) {
-          if (canvas.width !== vWidth || canvas.height !== vHeight) {
-            canvas.width = vWidth;
-            canvas.height = vHeight;
-          }
-          ctx.drawImage(video, 0, 0, vWidth, vHeight);
+    const render = (time: number) => {
+      if (!startTime) startTime = time;
+      const elapsed = time - startTime;
+      
+      // 현재 프레임 계산
+      const frameIndex = Math.min(
+        Math.floor((elapsed / 1000) * FRAME_RATE) + 1, 
+        TOTAL_FRAMES
+      );
+      
+      const img = framesRef.current[frameIndex];
+      if (img && img.complete) {
+        // 캔버스 크기 조정 (첫 프레임 기준)
+        if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
         }
+        ctx.drawImage(img, 0, 0);
       }
-      animationFrameId = requestAnimationFrame(render);
+
+      if (frameIndex < TOTAL_FRAMES) {
+        animationFrameId = requestAnimationFrame(render);
+      } else {
+        // 재생 완료
+        setHasEnded(true);
+        animate(endProgress, 1, { duration: 1.0, ease: 'easeInOut' });
+      }
     };
 
-    render();
+    animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [preloadedVideo]);
-
-  // ── Effect A: 프리로드 객체를 DOM에 마운트 + ended 핸들러 등록 ──────────
-  useEffect(() => {
-    const container = videoContainerRef.current;
-    const video = preloadedVideo;
-    if (!container || !video) return;
-
-    videoRef.current = video;
-    container.appendChild(video);
-
-    const handleEnded = () => {
-      setHasEnded(true);
-      animate(endProgress, 1, { duration: 1.0, ease: 'easeInOut' });
-    };
-    video.addEventListener('ended', handleEnded);
-
-    return () => {
-      video.removeEventListener('ended', handleEnded);
-      video.pause();
-      if (container.contains(video)) container.removeChild(video);
-      videoRef.current = null;
-    };
-  }, [preloadedVideo, endProgress]);
-
-  // ── Effect B: fallback <video> 태그 설정 (프리로드 없을 때) ────────────
-  useEffect(() => {
-    if (preloadedVideo) return; 
-    const video = fallbackVideoRef.current;
-    if (!video) return;
-
-    videoRef.current = video;
-
-    const handleEnded = () => {
-      setHasEnded(true);
-      animate(endProgress, 1, { duration: 1.0, ease: 'easeInOut' });
-    };
-    video.addEventListener('ended', handleEnded);
-
-    return () => {
-      video.removeEventListener('ended', handleEnded);
-    };
-  }, [preloadedVideo, endProgress]);
-
-  // ── Effect C: MainIntro가 완전히 사라진 후 재생 ────────────────────────
-  useEffect(() => {
-    if (!introFadedOut) return;
-    const video = videoRef.current;
-    if (!video) return;
-    video.play().catch((err) => console.warn('VideoGreeting2 play error:', err));
-  }, [introFadedOut]);
+  }, [introFadedOut, isLoaded, endProgress]);
 
   if (!isVisible) return null;
 
@@ -131,26 +139,11 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
         className="absolute inset-0 w-full h-full bg-white"
         style={{ opacity: videoOpacity, filter: videoBlur, willChange: 'opacity, filter' }}
       >
-        {/* Canvas for rendering */}
+        {/* Canvas for rendering Image Sequence */}
         <canvas 
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-cover"
         />
-
-        {/* 프리로드 객체 삽입 컨테이너 (숨김 상태이나 활성 상태 유지) */}
-        <div ref={videoContainerRef} className="opacity-0 absolute pointer-events-none w-0 h-0 overflow-hidden" />
-
-        {/* fallback: 프리로드 객체가 없을 때 (숨김 상태) */}
-        {!preloadedVideo && (
-          <video
-            ref={fallbackVideoRef}
-            src={videoSrc}
-            muted
-            playsInline
-            preload="auto"
-            className="opacity-0 absolute pointer-events-none w-0 h-0"
-          />
-        )}
       </motion.div>
 
       {/* Scroll Hint */}
@@ -174,4 +167,5 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     </div>
   );
 }
+
 
