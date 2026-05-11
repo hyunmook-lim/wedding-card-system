@@ -2,11 +2,6 @@
 
 import { useEffect } from 'react';
 
-declare global {
-  interface Window {
-    Kakao: any;
-  }
-}
 
 export default function KakaoInit() {
   useEffect(() => {
@@ -33,3 +28,4 @@ export default function KakaoInit() {
 
   return null;
 }
+

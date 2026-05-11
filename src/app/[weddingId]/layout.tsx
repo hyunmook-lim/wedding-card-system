@@ -1,4 +1,4 @@
-import BGMPlayer from "@/components/effects/BGMPlayer";
+import FloatingActions from "@/components/effects/FloatingActions";
 
 export default async function WeddingLayout({
   children,
@@ -13,7 +13,7 @@ export default async function WeddingLayout({
     <div className="min-h-screen bg-neutral-100 flex justify-center">
        {/* Mobile Container Limit */}
       <div className="w-full max-w-[430px] relative min-h-screen shadow-2xl overflow-x-visible">
-        <BGMPlayer weddingId={weddingId} />
+        <FloatingActions weddingId={weddingId} />
         {/* Content Layer */}
         <div className="w-full">
           {children}
