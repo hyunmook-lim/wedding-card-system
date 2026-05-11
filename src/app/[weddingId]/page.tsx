@@ -86,6 +86,7 @@ export default async function WeddingPage({ params }: PageProps) {
   });
 
   return (
-    <SectionRegistry sections={sectionsWithData} />
+    <SectionRegistry wedding={{ ...wedding, sections: sectionsWithData }} />
   );
 }
+

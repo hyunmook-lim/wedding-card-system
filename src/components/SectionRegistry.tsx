@@ -1,9 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { SectionConfig, BackgroundConfig } from '@/types/wedding';
+import { WeddingConfig, BackgroundConfig, SectionConfig, SectionProps } from '@/types/wedding';
 import { ComponentType, useState, useEffect, useRef } from 'react';
-import { SectionProps } from '@/types/wedding';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { PreloadedMediaContext, PreloadedMediaMap, IntroFadedContext } from '@/lib/preloaded-media-context';
@@ -137,7 +136,8 @@ const SECTION_HEIGHTS: Record<string, Record<string, string>> = {
 
 
 
-export default function SectionRegistry({ sections }: { sections: SectionConfig[] }) {
+export default function SectionRegistry({ wedding }: { wedding: WeddingConfig }) {
+  const { sections } = wedding;
   const [showIntro, setShowIntro] = useState(true);
   const [isPreloading, setIsPreloading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -161,12 +161,12 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
 
   // Preloading Logic — track ALL resources so isPreloading stays true until everything is ready
   useEffect(() => {
-    const introSection = sections.find(s => s.type === 'intro');
+    const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
     const introContent = introSection?.content as Record<string, unknown> | undefined;
     const introVideo: string | undefined =
       (typeof introContent?.introVideo === 'string' ? introContent.introVideo : undefined) ?? '/test-resources/intro.mp4';
 
-    // --- Collect every URL from all section configs ---
+    // --- Collect every URL from the entire wedding config ---
     const allUrls = new Set<string>();
     const extractUrls = (obj: unknown) => {
       if (!obj) return;
@@ -178,13 +178,16 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         Object.values(obj as Record<string, unknown>).forEach(extractUrls);
       }
     };
-    sections.forEach(s => extractUrls(s.content));
+    
+    // Extract from the whole wedding object (including ogImage, event location images, etc)
+    extractUrls(wedding);
 
-    // --- Build unified task list ---
-    const tasks: Array<() => Promise<void>> = [];
+    // --- Build task lists with priority ---
+    const priorityTasks: Array<() => Promise<void>> = [];
+    const regularTasks: Array<() => Promise<void>> = [];
 
-    // 1. Font
-    tasks.push(
+    // 1. Font (Priority)
+    priorityTasks.push(
       () =>
         new Promise<void>((resolve) => {
           if (document.fonts) {
@@ -195,9 +198,23 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         })
     );
 
-    // 2. Intro video (highest priority — but still counted in the same list)
+    // 2. Intro sequence frames (Priority)
+    for (let i = 1; i <= 45; i++) {
+      const frameNum = String(i).padStart(4, '0');
+      const url = `/test-resources/ImageToStl.com_intro/frame_${frameNum}.jpg`;
+      priorityTasks.push(
+        () => new Promise<void>((resolve) => {
+          const img = new window.Image();
+          img.onload = () => resolve();
+          img.onerror = () => resolve();
+          img.src = url;
+        })
+      );
+    }
+
+    // 3. Intro video (if variant is video) (Priority)
     if (introVideo) {
-      tasks.push(
+      priorityTasks.push(
         () =>
           new Promise<void>((resolve) => {
             const video = document.createElement('video');
@@ -210,25 +227,11 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       );
     }
 
-    // 2.5. Image Sequence Frames (MainIntro & VideoGreeting2)
-    // MainIntro frames
-    for (let i = 1; i <= 45; i++) {
-      const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/ImageToStl.com_intro/frame_${frameNum}.jpg`;
-      tasks.push(
-        () => new Promise<void>((resolve) => {
-          const img = new window.Image();
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-          img.src = url;
-        })
-      );
-    }
-    // VideoGreeting2 frames
+    // 4. VideoGreeting2 frames (Regular)
     for (let i = 1; i <= 73; i++) {
       const frameNum = String(i).padStart(4, '0');
       const url = `/test-resources/ImageToStl.com_video/frame_${frameNum}.jpg`;
-      tasks.push(
+      regularTasks.push(
         () => new Promise<void>((resolve) => {
           const img = new window.Image();
           img.onload = () => resolve();
@@ -238,18 +241,21 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       );
     }
 
-    // 3. All other media from sections
+    // 5. All other media from sections (Regular)
     allUrls.forEach(url => {
-      if (url === introVideo) return; // already added above
+      // Skip if already in priority
+      if (url === introVideo) return;
+      if (url.includes('ImageToStl.com_intro')) return;
+      if (url.includes('ImageToStl.com_video')) return; // already in regular
+
       if (url.match(/\.(mp4|webm)$/i)) {
-        tasks.push(
+        regularTasks.push(
           () =>
             new Promise<void>((resolve) => {
               const v = document.createElement('video');
               v.muted = true;
               v.playsInline = true;
               v.preload = 'auto';
-              // 스타일을 미리 설정 → VideoGreeting2에서 뮤테이션 불필요
               v.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
               v.oncanplaythrough = () => {
                 preloadedMediaRef.current.set(url, v);
@@ -261,7 +267,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             })
         );
       } else if (url.match(/\.(mp3|wav)$/i)) {
-        tasks.push(
+        regularTasks.push(
           () =>
             new Promise<void>((resolve) => {
               const a = new Audio();
@@ -273,7 +279,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
             })
         );
       } else {
-        tasks.push(
+        regularTasks.push(
           () =>
             new Promise<void>((resolve) => {
               const img = new window.Image();
@@ -285,8 +291,8 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       }
     });
 
-    // --- Run all tasks in parallel and track progress ---
-    const total = tasks.length;
+    // --- Run tasks sequentially by batch ---
+    const total = priorityTasks.length + regularTasks.length;
     if (total === 0) {
       setLoadingProgress(100);
       setTimeout(() => setIsPreloading(false), 300);
@@ -302,19 +308,24 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
       }
     };
 
-    tasks.forEach(task => task().then(onOneDone));
+    // First batch: Priority tasks (Wait for them to start)
+    Promise.all(priorityTasks.map(task => task().then(onOneDone))).then(() => {
+      // Second batch: Regular tasks
+      regularTasks.forEach(task => task().then(onOneDone));
+    });
 
-    // 프리로딩 완료 시 ref → state 스냅샷 (Provider에 새 Map 인스턴스 전달)
-    // setIsPreloading 이후에 실행되도록 tasks 완료 후 동일 타이밍에 실행
-    Promise.all(tasks.map(t => t())).catch(() => {}).finally(() => {
+    // Update state snapshot when ALL are done
+    const allTasks = [...priorityTasks, ...regularTasks];
+    Promise.all(allTasks.map(t => t())).catch(() => {}).finally(() => {
       setPreloadedMedia(new Map(preloadedMediaRef.current));
     });
-  }, [sections]);
+  }, [wedding, sections]);
+
 
 
   useEffect(() => {
     if (showIntro && !isPreloading) {
-      const introSection = sections.find(s => s.type === 'intro');
+      const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
       const isVideoIntro = introSection?.variant === 'video';
       // 비디오 인트로: 로딩 완료 직후 전환 / 기본 인트로: 6초 애니메이션 대기
       const delay = isVideoIntro ? 1500 : 6000;
@@ -329,9 +340,9 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
   const fadeOutRef = useRef<HTMLDivElement>(null);
 
   // 1. Separate 'intro' from other sections
-  const introSection = sections.find(s => s.type === 'intro');
-  const otherSections = sections.filter(s => s.type !== 'intro');
-  const visibleSections = otherSections.filter(s => s.isVisible);
+  const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
+  const otherSections = sections.filter((s: SectionConfig) => s.type !== 'intro');
+  const visibleSections = otherSections.filter((s: SectionConfig) => s.isVisible);
   const lastSectionId = visibleSections[visibleSections.length - 1]?.id;
 
   // 2. Render Intro Overlay
@@ -389,7 +400,7 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
         {/* Render Main Content (only after intro) */}
         {!showIntro && (
           <div className="animate-in fade-in duration-1000">
-            {otherSections.map((section, index) => {
+            {otherSections.map((section: SectionConfig, index: number) => {
               if (!section.isVisible) return null;
 
               const componentMap = SECTION_COMPONENTS[section.type];
@@ -430,4 +441,3 @@ export default function SectionRegistry({ sections }: { sections: SectionConfig[
     </IntroFadedContext.Provider>
   );
 }
-
