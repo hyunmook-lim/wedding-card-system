@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Serif_KR, Pacifico } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
+import KakaoInit from "@/components/KakaoInit";
 
 const pacifico = Pacifico({
   variable: "--font-pacifico",
@@ -37,7 +39,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} ${pacifico.variable} antialiased`}>
+        <KakaoInit />
         {children}
+        <Script
+          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

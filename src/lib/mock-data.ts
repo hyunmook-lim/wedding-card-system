@@ -20,8 +20,8 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
     event: {
       date: '2026-07-25T11:00:00',
       location: {
-        name: '서울 웨딩홀',
-        address: '서울시 강남구 테헤란로 123',
+        name: '토브헤세드',
+        address: '서울시 강남구 논현동 123',
         lat: 37.5,
         lng: 127.0,
         mapUrl: 'https://naver.me/placeholder'
