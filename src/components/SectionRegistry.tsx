@@ -164,7 +164,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
     const introContent = introSection?.content as Record<string, unknown> | undefined;
     const introVideo: string | undefined =
-      (typeof introContent?.introVideo === 'string' ? introContent.introVideo : undefined) ?? '/test-resources/intro.mp4';
+      (typeof introContent?.introVideo === 'string' ? introContent.introVideo : undefined);
 
     // --- Collect every URL from the entire wedding config ---
     const allUrls = new Set<string>();

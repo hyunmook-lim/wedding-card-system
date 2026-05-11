@@ -15,6 +15,11 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
   }, [weddingId]);
 
   const handleShare = () => {
+    // 🔍 KAKAO SHARE DEBUG
+    console.log('--- KAKAO SHARE DEBUG ---');
+    console.log('1. NEXT_PUBLIC_BASE_URL (Env):', process.env.NEXT_PUBLIC_BASE_URL);
+    console.log('2. window.location.origin (Current):', typeof window !== 'undefined' ? window.location.origin : 'N/A');
+
     if (!window.Kakao) {
       alert('카카오 SDK를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
       return;
@@ -22,7 +27,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
     const currentUrl = `${baseUrl}/${weddingId}`;
     
     // Set requested image
