@@ -11,15 +11,12 @@ import { usePreloadedVideo, useIntroFaded } from '@/lib/preloaded-media-context'
 export default function VideoGreeting2({ config, isVisible }: SectionProps) {
   const { src: videoSrc = '/test-resources/video.mp4' } = config as { src?: string };
 
-  // Context: 프리로드된 video 객체 + MainIntro 페이드아웃 완료 여부
   const preloadedVideo = usePreloadedVideo(videoSrc);
   const introFadedOut = useIntroFaded();
 
-  // 실제 제어용 ref (preloaded or fallback 모두 이걸로 접근)
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  // 프리로드된 video 엘리먼트를 삽입할 컨테이너
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
-  // 프리로드 없을 때 fallback <video> 태그 ref
   const fallbackVideoRef = useRef<HTMLVideoElement>(null);
 
   const [hasEnded, setHasEnded] = useState(false);
@@ -42,8 +39,41 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
   );
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
+  // Canvas Rendering Loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+
+    let animationFrameId: number;
+
+    const render = () => {
+      const video = videoRef.current;
+      if (video && video.readyState >= 2) {
+        const vWidth = video.videoWidth;
+        const vHeight = video.videoHeight;
+
+        if (vWidth > 0 && vHeight > 0) {
+          if (canvas.width !== vWidth || canvas.height !== vHeight) {
+            canvas.width = vWidth;
+            canvas.height = vHeight;
+          }
+          ctx.drawImage(video, 0, 0, vWidth, vHeight);
+        }
+      }
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [preloadedVideo]);
+
   // ── Effect A: 프리로드 객체를 DOM에 마운트 + ended 핸들러 등록 ──────────
-  // play()는 여기서 호출하지 않음 — introFadedOut이 true가 될 때까지 대기
   useEffect(() => {
     const container = videoContainerRef.current;
     const video = preloadedVideo;
@@ -68,7 +98,7 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
 
   // ── Effect B: fallback <video> 태그 설정 (프리로드 없을 때) ────────────
   useEffect(() => {
-    if (preloadedVideo) return; // Effect A가 처리
+    if (preloadedVideo) return; 
     const video = fallbackVideoRef.current;
     if (!video) return;
 
@@ -86,7 +116,6 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
   }, [preloadedVideo, endProgress]);
 
   // ── Effect C: MainIntro가 완전히 사라진 후 재생 ────────────────────────
-  // introFadedOut이 true가 되는 시점 = AnimatePresence onExitComplete 콜백
   useEffect(() => {
     if (!introFadedOut) return;
     const video = videoRef.current;
@@ -102,10 +131,16 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
         className="absolute inset-0 w-full h-full bg-white"
         style={{ opacity: videoOpacity, filter: videoBlur, willChange: 'opacity, filter' }}
       >
-        {/* 프리로드 객체 삽입 컨테이너 */}
-        <div ref={videoContainerRef} className="absolute inset-0 w-full h-full" />
+        {/* Canvas for rendering */}
+        <canvas 
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
 
-        {/* fallback: 프리로드 객체가 없을 때 */}
+        {/* 프리로드 객체 삽입 컨테이너 (숨김 상태이나 활성 상태 유지) */}
+        <div ref={videoContainerRef} className="opacity-0 absolute pointer-events-none w-0 h-0 overflow-hidden" />
+
+        {/* fallback: 프리로드 객체가 없을 때 (숨김 상태) */}
         {!preloadedVideo && (
           <video
             ref={fallbackVideoRef}
@@ -113,7 +148,7 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover"
+            className="opacity-0 absolute pointer-events-none w-0 h-0"
           />
         )}
       </motion.div>
@@ -139,3 +174,4 @@ export default function VideoGreeting2({ config, isVisible }: SectionProps) {
     </div>
   );
 }
+

@@ -1,3 +1,5 @@
+'use client';
+
 import { useRef, useEffect, useState } from 'react';
 import { SectionProps } from '@/types/wedding';
 import Image from 'next/image';
@@ -13,6 +15,7 @@ const LOADING_MESSAGES = [
 
 export default function MainIntro({ config, isVisible, onEnter, isPreloading, loadingProgress }: SectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
@@ -24,6 +27,41 @@ export default function MainIntro({ config, isVisible, onEnter, isPreloading, lo
     }
   }, [isPreloading]);
 
+  // Canvas Rendering Loop
+  useEffect(() => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!video || !canvas) return;
+
+    const ctx = canvas.getContext('2d', { alpha: false });
+    if (!ctx) return;
+
+    let animationFrameId: number;
+
+    const render = () => {
+      if (video.readyState >= 2) {
+        const vWidth = video.videoWidth;
+        const vHeight = video.videoHeight;
+
+        if (vWidth > 0 && vHeight > 0) {
+          // 캔버스 내부 해상도를 비디오 원본 크기에 맞춤
+          if (canvas.width !== vWidth || canvas.height !== vHeight) {
+            canvas.width = vWidth;
+            canvas.height = vHeight;
+          }
+          ctx.drawImage(video, 0, 0, vWidth, vHeight);
+        }
+      }
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isVisible]);
+
   useEffect(() => {
     if (isVisible && videoRef.current) {
       const playVideo = async () => {
@@ -33,7 +71,6 @@ export default function MainIntro({ config, isVisible, onEnter, isPreloading, lo
           }
         } catch (error) {
           console.warn("Video auto-play failed. Retrying on interaction:", error);
-          // Standard fallback: Wait for user interaction
           const handleFirstClick = () => {
             videoRef.current?.play().catch(() => {});
             window.removeEventListener('click', handleFirstClick);
@@ -59,16 +96,22 @@ export default function MainIntro({ config, isVisible, onEnter, isPreloading, lo
     >
         <div className="relative w-full h-full">
             {introVideo ? (
-                <video
-                    ref={videoRef}
-                    src={introVideo}
-                    autoPlay
-                    muted
-                    playsInline
-                    preload="auto"
-                    onLoadedData={() => videoRef.current?.play().catch(() => {})}
-                    className="absolute inset-0 w-full h-full object-cover"
-                />
+                <>
+                    <video
+                        ref={videoRef}
+                        src={introVideo}
+                        autoPlay
+                        muted
+                        playsInline
+                        preload="auto"
+                        onLoadedData={() => videoRef.current?.play().catch(() => {})}
+                        className="opacity-0 absolute pointer-events-none w-0 h-0" // display: none 대신 opacity-0 사용하여 브라우저 최적화 방지
+                    />
+                    <canvas 
+                        ref={canvasRef}
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                </>
             ) : mainImage ? (
                 <Image
                     src={mainImage}
@@ -120,3 +163,4 @@ export default function MainIntro({ config, isVisible, onEnter, isPreloading, lo
     </section>
   );
 }
+
