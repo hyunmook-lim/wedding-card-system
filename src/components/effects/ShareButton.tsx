@@ -27,11 +27,12 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
-    const currentUrl = `${baseUrl}/${weddingId}`;
-    
-    // Set requested image
-    const imageUrl = `${baseUrl}/test-resources/openimage.jpeg`;
+    // 강제로 운영 주소 고정 (테스트용)
+    const productionUrl = 'https://anotherwedding.vercel.app';
+    const currentUrl = `${productionUrl}/${weddingId}`;
+    const imageUrl = `${productionUrl}/test-resources/openimage.jpeg`;
+
+    console.log('3. Final Sharing URL:', currentUrl);
 
     // Format date and time (e.g. 2026.07.25 11:00)
     const dateObj = new Date(weddingData.event.date);
