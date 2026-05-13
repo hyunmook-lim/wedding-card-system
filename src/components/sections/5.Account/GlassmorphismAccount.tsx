@@ -169,23 +169,13 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
   const [brideRevealed, setBrideRevealed] = useState(false);
 
   // Cast config to proper structure
-  const accountConfig = config?.content as {
+  const { description, groom = [], bride = [] } = config as {
     description?: string;
     groom: AccountItem[];
     bride: AccountItem[];
-  } || {
-    description: "참석이 어려우신 분들을 위해\n계좌번호를 기재하였습니다.\n너그러운 마음으로 양해 부탁드립니다.",
-    groom: [
-      { relation: '신랑', name: '유영후', bank: '우리은행', accountNumber: '1002 747 550750' },
-      { relation: '신랑 아버지', name: '유정호', bank: '국민은행', accountNumber: '286 21 0073 941' },
-      { relation: '신랑 어머니', name: '오현미', bank: '국민은행', accountNumber: '655202 01 018442' }
-    ],
-    bride: [
-       { relation: '신부', name: '임예은', bank: '우리은행', accountNumber: '1002 547 570441' },
-       { relation: '신부 아버지', name: '임재용', bank: '신한은행', accountNumber: '110 164 865100' },
-       { relation: '신부 어머니', name: '허미영', bank: '신한은행', accountNumber: '356 02 308641' }
-    ]
   };
+
+  const defaultDescription = "참석이 어려우신 분들을 위해\n계좌번호를 기재하였습니다.\n너그러운 마음으로 양해 부탁드립니다.";
 
   useMotionValueEvent(inViewProgress, "change", (latest) => {
     if (latest > 0.45) {
@@ -281,7 +271,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                 {/* Description */}
                 <div className="text-center mb-10 px-8">
                   <Typography variant="body" className="text-[0.8rem] leading-7 text-black/50 font-medium">
-                    {(accountConfig.description || "").split('\n').map((line, i) => (
+                    {(description || defaultDescription).split('\n').map((line, i) => (
                       <span key={i}>
                         {line}
                         <br />
@@ -296,7 +286,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                     label="신랑측" 
                     isRevealed={groomRevealed}
                     onToggle={setGroomRevealed}
-                    accounts={accountConfig.groom} 
+                    accounts={groom} 
                   />
 
                   <AccountGroup 
@@ -304,7 +294,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
                     label="신부측"
                     isRevealed={brideRevealed}
                     onToggle={setBrideRevealed}
-                    accounts={accountConfig.bride} 
+                    accounts={bride} 
                   />
                 </div>
             </motion.div>

@@ -43,13 +43,27 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
 
   if (!isVisible) return null;
 
-  const { location } = config as { location: { name: string; address: string; mapUrl?: string } };
+  const { 
+    location, 
+    transportation = [], 
+    hall_info, 
+    cafe_link,
+    hospitality_message 
+  } = config as { 
+    location: { name: string; address: string; mapUrl?: string };
+    transportation: Array<{ title: string; content: string; sub?: string; icon: string }>;
+    hall_info?: string;
+    cafe_link?: string;
+    hospitality_message?: string;
+  };
 
-  const transportation = [ 
+  const defaultTransportation = [ 
     { title: "지하철", content: "학동역 10번 출구", icon: "/test-resources/location/subway.svg" },
     { title: "셔틀버스", content: "학동역 10번 출구 좌측에서 셔틀 대기", sub: "(10~15분 간격으로 탑승 가능 하시며,\n3분 정도 소요 됩니다.)", icon: "/test-resources/location/bus.svg" },
     { title: "자가용", content: `네비게이션 '${location?.name || "토브헤세드"}' 검색`, sub: "(주차 3시간 무료)\n만차 시 인근주차장 정보\n- 언주로147길 노상공영주차장(4,800원)\n- 연승빌딩주차장(3,000원)", icon: "/test-resources/location/car.svg" }
   ];
+
+  const activeTransportation = transportation.length > 0 ? transportation : defaultTransportation;
 
   const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
@@ -112,7 +126,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
 
         {/* Transportation Info Section */}
         <div className="w-full flex flex-col items-center justify-center space-y-6">
-          {transportation.map((info, idx) => {
+          {activeTransportation.map((info, idx) => {
             const isItemRevealed = (revealed as Record<string, boolean>)[`trans${idx}`];
             return (
               <div key={info.title} className="flex items-center space-x-6 w-full">
@@ -175,7 +189,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
               variant="dock"
               className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
               containerClassName="gap-3"
-              onClick={() => window.open('https://naver.me/53lKcqqR')}
+              onClick={() => window.open(location?.mapUrl || 'https://naver.me/53lKcqqR')}
             >
                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-[#03C75A] drop-shadow-sm">
                  <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727v12.845z" />
@@ -193,32 +207,11 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
             <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep">
-              저희의 예식은 두 곳의 복층 공간에서 진행됩니다.<br/>
-              하객분들의 편의에 맞춰<br/> 편안한 자리를 선택해 주세요.<br/><br/>
-              
-              <span className="font-semibold opacity-80">1층 메인홀:</span> 예식에 오롯이 집중하며 온전히 즐긴 후<br/>
-              <span className="relative inline-block font-medium text-black/80">
-                <motion.span 
-                  initial={{ scaleX: 0 }}
-                  animate={revealed.hall_info ? { scaleX: 1 } : { scaleX: 0 }}
-                  transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
-                  style={{ transformOrigin: "left" }}
-                  className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
-                />
-                예식이 끝난 후 식사
-              </span>를 하실 분들을 위한 장소입니다.<br/><br/>
-
-              <span className="font-semibold opacity-80">2층 테라스홀:</span> <span className="relative inline-block font-normal text-black/80">
-                <motion.span 
-                  initial={{ scaleX: 0 }}
-                  animate={revealed.hall_info ? { scaleX: 1 } : { scaleX: 0 }}
-                  transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
-                  style={{ transformOrigin: "left" }}
-                  className="absolute bottom-0.5 left-0 w-full h-[6px] bg-[#a3e635]/30 -z-10" 
-                />
-                예식과 식사를 동시
-              </span>에 편안하고<br/>
-              여유롭게 즐기실 분들을 위한 자리입니다.
+              {(hall_info || `저희의 예식은 두 곳의 복층 공간에서 진행됩니다.\n하객분들의 편의에 맞춰\n 편안한 자리를 선택해 주세요.\n\n1층 메인홀: 예식에 오롯이 집중하며 온전히 즐긴 후\n예식이 끝난 후 식사를 하실 분들을 위한 장소입니다.\n\n2층 테라스홀: 예식과 식사를 동시에 편안하고\n여유롭게 즐기실 분들을 위한 자리입니다.`).split('\n').map((line, i) => (
+                <span key={i} className="block mb-2">
+                  {line}
+                </span>
+              ))}
             </Typography>
             <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-8" />
           </motion.div>
@@ -277,10 +270,10 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
               <LiquidGlassWidget 
                 variant="dock"
                 className="px-8 py-3.5 rounded-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-lg"
-                onClick={() => window.open('https://naver.me/5If4L6J7')}
+                onClick={() => window.open(cafe_link || 'https://naver.me/5If4L6J7')}
               >
                  <span className="text-[0.8rem] font-black text-black/50 tracking-[0.1em] uppercase">
-                   ☕️ 신랑신부의 추천 카페
+                   ☕️ 주변 카페 안내 보기
                  </span>
               </LiquidGlassWidget>
             </motion.div>
@@ -295,9 +288,11 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
             <Typography className="text-[0.75rem] font-serif italic text-black/50 leading-relaxed break-keep">
-              아끼는 마음들을 모아<br/>
-              함께하는 발걸음마다 축복을 더해주시는<br/>
-              모든 분들께 감사의 인사를 전합니다.
+              {(hospitality_message || `아끼는 마음들을 모아\n함께하는 발걸음마다 축복을 더해주시는\n모든 분들께 감사의 인사를 전합니다.`).split('\n').map((line, i) => (
+                <span key={i} className="block">
+                  {line}
+                </span>
+              ))}
             </Typography>
             <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-6" />
           </motion.div>

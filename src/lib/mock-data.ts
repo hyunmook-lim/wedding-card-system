@@ -94,7 +94,13 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           isSticky: false,
-          background: { type: 'none' }
+          background: { type: 'none' },
+          milestones: [
+            { id: 'start', date: '2018년 05월 27일', title: '설레었던 우리의 시작', image: '/test-resources/memories/1.jpeg' },
+            { id: 'period', date: '연애기간 2982일', title: '울고 웃었던\n8년간의 장거리 연애', image: '/test-resources/memories/2.jpeg' },
+            { id: 'promise', date: '2025. 04. 12', title: 'Will you marry me?', image: '/test-resources/memories/3.jpeg' },
+            { id: 'forever', date: '2026. 07. 25', title: '평생을 약속하는 오늘', image: '/test-resources/memories/4.jpeg' }
+          ]
         }
       },
       {
@@ -115,8 +121,15 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           isSticky: false,
-          background: { type: 'none' }
-          // location injected from global event
+          background: { type: 'none' },
+          transportation: [
+            { title: "지하철", content: "학동역 10번 출구", icon: "/test-resources/location/subway.svg" },
+            { title: "셔틀버스", content: "학동역 10번 출구 좌측에서 셔틀 대기", sub: "(10~15분 간격으로 탑승 가능 하시며,\n3분 정도 소요 됩니다.)", icon: "/test-resources/location/bus.svg" },
+            { title: "자가용", content: "네비게이션 '토브헤세드' 검색", sub: "(주차 3시간 무료)\n만차 시 인근주차장 정보\n- 언주로147길 노상공영주차장(4,800원)\n- 연승빌딩주차장(3,000원)", icon: "/test-resources/location/car.svg" }
+          ],
+          hall_info: "저희의 예식은 두 곳의 복층 공간에서 진행됩니다.\n하객분들의 편의에 맞춰\n 편안한 자리를 선택해 주세요.\n\n1층 메인홀: 예식에 오롯이 집중하며 온전히 즐긴 후\n예식이 끝난 후 식사를 하실 분들을 위한 장소입니다.\n\n2층 테라스홀: 예식과 식사를 동시에 편안하고\n여유롭게 즐기실 분들을 위한 자리입니다.",
+          cafe_link: "https://naver.me/5If4L6J7",
+          hospitality_message: "아끼는 마음들을 모아\n함께하는 발걸음마다 축복을 더해주시는\n모든 분들께 감사의 인사를 전합니다."
         }
       },
        {
@@ -127,8 +140,16 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         content: {
           isSticky: false,
           background: { type: 'none' }, 
-          accounts: [
-            { bank: '신한은행', account: '110-333-444444', name: '임현묵' }
+          description: "참석이 어려우신 분들을 위해\n계좌번호를 기재하였습니다.\n너그러운 마음으로 양해 부탁드립니다.",
+          groom: [
+            { relation: '신랑', name: '유영후', bank: '우리은행', accountNumber: '1002 747 550750' },
+            { relation: '신랑 아버지', name: '유정호', bank: '국민은행', accountNumber: '286 21 0073 941' },
+            { relation: '신랑 어머니', name: '오현미', bank: '국민은행', accountNumber: '655202 01 018442' }
+          ],
+          bride: [
+             { relation: '신부', name: '임예은', bank: '우리은행', accountNumber: '1002 547 570441' },
+             { relation: '신부 아버지', name: '임재용', bank: '신한은행', accountNumber: '110 164 865100' },
+             { relation: '신부 어머니', name: '허미영', bank: '신한은행', accountNumber: '356 02 308641' }
           ]
         }
       },

@@ -14,7 +14,14 @@ import Image from 'next/image';
    of the project's other glassmorphism components.
    ───────────────────────────────────────────────────────────────────────────── */
 
-export default function GlassmorphismMemories({ isVisible }: SectionProps) {
+interface Milestone {
+  id: string;
+  date: string;
+  title: string;
+  image: string;
+}
+
+export default function GlassmorphismMemories({ isVisible, config }: SectionProps) {
   const scrollRef = useStickyScrollRef();
   const { scrollYProgress: inViewProgress } = useScroll({
     target: scrollRef || undefined,
@@ -41,32 +48,7 @@ export default function GlassmorphismMemories({ isVisible }: SectionProps) {
 
   if (!isVisible) return null;
 
-  const milestones = [
-    { 
-      id: 'start', 
-      date: '2018년 05월 27일', 
-      title: '설레었던 우리의 시작', 
-      image: '/test-resources/memories/1.jpeg'
-    },
-    { 
-      id: 'period', 
-      date: '연애기간 2982일', 
-      title: '울고 웃었던\n8년간의 장거리 연애',
-      image: '/test-resources/memories/2.jpeg'
-    },
-    { 
-      id: 'promise', 
-      date: '2025. 04. 12', 
-      title: 'Will you marry me?', 
-      image: '/test-resources/memories/3.jpeg'
-    },
-    { 
-      id: 'forever', 
-      date: '2026. 07. 25', 
-      title: '평생을 약속하는 오늘', 
-      image: '/test-resources/memories/4.jpeg'
-    }
-  ];
+  const milestones = (config as { milestones: Milestone[] })?.milestones || [];
 
   const fadeInLeft: Variants = {
     hidden: { opacity: 0, x: -30 },
