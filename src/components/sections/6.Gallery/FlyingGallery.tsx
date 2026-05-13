@@ -76,7 +76,7 @@ export default function FlyingGallery({ config, isVisible }: SectionProps) {
                </div>
                
                <Typography 
-                 className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+                 className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
                >
                  {title}
                </Typography>
@@ -289,7 +289,7 @@ function ThankYouMessage({ scrollProgress }: { scrollProgress: MotionValue<numbe
         willChange: "transform, opacity"
       }}
     >
-      <Typography className="font-serif text-[1.4rem] tracking-[0.2em] text-black/80 font-medium mb-3">
+      <Typography className="font-gowun text-[1.4rem] tracking-[0.2em] text-black/80 font-medium mb-3">
         감사합니다
       </Typography>
       <Typography className="text-[0.65rem] tracking-[0.3em] text-black/40 font-light uppercase">

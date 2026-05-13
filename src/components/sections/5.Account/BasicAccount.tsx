@@ -15,7 +15,7 @@ export default function BasicAccount({ config, isVisible }: SectionProps) {
 
   return (
     <section className="py-16 px-6 bg-gray-50">
-      <h3 className="text-center font-serif text-xl mb-8">마음 전하실 곳</h3>
+      <h3 className="text-center font-gowun text-xl mb-8">마음 전하실 곳</h3>
       <div className="space-y-4 max-w-sm mx-auto">
         {accounts.map((acc, idx) => (
           <div key={idx} className="bg-white/40 backdrop-blur-sm p-4 rounded-lg shadow-sm flex justify-between items-center">

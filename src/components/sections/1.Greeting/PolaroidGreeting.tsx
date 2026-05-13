@@ -80,7 +80,7 @@ function PolaroidItem({
       {/* Caption */}
       {caption && (
         <div className="mt-4 px-1 text-center">
-          <Typography className="font-serif italic text-gray-700 text-sm tracking-tight leading-relaxed">
+          <Typography className="font-gowun italic text-gray-700 text-sm tracking-tight leading-relaxed">
             {caption}
           </Typography>
         </div>

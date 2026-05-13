@@ -107,7 +107,7 @@ export default function SoftTypingDate({ config, isVisible }: SectionProps) {
             >
                 <div className="block whitespace-nowrap">
                     {fullDateString.split("").map((char, index) => (
-                        <motion.span key={char + "-" + index} variants={letter} className="text-3xl font-serif text-slate-800" style={{ willChange: "transform, opacity" }}>
+                        <motion.span key={char + "-" + index} variants={letter} className="text-3xl font-gowun text-slate-800" style={{ willChange: "transform, opacity" }}>
                             {char}
                         </motion.span>
                     ))}

@@ -173,7 +173,7 @@ export default function TypingDate({ config, isVisible }: SectionProps) {
                          <ScrambleText 
                             text={fullDateString} 
                             delay={0.2} 
-                            className="text-3xl font-serif text-slate-800" 
+                            className="text-3xl font-gowun text-slate-800" 
                          />
                     </div>
                     

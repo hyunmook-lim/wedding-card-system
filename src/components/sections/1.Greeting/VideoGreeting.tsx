@@ -264,7 +264,7 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
               className="absolute text-center text-white px-8 w-full max-w-[400px]"
             >
               <Typography 
-                className="font-serif italic text-[1.1rem] leading-relaxed tracking-[0.05em] text-white/90 break-keep drop-shadow-md whitespace-pre-line"
+                className="font-gowun italic text-[1.1rem] leading-relaxed tracking-[0.05em] text-white/90 break-keep drop-shadow-md whitespace-pre-line"
               >
                 {phrase}
               </Typography>

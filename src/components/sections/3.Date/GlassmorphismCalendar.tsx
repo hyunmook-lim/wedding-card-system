@@ -252,7 +252,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
             </svg>
             <div className="w-8 h-[0.5px] bg-black" />
           </div>
-          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">소중한 날</Typography>
+          <Typography className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">소중한 날</Typography>
           <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Save The Date</Typography>
         </div>
       </motion.div>
@@ -266,7 +266,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
           variants={fadeInUp}
           className="text-center mb-8 shrink-0"
         >
-          <Typography className="text-[1.4rem] font-serif text-black/60 italic leading-none">
+          <Typography className="text-[1.4rem] font-gowun text-black/60 italic leading-none">
             {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(weddingDate)}
           </Typography>
           <Typography className="text-[0.6rem] tracking-[0.3em] text-black/30 font-bold uppercase mt-2">
@@ -389,7 +389,7 @@ export default function GlassmorphismCalendar({ config, isVisible }: SectionProp
                 }
               </div>
 
-              <Typography className="text-[0.65rem] text-black/20 font-serif italic mt-5 tracking-[0.1em]">
+              <Typography className="text-[0.65rem] text-black/20 font-gowun italic mt-5 tracking-[0.1em]">
                 Wedding Day
               </Typography>
           </motion.div>

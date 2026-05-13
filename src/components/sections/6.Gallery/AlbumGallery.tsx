@@ -130,7 +130,7 @@ export default function AlbumGallery({ config, isVisible }: SectionProps) {
 
   const configImages = config?.images as string[] | undefined;
   const images = (configImages && configImages.length > 0) ? configImages : GALLERY_IMAGES;
-  const title = (config?.title as string) || 'Gallery';
+  const title = (config?.title as string) || '갤러리';
 
   // 1. 완벽한 Sticky 구간에서만 스크롤이 사진 인덱스에 매핑됨
   const rawScrollOffset = useTransform(stickyProgress, [0, 1], [0, images.length - 0.5]);
@@ -219,7 +219,7 @@ export default function AlbumGallery({ config, isVisible }: SectionProps) {
               </svg>
               <div className="w-8 h-[0.5px] bg-black" />
             </div>
-            <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none">
+            <Typography className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none">
               {title}
             </Typography>
             <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">

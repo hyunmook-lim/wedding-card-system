@@ -93,7 +93,7 @@ export default function GlassmorphismMemories({ isVisible, config }: SectionProp
             </svg>
             <div className="w-8 h-[0.5px] bg-black" />
           </div>
-          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">오늘에 닿기까지의 시간들</Typography>
+          <Typography className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium">오늘에 닿기까지의 시간들</Typography>
           <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Our Journey & Story</Typography>
         </div>
       </motion.div>

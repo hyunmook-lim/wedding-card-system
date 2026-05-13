@@ -8,7 +8,7 @@ export default function BasicGallery({ config, isVisible }: SectionProps) {
 
   return (
     <section className="py-16 px-6 bg-transparent text-center">
-      <h3 className="text-center font-serif text-xl mb-8">Gallery</h3>
+      <h3 className="text-center font-gowun text-xl mb-8">갤러리</h3>
       <div className="grid grid-cols-3 gap-1 px-1">
         {images.map((src: string, idx: number) => (
           <div key={idx} className="relative aspect-square bg-gray-100 relative">

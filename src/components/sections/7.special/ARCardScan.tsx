@@ -214,7 +214,7 @@ export default function ARCardScan({ config, onClose }: SectionProps) {
                   <div className="w-8 h-[0.5px] bg-black" />
                 </div>
                 <div className="text-center mb-10">
-                  <Typography className="font-serif text-[1.4rem] tracking-[0.2em] text-black/80 font-medium mb-3 uppercase">
+                  <Typography className="font-gowun text-[1.4rem] tracking-[0.2em] text-black/80 font-medium mb-3 uppercase">
                     AR 초대장
                   </Typography>
                   <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 font-light uppercase">
@@ -262,7 +262,7 @@ export default function ARCardScan({ config, onClose }: SectionProps) {
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-400/20 to-transparent h-[1.5px] w-full animate-scan-line" />
                   </div>
                   <div className="mt-12 text-center px-10">
-                    <Typography className="font-serif text-[1.1rem] tracking-[0.25em] text-white/90 font-medium mb-3 uppercase">AR 초대장 스캔</Typography>
+                    <Typography className="font-gowun text-[1.1rem] tracking-[0.25em] text-white/90 font-medium mb-3 uppercase">AR 초대장 스캔</Typography>
                     <Typography className="text-[0.65rem] tracking-[0.3em] text-white/50 font-light uppercase italic">{subtitle}</Typography>
                   </div>
                 </div>

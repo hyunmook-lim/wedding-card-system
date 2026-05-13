@@ -108,7 +108,7 @@ export default function NewmorphismLocation({ config, isVisible }: SectionProps)
              </div>
              
              <Typography 
-               className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+               className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
              >
                오시는 길
              </Typography>

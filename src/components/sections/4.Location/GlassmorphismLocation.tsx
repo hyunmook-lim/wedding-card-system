@@ -96,7 +96,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
             </svg>
             <div className="w-8 h-[0.5px] bg-black" />
           </div>
-          <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-normal">오시는 길</Typography>
+          <Typography className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-normal">오시는 길</Typography>
           <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Location Details</Typography>
         </div>
       </motion.div>
@@ -234,7 +234,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
                   </svg>
                   <div className="w-8 h-[0.5px] bg-black" />
                 </div>
-                <Typography className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-normal">주변 카페 안내</Typography>
+                <Typography className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-normal">주변 카페 안내</Typography>
                 <Typography className="text-[0.6rem] tracking-[0.4em] text-black/40 mt-3 font-light uppercase opacity-80">Nearby Cafe Guide</Typography>
               </div>
             </motion.div>
@@ -287,7 +287,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
             className="flex flex-col items-center w-full text-center mt-12 pb-20 px-6 opacity-60"
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-            <Typography className="text-[0.75rem] font-serif italic text-black/50 leading-relaxed break-keep">
+            <Typography className="text-[0.75rem] font-gowun italic text-black/50 leading-relaxed break-keep">
               {(hospitality_message || `아끼는 마음들을 모아\n함께하는 발걸음마다 축복을 더해주시는\n모든 분들께 감사의 인사를 전합니다.`).split('\n').map((line, i) => (
                 <span key={i} className="block">
                   {line}

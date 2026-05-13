@@ -244,7 +244,7 @@ export default function GlassmorphismAccount({ isVisible, config }: SectionProps
              </div>
              
              <Typography 
-               className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+               className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
              >
                마음 전하실 곳
              </Typography>

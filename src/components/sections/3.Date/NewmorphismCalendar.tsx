@@ -281,7 +281,7 @@ export default function NewmorphismCalendar({ config, isVisible }: SectionProps)
           </div>
           
           <Typography 
-            className="font-serif text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
+            className="font-gowun text-[1.6rem] tracking-[0.15em] text-black/80 font-medium py-0 px-0 border-none"
           >
             소중한 날
           </Typography>
@@ -303,7 +303,7 @@ export default function NewmorphismCalendar({ config, isVisible }: SectionProps)
           custom={0}
           className="text-center mb-8 shrink-0"
         >
-          <Typography className="text-[1.4rem] font-serif text-black/60 italic lowercase leading-none">
+          <Typography className="text-[1.4rem] font-gowun text-black/60 italic lowercase leading-none">
             {new Intl.DateTimeFormat('en-US', { month: 'long' }).format(weddingDate)}
           </Typography>
           <Typography className="text-[0.6rem] tracking-[0.3em] text-black/30 font-bold uppercase mt-2">
@@ -420,7 +420,7 @@ export default function NewmorphismCalendar({ config, isVisible }: SectionProps)
                 }
               </div>
 
-              <Typography className="text-[0.65rem] text-black/20 font-serif italic mt-5 tracking-[0.1em]">
+              <Typography className="text-[0.65rem] text-black/20 font-gowun italic mt-5 tracking-[0.1em]">
                 Wedding Day
               </Typography>
           </motion.div>
