@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { SectionProps } from '@/types/wedding';
 import { cn } from '@/lib/utils';
 import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { useIntroFaded } from '@/lib/preloaded-media-context';
 
@@ -31,6 +31,17 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
   
   const videoBlur = useTransform(scrollYProgress, [0, 0.3], ["blur(0px)", "blur(20px)"]);
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+
+  const [resetKey, setResetKey] = useState(0);
+  
+  // 스크롤이 맨 위로 돌아오면 영상 상태 초기화 및 재재생 준비
+  useMotionValueEvent(scrollYProgress, "change", (latest: number) => {
+    if (latest === 0 && hasEnded) {
+      setHasEnded(false);
+      endProgress.set(0);
+      setResetKey(prev => prev + 1);
+    }
+  });
 
   useEffect(() => {
     let loadedCount = 0;
@@ -124,7 +135,7 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, [introFadedOut, isLoaded, endProgress]);
+  }, [introFadedOut, isLoaded, endProgress, resetKey]);
 
   if (!isVisible) return null;
 
