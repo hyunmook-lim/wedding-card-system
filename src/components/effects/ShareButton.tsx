@@ -44,20 +44,20 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: `[PRODUCTION] ${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식 (${new Date().getSeconds()})`,
+        title: `[FINAL TEST] ${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식`,
         description: `${weddingData.event.location.name}\n${formattedDate} ${formattedTime}`,
-        imageUrl: imageUrl,
+        imageUrl: 'https://anotherwedding.vercel.app/test-resources/openimage.jpeg',
         link: {
-          mobileWebUrl: currentUrl,
-          webUrl: currentUrl,
+          mobileWebUrl: 'https://anotherwedding.vercel.app/default',
+          webUrl: 'https://anotherwedding.vercel.app/default',
         },
       },
       buttons: [
         {
           title: '청첩장 보기',
           link: {
-            mobileWebUrl: currentUrl,
-            webUrl: currentUrl,
+            mobileWebUrl: 'https://anotherwedding.vercel.app/default',
+            webUrl: 'https://anotherwedding.vercel.app/default',
           },
         },
       ],
