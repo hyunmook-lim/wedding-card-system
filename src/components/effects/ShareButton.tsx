@@ -27,29 +27,13 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    const usedKey = '402797996...'; // JS Key prefix
-    window.alert(`[디버그]\n사용 중인 키: ${usedKey}\n보낼 주소: https://anotherwedding.vercel.app/default`);
-
-    // HARDCODED for testing to ensure no env var issues
-    const baseUrl = 'https://anotherwedding.vercel.app';
-    const currentUrl = `${baseUrl}/${weddingId}`;
-    const imageUrl = `${baseUrl}/test-resources/openimage.jpeg`;
-
-    console.log('--- KAKAO SHARE EXECUTE ---');
-    console.log('Target URL:', currentUrl);
-    console.log('Image URL:', imageUrl);
-
-    // Format date and time (e.g. 2026.07.25 11:00)
-    const dateObj = new Date(weddingData.event.date);
-    const formattedDate = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
-    const formattedTime = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
-
+    // --- CACHE BUSTING TEST ---
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: `[FINAL TEST] ${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식`,
-        description: `${weddingData.event.location.name}\n${formattedDate} ${formattedTime}`,
-        imageUrl: 'https://anotherwedding.vercel.app/test-resources/openimage.jpeg',
+        title: '신랑 신부의 특별한 초대장', // 완전히 새로운 제목
+        description: '세상에 단 하나뿐인 우리만의 청첩장입니다.',
+        imageUrl: 'https://anotherwedding.vercel.app/test-resources/openimage.jpeg?v=' + Date.now(),
         link: {
           mobileWebUrl: 'https://anotherwedding.vercel.app/default',
           webUrl: 'https://anotherwedding.vercel.app/default',
@@ -57,7 +41,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
       },
       buttons: [
         {
-          title: '[TEST] 보러가기',
+          title: '초대장 열어보기', // 버튼 이름도 새로 변경
           link: {
             mobileWebUrl: 'https://anotherwedding.vercel.app/default',
             webUrl: 'https://anotherwedding.vercel.app/default',
