@@ -33,7 +33,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
         }
       }
     };
-    firstImg.src = `${FRAME_PATH}/frame_0001.jpg`;
+    firstImg.src = `${FRAME_PATH}/frame_0001.webp`;
     framesRef.current[1] = firstImg;
 
     const handleLoad = () => {
@@ -49,7 +49,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
       const frameNum = String(i).padStart(4, '0');
       img.onload = handleLoad;
       img.onerror = handleLoad;
-      img.src = `${FRAME_PATH}/frame_${frameNum}.jpg`;
+      img.src = `${FRAME_PATH}/frame_${frameNum}.webp`;
       framesRef.current[i] = img;
     }
   }, []);

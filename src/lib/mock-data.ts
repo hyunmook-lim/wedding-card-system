@@ -85,10 +85,10 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         content: {
           isSticky: false,
           background: { type: 'none' },
-          groomImage: '/test-resources/bride-groom/groom-full.png',
-          groomBgImage: '/test-resources/bride-groom/groom-background-full.png',
-          brideImage: '/test-resources/bride-groom/bride-full-changed.png',
-          brideBgImage: '/test-resources/bride-groom/bride-background.png'
+          groomImage: '/test-resources/bride-groom/groom-full.webp',
+          groomBgImage: '/test-resources/bride-groom/groom-background-full.webp',
+          brideImage: '/test-resources/bride-groom/bride-full-changed.webp',
+          brideBgImage: '/test-resources/bride-groom/bride-background.webp'
         }
       },
       {
@@ -100,10 +100,10 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
           isSticky: false,
           background: { type: 'none' },
           milestones: [
-            { id: 'start', date: '2018년 05월 27일', title: '설레었던 우리의 시작', image: '/test-resources/memories/1.jpeg' },
-            { id: 'period', date: '연애기간 2982일', title: '울고 웃었던\n8년간의 장거리 연애', image: '/test-resources/memories/2.jpeg' },
-            { id: 'promise', date: '2025. 04. 12', title: 'Will you marry me?', image: '/test-resources/memories/3.jpeg' },
-            { id: 'forever', date: '2026. 07. 25', title: '평생을 약속하는 오늘', image: '/test-resources/memories/4.jpeg' }
+            { id: 'start', date: '2018년 05월 27일', title: '설레었던 우리의 시작', image: '/test-resources/memories/1.webp' },
+            { id: 'period', date: '연애기간 2982일', title: '울고 웃었던\n8년간의 장거리 연애', image: '/test-resources/memories/2.webp' },
+            { id: 'promise', date: '2025. 04. 12', title: 'Will you marry me?', image: '/test-resources/memories/3.webp' },
+            { id: 'forever', date: '2026. 07. 25', title: '평생을 약속하는 오늘', image: '/test-resources/memories/4.webp' }
           ]
         }
       },
@@ -152,9 +152,9 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
             { relation: '신랑 어머니', name: '오현미', bank: '국민은행', accountNumber: '655202 01 018442' }
           ],
           bride: [
-             { relation: '신부', name: '임예은', bank: '우리은행', accountNumber: '1002 547 570441' },
-             { relation: '신부 아버지', name: '임재용', bank: '신한은행', accountNumber: '110 164 865100' },
-             { relation: '신부 어머니', name: '허미영', bank: '신한은행', accountNumber: '356 02 308641' }
+            { relation: '신부', name: '임예은', bank: '우리은행', accountNumber: '1002 547 570441' },
+            { relation: '신부 아버지', name: '임재용', bank: '신한은행', accountNumber: '110 164 865100' },
+            { relation: '신부 어머니', name: '허미영', bank: '신한은행', accountNumber: '356 02 308641' }
           ]
         }
       },
@@ -179,6 +179,6 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         }
       },
     ],
-    ogImage: '/test-resources/openimage.jpeg',
+    ogImage: '/test-resources/openimage.webp',
   }
 };

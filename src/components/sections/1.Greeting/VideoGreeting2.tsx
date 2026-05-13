@@ -57,7 +57,7 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
       const frameNum = String(i).padStart(4, '0');
       img.onload = handleLoad;
       img.onerror = handleLoad;
-      img.src = `${FRAME_PATH}/frame_${frameNum}.jpg`;
+      img.src = `${FRAME_PATH}/frame_${frameNum}.webp`;
       framesRef.current[i] = img;
     }
   }, []);

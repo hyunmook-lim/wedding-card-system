@@ -1,6 +1,5 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import { WeddingConfig, BackgroundConfig, SectionConfig, SectionProps } from '@/types/wedding';
 import { ComponentType, useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -201,7 +200,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     // 2. Intro sequence frames (Priority)
     for (let i = 1; i <= 45; i++) {
       const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/intro/frame_${frameNum}.jpg`;
+      const url = `/test-resources/intro/frame_${frameNum}.webp`;
       priorityTasks.push(
         () => new Promise<void>((resolve) => {
           const img = new window.Image();
@@ -230,7 +229,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     // 4. VideoGreeting2 frames (Regular)
     for (let i = 1; i <= 73; i++) {
       const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/video/frame_${frameNum}.jpg`;
+      const url = `/test-resources/video/frame_${frameNum}.webp`;
       regularTasks.push(
         () => new Promise<void>((resolve) => {
           const img = new window.Image();
