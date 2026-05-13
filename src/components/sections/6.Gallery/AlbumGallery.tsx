@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 
-const GALLERY_IMAGES = Array.from({ length: 20 }, (_, i) => `/test-resources/gallery/${i + 1}.jpg`);
+const GALLERY_IMAGES = Array.from({ length: 20 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
 
 function DiagonalPhoto({
   src,
