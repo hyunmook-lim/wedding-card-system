@@ -27,6 +27,8 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
+    window.alert(`[디버그] 카카오톡으로 보낼 주소: https://anotherwedding.vercel.app/default`);
+
     // HARDCODED for testing to ensure no env var issues
     const baseUrl = 'https://anotherwedding.vercel.app';
     const currentUrl = `${baseUrl}/${weddingId}`;
