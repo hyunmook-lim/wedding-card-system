@@ -7,7 +7,7 @@ import Loader from '@/components/ui/Loader';
 
 const TOTAL_FRAMES = 45;
 const FRAME_RATE = 20; // 45프레임 -> 약 2.2초
-const FRAME_PATH = '/test-resources/ImageToStl.com_intro';
+const FRAME_PATH = '/test-resources/intro';
 
 export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,6 +16,24 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
 
   useEffect(() => {
     let loadedCount = 0;
+    
+    // 첫 번째 프레임 우선 로드 및 즉시 렌더링 시도
+    const firstImg = new window.Image();
+    firstImg.onload = () => {
+      loadedCount++;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const ctx = canvas.getContext('2d', { alpha: false });
+        if (ctx) {
+          canvas.width = firstImg.naturalWidth;
+          canvas.height = firstImg.naturalHeight;
+          ctx.drawImage(firstImg, 0, 0);
+        }
+      }
+    };
+    firstImg.src = `${FRAME_PATH}/frame_0001.jpg`;
+    framesRef.current[1] = firstImg;
+
     const handleLoad = () => {
       loadedCount++;
       if (loadedCount === TOTAL_FRAMES) {
@@ -23,11 +41,12 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
       }
     };
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    // 2번부터 나머지 프레임 로드
+    for (let i = 2; i <= TOTAL_FRAMES; i++) {
       const img = new window.Image();
       const frameNum = String(i).padStart(4, '0');
       img.onload = handleLoad;
-      img.onerror = handleLoad; // 에러 발생 시에도 카운트 올려서 멈춤 방지
+      img.onerror = handleLoad;
       img.src = `${FRAME_PATH}/frame_${frameNum}.jpg`;
       framesRef.current[i] = img;
     }
@@ -123,7 +142,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
                 {isPreloading && (
                     <motion.div 
                         key="loading"
-                        className="absolute bottom-24 left-0 right-0 flex flex-col items-center justify-center z-10"
+                        className="absolute bottom-24 left-0 right-0 flex flex-col items-center justify-center z-20"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}

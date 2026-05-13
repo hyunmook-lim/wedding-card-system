@@ -13,14 +13,24 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   if (!wedding) return {};
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
+  const ogImageUrl = wedding.ogImage ? `${baseUrl}${wedding.ogImage}` : `${baseUrl}/test-resources/openimage.jpeg`;
+
   return {
     title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
     description: `${wedding.event.location.name}에서 열리는 아름다운 예식에 초대합니다.`,
     openGraph: {
       title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
       description: `${wedding.event.location.name}에서 열리는 아름다운 예식에 초대합니다.`,
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app'}/${weddingId}`,
+      url: `${baseUrl}/${weddingId}`,
       siteName: 'Interactive Wedding Card',
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+        },
+      ],
       locale: 'ko_KR',
       type: 'website',
     },
@@ -28,6 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
       description: `${wedding.event.location.name}에서 열리는 아름다운 예식에 초대합니다.`,
+      images: [ogImageUrl],
     },
   };
 }

@@ -84,7 +84,11 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           isSticky: false,
-          background: { type: 'none' }
+          background: { type: 'none' },
+          groomImage: '/test-resources/bride-groom/groom-full.png',
+          groomBgImage: '/test-resources/bride-groom/groom-background-full.png',
+          brideImage: '/test-resources/bride-groom/bride-full-changed.png',
+          brideBgImage: '/test-resources/bride-groom/bride-background.png'
         }
       },
       {

@@ -48,9 +48,20 @@ function RevealContainer({
 export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible }: SectionProps) {
   if (!sectionVisible) return null;
 
-  const { groom, bride } = config as { 
+  const { 
+    groom, 
+    bride, 
+    groomImage = '/test-resources/bride-groom/groom-full.png',
+    groomBgImage = '/test-resources/bride-groom/groom-background-full.png',
+    brideImage = '/test-resources/bride-groom/bride-full-changed.png',
+    brideBgImage = '/test-resources/bride-groom/bride-background.png'
+  } = config as { 
     groom: { name: string; nameEng?: string; relation: string; parents: { father: string; mother: string } };
     bride: { name: string; nameEng?: string; relation: string; parents: { father: string; mother: string } };
+    groomImage?: string;
+    groomBgImage?: string;
+    brideImage?: string;
+    brideBgImage?: string;
   };
 
   return (
@@ -77,7 +88,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
             <div className="w-full aspect-[4/5] relative">
               {/* 배경 이미지는 고정 */}
               <Image 
-                src="/test-resources/bride-groom/groom-background-full.png"
+                src={groomBgImage}
                 alt="Groom Background"
                 fill
                 className="object-contain"
@@ -89,7 +100,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
                 isVisible ? 'translate-x-12' : '-translate-x-4'
               }`}>
                 <Image 
-                  src="/test-resources/bride-groom/groom-full.png"
+                  src={groomImage}
                   alt="Groom Full"
                   fill
                   className="object-contain"
@@ -125,7 +136,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
             <div className="w-full aspect-[4/5] relative">
               {/* 배경 이미지는 고정 */}
               <Image 
-                src="/test-resources/bride-groom/bride-background.png"
+                src={brideBgImage}
                 alt="Bride Background"
                 fill
                 className="object-contain"
@@ -137,7 +148,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
                 isVisible ? 'translate-x-0' : 'translate-x-16'
               }`}>
                 <Image 
-                  src="/test-resources/bride-groom/bride-full-changed.png"
+                  src={brideImage}
                   alt="Bride Full"
                   fill
                   className="object-contain"

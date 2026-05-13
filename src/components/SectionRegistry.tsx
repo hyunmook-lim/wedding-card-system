@@ -8,35 +8,35 @@ import { cn } from '@/lib/utils';
 import { PreloadedMediaContext, PreloadedMediaMap, IntroFadedContext } from '@/lib/preloaded-media-context';
 
 // Lazy load components
-const BasicGreeting = dynamic(() => import('./sections/1.Greeting/BasicGreeting'));
-const VideoGreeting = dynamic(() => import('./sections/1.Greeting/VideoGreeting'));
-const VideoGreeting2 = dynamic(() => import('./sections/1.Greeting/VideoGreeting2'));
-const PolaroidGreeting = dynamic(() => import('./sections/1.Greeting/PolaroidGreeting'));
-const PolaroidGreeting2 = dynamic(() => import('./sections/1.Greeting/PolaroidGreeting2'));
-const BasicBrideGroom = dynamic(() => import('./sections/2.BrideGroom/BasicBrideGroom'));
-const CardBrideGroom = dynamic(() => import('./sections/2.BrideGroom/CardBrideGroom'));
-const TrendyTextBrideGroom = dynamic(() => import('./sections/2.BrideGroom/TrendyTextBrideGroom'));
+import BasicGreeting from './sections/1.Greeting/BasicGreeting';
+import VideoGreeting from './sections/1.Greeting/VideoGreeting';
+import VideoGreeting2 from './sections/1.Greeting/VideoGreeting2';
+import PolaroidGreeting from './sections/1.Greeting/PolaroidGreeting';
+import PolaroidGreeting2 from './sections/1.Greeting/PolaroidGreeting2';
+import BasicBrideGroom from './sections/2.BrideGroom/BasicBrideGroom';
+import CardBrideGroom from './sections/2.BrideGroom/CardBrideGroom';
+import TrendyTextBrideGroom from './sections/2.BrideGroom/TrendyTextBrideGroom';
 import MainIntro from './sections/0.Intro/MainIntro';
 import BasicIntro from './sections/0.Intro/BasicIntro';
 
-const BasicDate = dynamic(() => import('./sections/3.Date/BasicDate'));
-const TypingDate = dynamic(() => import('./sections/3.Date/TypingDate'));
-const SoftTypingDate = dynamic(() => import('./sections/3.Date/SoftTypingDate'));
-const FlipBoardDate = dynamic(() => import('./sections/3.Date/FlipBoardDate'));
-const NewmorphismCalendar = dynamic(() => import('./sections/3.Date/NewmorphismCalendar'));
-const BasicLocation = dynamic(() => import('./sections/4.Location/BasicLocation'));
-const NewmorphismLocation = dynamic(() => import('./sections/4.Location/NewmorphismLocation'));
-const GlassmorphismLocation = dynamic(() => import('./sections/4.Location/GlassmorphismLocation'));
+import BasicDate from './sections/3.Date/BasicDate';
+import TypingDate from './sections/3.Date/TypingDate';
+import SoftTypingDate from './sections/3.Date/SoftTypingDate';
+import FlipBoardDate from './sections/3.Date/FlipBoardDate';
+import NewmorphismCalendar from './sections/3.Date/NewmorphismCalendar';
+import BasicLocation from './sections/4.Location/BasicLocation';
+import NewmorphismLocation from './sections/4.Location/NewmorphismLocation';
+import GlassmorphismLocation from './sections/4.Location/GlassmorphismLocation';
 
-const GlassmorphismCalendar = dynamic(() => import('./sections/3.Date/GlassmorphismCalendar'));
-const BasicAccount = dynamic(() => import('./sections/5.Account/BasicAccount'));
-const GlassmorphismAccount = dynamic(() => import('./sections/5.Account/GlassmorphismAccount'));
-const BasicGallery = dynamic(() => import('./sections/6.Gallery/BasicGallery'));
-const FlyingGallery = dynamic(() => import('./sections/6.Gallery/FlyingGallery'));
-const AlbumGallery = dynamic(() => import('./sections/6.Gallery/AlbumGallery'));
-const ARViewer = dynamic(() => import('./sections/7.special/ARViewer'));
-const ARCardScan = dynamic(() => import('./sections/7.special/ARCardScan'));
-const GlassmorphismMemories = dynamic(() => import('./sections/8.Memories/GlassmorphismMemories'));
+import GlassmorphismCalendar from './sections/3.Date/GlassmorphismCalendar';
+import BasicAccount from './sections/5.Account/BasicAccount';
+import GlassmorphismAccount from './sections/5.Account/GlassmorphismAccount';
+import BasicGallery from './sections/6.Gallery/BasicGallery';
+import FlyingGallery from './sections/6.Gallery/FlyingGallery';
+import AlbumGallery from './sections/6.Gallery/AlbumGallery';
+import ARViewer from './sections/7.special/ARViewer';
+import ARCardScan from './sections/7.special/ARCardScan';
+import GlassmorphismMemories from './sections/8.Memories/GlassmorphismMemories';
 
 // Debug Wrapper
 import SectionDebugWrapper from './dev/SectionDebugWrapper';
@@ -201,7 +201,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     // 2. Intro sequence frames (Priority)
     for (let i = 1; i <= 45; i++) {
       const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/ImageToStl.com_intro/frame_${frameNum}.jpg`;
+      const url = `/test-resources/intro/frame_${frameNum}.jpg`;
       priorityTasks.push(
         () => new Promise<void>((resolve) => {
           const img = new window.Image();
@@ -230,7 +230,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     // 4. VideoGreeting2 frames (Regular)
     for (let i = 1; i <= 73; i++) {
       const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/ImageToStl.com_video/frame_${frameNum}.jpg`;
+      const url = `/test-resources/video/frame_${frameNum}.jpg`;
       regularTasks.push(
         () => new Promise<void>((resolve) => {
           const img = new window.Image();
@@ -245,8 +245,8 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     allUrls.forEach(url => {
       // Skip if already in priority
       if (url === introVideo) return;
-      if (url.includes('ImageToStl.com_intro')) return;
-      if (url.includes('ImageToStl.com_video')) return; // already in regular
+      if (url.includes('/test-resources/intro')) return;
+      if (url.includes('/test-resources/video')) return; // already in regular
 
       if (url.match(/\.(mp4|webm)$/i)) {
         regularTasks.push(

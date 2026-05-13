@@ -10,7 +10,7 @@ import { useIntroFaded } from '@/lib/preloaded-media-context';
 
 const TOTAL_FRAMES = 73;
 const FRAME_RATE = 25; // 약 3초 분량 (73프레임 / 25fps)
-const FRAME_PATH = '/test-resources/ImageToStl.com_video';
+const FRAME_PATH = '/test-resources/video';
 
 export default function VideoGreeting2({ isVisible }: SectionProps) {
   const introFadedOut = useIntroFaded();
