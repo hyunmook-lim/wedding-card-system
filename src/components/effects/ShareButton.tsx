@@ -27,10 +27,10 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    // 강제로 운영 주소 고정 (테스트용)
-    const productionUrl = 'https://anotherwedding.vercel.app';
-    const currentUrl = `${productionUrl}/${weddingId}`;
-    const imageUrl = `${productionUrl}/test-resources/openimage.jpeg`;
+    // Use environment variable with a hardcoded fallback for production
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
+    const currentUrl = `${baseUrl}/${weddingId}`;
+    const imageUrl = `${baseUrl}/test-resources/openimage.jpeg`;
 
     console.log('3. Final Sharing URL:', currentUrl);
 
@@ -42,7 +42,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: `${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식`,
+        title: `${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식 (${new Date().getSeconds()})`,
         description: `${weddingData.event.location.name}\n${formattedDate} ${formattedTime}`,
         imageUrl: imageUrl,
         link: {
