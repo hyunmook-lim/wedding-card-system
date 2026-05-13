@@ -15,36 +15,34 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
   }, [weddingId]);
 
   const handleShare = () => {
-    // 🔍 KAKAO SHARE DEBUG
-    console.log('--- KAKAO SHARE DEBUG ---');
-    console.log('1. NEXT_PUBLIC_BASE_URL (Env):', process.env.NEXT_PUBLIC_BASE_URL);
-    console.log('2. window.location.origin (Current):', typeof window !== 'undefined' ? window.location.origin : 'N/A');
+    if (!window.Kakao || !weddingData) return;
 
-    if (!window.Kakao) {
-      alert('카카오 SDK를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.');
-      return;
-    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
+    const currentUrl = `${baseUrl}/${weddingId}`;
+    const imageUrl = `${baseUrl}${weddingData.ogImage || '/test-resources/openimage.jpeg'}`;
 
-    if (!weddingData) return;
+    // Format date and time
+    const dateObj = new Date(weddingData.event.date);
+    const formattedDate = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
+    const formattedTime = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-    // --- CACHE BUSTING TEST ---
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: '신랑 신부의 특별한 초대장', // 완전히 새로운 제목
-        description: '세상에 단 하나뿐인 우리만의 청첩장입니다.',
-        imageUrl: 'https://anotherwedding.vercel.app/test-resources/openimage.jpeg?v=' + Date.now(),
+        title: `${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식`,
+        description: `${weddingData.event.location.name}\n${formattedDate} ${formattedTime}`,
+        imageUrl: imageUrl,
         link: {
-          mobileWebUrl: 'https://anotherwedding.vercel.app/default',
-          webUrl: 'https://anotherwedding.vercel.app/default',
+          mobileWebUrl: currentUrl,
+          webUrl: currentUrl,
         },
       },
       buttons: [
         {
-          title: '초대장 열어보기', // 버튼 이름도 새로 변경
+          title: '청첩장 보기',
           link: {
-            mobileWebUrl: 'https://anotherwedding.vercel.app/default',
-            webUrl: 'https://anotherwedding.vercel.app/default',
+            mobileWebUrl: currentUrl,
+            webUrl: currentUrl,
           },
         },
       ],
