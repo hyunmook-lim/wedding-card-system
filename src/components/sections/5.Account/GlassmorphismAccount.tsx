@@ -67,8 +67,8 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
       </div>
 
       <LiquidGlassWidget 
-        className="relative h-[220px] flex items-center justify-center rounded-[2rem] overflow-hidden"
-        containerClassName="w-full h-full flex flex-col"
+        className="relative min-h-[220px] flex items-center justify-center rounded-[2rem] overflow-hidden"
+        containerClassName="w-full h-full min-h-[220px] flex flex-col"
       >
         <AnimatePresence mode="wait">
           {isRevealed ? (
@@ -77,31 +77,31 @@ function AccountGroup({ type, label, accounts, isRevealed, onToggle }: AccountGr
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.02 }}
-              className="w-full h-full divide-y divide-black/5 flex flex-col justify-center"
+              className="w-full h-full divide-y divide-black/5 flex flex-col"
             >
               {accounts.map((acc, idx) => (
                 <div 
                   key={idx} 
-                  className="flex items-center justify-between px-6 py-[18px] hover:bg-black/5 transition-colors flex-1"
+                  className="flex items-center justify-between px-5 py-3.5 hover:bg-black/5 transition-colors"
                 >
-                  <div className="flex flex-col space-y-1">
-                    <div className="flex items-center space-x-2.5">
-                       <span className="text-[0.6rem] font-extrabold px-1.5 py-0.5 rounded-md bg-black/5 text-black/30 uppercase tracking-widest">
+                  <div className="flex flex-col space-y-0.5 min-w-0">
+                    <div className="flex items-center space-x-2">
+                       <span className="text-[0.55rem] font-extrabold px-1.5 py-0.5 rounded bg-black/5 text-black/30 uppercase tracking-tighter">
                           {acc.relation}
                        </span>
-                       <span className="text-[0.9rem] font-bold text-black/80 tracking-tight">
+                       <span className="text-[0.85rem] font-bold text-black/80 tracking-tight">
                           {acc.name}
                        </span>
                     </div>
-                    <div className="text-[0.75rem] text-black/40 font-medium tracking-tight">
-                      {acc.bank} <span className="opacity-20 mx-1">|</span> {acc.accountNumber}
+                    <div className="text-[0.7rem] text-black/40 font-medium tracking-tighter truncate">
+                      {acc.bank} <span className="opacity-20 mx-0.5">|</span> {acc.accountNumber}
                     </div>
                   </div>
                   
                   <button 
                     onClick={() => handleCopy(acc.accountNumber, idx)}
                     className={cn(
-                      "relative h-8 px-4 rounded-full text-[0.65rem] font-bold transition-all active:scale-90 shadow-sm",
+                      "relative h-7 px-3 ml-2 shrink-0 rounded-full text-[0.6rem] font-bold transition-all active:scale-90 shadow-sm",
                       copiedIndex === idx 
                         ? "bg-green-500 text-white" 
                         : "bg-black/5 text-black/60 hover:bg-black/10"
