@@ -30,3 +30,24 @@ body {
   color: var(--foreground);
   font-family: 'GowunDodum', Arial, Helvetica, sans-serif;
 }
+
+/* 이미지 및 미디어 보호 설정: iOS 카카오톡/Safari 최적화 */
+img, 
+canvas, 
+video,
+[style*="background-image"] {
+  -webkit-touch-callout: none !important;    /* iOS 시스템 메뉴 강제 차단 */
+  -webkit-user-select: none !important;      /* 선택 방지 */
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;        /* 드래그 방지 */
+  -webkit-tap-highlight-color: transparent;  /* 터치 시 하이라이트 제거 */
+  pointer-events: none !important;           /* 이미지 자체의 이벤트 수신 차단 (메뉴 방지 핵심) */
+}
+
+/* 링크 내 이미지가 있는 경우에도 메뉴 차단 */
+a img {
+  -webkit-touch-callout: none !important;
+}
