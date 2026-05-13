@@ -13,6 +13,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const framesRef = useRef<HTMLImageElement[]>([]);
   const [isIntroLoaded, setIsIntroLoaded] = useState(false);
+  const [isFirstFrameRendered, setIsFirstFrameRendered] = useState(false);
 
   useEffect(() => {
     let loadedCount = 0;
@@ -28,6 +29,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
           canvas.width = firstImg.naturalWidth;
           canvas.height = firstImg.naturalHeight;
           ctx.drawImage(firstImg, 0, 0);
+          setIsFirstFrameRendered(true); // 첫 프레임 렌더링 완료 알림
         }
       }
     };
@@ -139,7 +141,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
 
             {/* Loading Overlay */}
             <AnimatePresence>
-                {isPreloading && (
+                {isPreloading && isFirstFrameRendered && (
                     <motion.div 
                         key="loading"
                         className="absolute bottom-24 left-0 right-0 flex flex-col items-center justify-center z-20"
