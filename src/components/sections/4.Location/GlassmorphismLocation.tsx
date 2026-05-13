@@ -112,7 +112,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
           >
             <div className="relative w-full overflow-hidden rounded-xl bg-transparent opacity-80 transition-opacity hover:opacity-100">
               <Image 
-                src="/test-resources/location/wedding-hall.png" 
+                src="/test-resources/location/wedding-hall.webp" 
                 alt="Map" 
                 width={500}
                 height={312}

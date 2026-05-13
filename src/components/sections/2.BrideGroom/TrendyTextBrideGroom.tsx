@@ -51,10 +51,10 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
   const { 
     groom, 
     bride, 
-    groomImage = '/test-resources/bride-groom/groom-full.png',
-    groomBgImage = '/test-resources/bride-groom/groom-background-full.png',
-    brideImage = '/test-resources/bride-groom/bride-full-changed.png',
-    brideBgImage = '/test-resources/bride-groom/bride-background.png'
+    groomImage = '/test-resources/bride-groom/groom-full.webp',
+    groomBgImage = '/test-resources/bride-groom/groom-background-full.webp',
+    brideImage = '/test-resources/bride-groom/bride-full-changed.webp',
+    brideBgImage = '/test-resources/bride-groom/bride-background.webp'
   } = config as { 
     groom: { name: string; nameEng?: string; relation: string; parents: { father: string; mother: string } };
     bride: { name: string; nameEng?: string; relation: string; parents: { father: string; mother: string } };
