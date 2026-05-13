@@ -59,7 +59,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
       <RevealContainer>
         {(isVisible) => (
           <>
-            <div className={`w-full flex flex-col items-end text-center transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            <div className={`w-full flex flex-col items-end text-center transition-all duration-[1800ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <div className="flex flex-col items-center">
@@ -85,7 +85,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
                 priority
               />
               {/* 인물 이미지는 살짝 왼쪽에서 시작해서 제자리(0)로 이동 */}
-              <div className={`absolute top-0 left-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              <div className={`absolute top-0 left-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-[1800ms] delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isVisible ? 'translate-x-12' : '-translate-x-4'
               }`}>
                 <Image 
@@ -107,7 +107,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
         {(isVisible) => (
           <>
             {/* 텍스트 영역 */}
-            <div className={`w-full flex flex-col items-start text-center transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            <div className={`w-full flex flex-col items-start text-center transition-all duration-[1800ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isVisible ? 'opacity-100 translate-y-0 text-gray-900' : 'opacity-0 translate-y-8 text-gray-400'
             }`}>
               <div className="flex flex-col items-center">
@@ -133,7 +133,7 @@ export default function TrendyTextBrideGroom({ config, isVisible: sectionVisible
                 priority
               />
               {/* 인물 이미지는 살짝 오른쪽에서 시작해서 제자리(0)로 이동 */}
-              <div className={`absolute top-0 right-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-1000 delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              <div className={`absolute top-0 right-0 bottom-0 w-[80%] z-10 pointer-events-none transition-transform duration-[1800ms] delay-100 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 isVisible ? 'translate-x-0' : 'translate-x-16'
               }`}>
                 <Image 

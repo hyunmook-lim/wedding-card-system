@@ -27,14 +27,9 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
 
   const endProgress = useMotionValue(0);
 
-  const videoOpacity = useTransform(
-    [scrollYProgress, endProgress],
-    ([s, e]: number[]) => Math.max(0.10, 1 - Math.max((s as number) / 0.3, e as number))
-  );
-  const videoBlur = useTransform(
-    [scrollYProgress, endProgress],
-    ([s, e]: number[]) => `blur(${Math.min(Math.max((s as number) / 0.3, e as number) * 20, 20)}px)`
-  );
+  const videoOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  
+  const videoBlur = useTransform(scrollYProgress, [0, 0.3], ["blur(0px)", "blur(20px)"]);
   const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   useEffect(() => {
@@ -158,8 +153,9 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.8, delay: 0.5 }}
+              className="scale-[1.2]"
             >
-              <ScrollIndicator color="#333333" text="Scroll Down" />
+              <ScrollIndicator color="#333333" text="스크롤을 내려주세요" />
             </motion.div>
           )}
         </AnimatePresence>

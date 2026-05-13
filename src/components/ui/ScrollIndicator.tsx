@@ -34,7 +34,7 @@ export function ScrollIndicator({ color = 'rgba(255, 255, 255, 0.8)', text = 'Sc
         </motion.div>
         
         <span 
-          className="text-[0.85rem] uppercase tracking-widest font-serif italic font-bold"
+          className="text-[0.85rem] tracking-[0.1em] font-gowun font-bold"
           style={{ color }}
         >
           {text}
