@@ -27,7 +27,8 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    window.alert(`[디버그] 카카오톡으로 보낼 주소: https://anotherwedding.vercel.app/default`);
+    const usedKey = '402797996...'; // JS Key prefix
+    window.alert(`[디버그]\n사용 중인 키: ${usedKey}\n보낼 주소: https://anotherwedding.vercel.app/default`);
 
     // HARDCODED for testing to ensure no env var issues
     const baseUrl = 'https://anotherwedding.vercel.app';
@@ -56,7 +57,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
       },
       buttons: [
         {
-          title: '청첩장 보기',
+          title: '[TEST] 보러가기',
           link: {
             mobileWebUrl: 'https://anotherwedding.vercel.app/default',
             webUrl: 'https://anotherwedding.vercel.app/default',
