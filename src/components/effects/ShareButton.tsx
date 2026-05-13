@@ -27,12 +27,14 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     if (!weddingData) return;
 
-    // Use environment variable with a hardcoded fallback for production
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
+    // HARDCODED for testing to ensure no env var issues
+    const baseUrl = 'https://anotherwedding.vercel.app';
     const currentUrl = `${baseUrl}/${weddingId}`;
     const imageUrl = `${baseUrl}/test-resources/openimage.jpeg`;
 
-    console.log('3. Final Sharing URL:', currentUrl);
+    console.log('--- KAKAO SHARE EXECUTE ---');
+    console.log('Target URL:', currentUrl);
+    console.log('Image URL:', imageUrl);
 
     // Format date and time (e.g. 2026.07.25 11:00)
     const dateObj = new Date(weddingData.event.date);
@@ -42,7 +44,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
     window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: `${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식 (${new Date().getSeconds()})`,
+        title: `[PRODUCTION] ${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식 (${new Date().getSeconds()})`,
         description: `${weddingData.event.location.name}\n${formattedDate} ${formattedTime}`,
         imageUrl: imageUrl,
         link: {
