@@ -17,19 +17,10 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
   const handleShare = () => {
     if (!window.Kakao || !weddingData) return;
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
+    // 환경변수가 꼬여있을 수 있으므로, 무조건 현재 브라우저의 실제 주소를 사용하도록 강제합니다.
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://anotherwedding.vercel.app';
     const currentUrl = `${baseUrl}/${weddingId}`;
     const imageUrl = `${baseUrl}${weddingData.ogImage || '/test-resources/openimage.jpeg'}`;
-
-    console.log("=== Kakao Share Debug ===");
-    console.log("baseUrl:", baseUrl);
-    console.log("currentUrl:", currentUrl);
-    console.log("weddingId:", weddingId);
-    console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
-    console.log("=========================");
-
-    // TODO: Remove this alert after debugging
-    alert(`디버그용 알림\n전송될 링크: ${currentUrl}\nNEXT_PUBLIC_BASE_URL: ${process.env.NEXT_PUBLIC_BASE_URL || '없음'}`);
 
     // Format date and time
     const dateObj = new Date(weddingData.event.date);
