@@ -21,6 +21,16 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
     const currentUrl = `${baseUrl}/${weddingId}`;
     const imageUrl = `${baseUrl}${weddingData.ogImage || '/test-resources/openimage.jpeg'}`;
 
+    console.log("=== Kakao Share Debug ===");
+    console.log("baseUrl:", baseUrl);
+    console.log("currentUrl:", currentUrl);
+    console.log("weddingId:", weddingId);
+    console.log("NEXT_PUBLIC_BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL);
+    console.log("=========================");
+
+    // TODO: Remove this alert after debugging
+    alert(`디버그용 알림\n전송될 링크: ${currentUrl}\nNEXT_PUBLIC_BASE_URL: ${process.env.NEXT_PUBLIC_BASE_URL || '없음'}`);
+
     // Format date and time
     const dateObj = new Date(weddingData.event.date);
     const formattedDate = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
