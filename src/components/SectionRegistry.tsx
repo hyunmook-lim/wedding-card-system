@@ -282,14 +282,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
           () =>
             new Promise<void>((resolve) => {
               const img = new window.Image();
-              img.onload = () => {
-                // 추가: 미리 디코딩하여 스크롤 시 끊김 방지
-                if ('decode' in img) {
-                  img.decode().then(() => resolve()).catch(() => resolve());
-                } else {
-                  resolve();
-                }
-              };
+              img.onload = () => resolve();
               img.onerror = () => resolve();
               img.src = url;
             })
@@ -297,41 +290,34 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
       }
     });
 
-    // --- Run tasks: Critical(Blocking) vs Non-Critical(Background) ---
-    const totalPriority = priorityTasks.length;
-    
-    // 비동기 백그라운드 로딩 함수
-    const runRegularTasksInBackground = () => {
-      // 일반 에셋(갤러리, 하위 섹션 등)은 로딩 UI를 막지 않고 다운로드
-      // 성능 최적화를 위해 청크(chunk) 단위로 병렬 처리할 수도 있으나,
-      // 브라우저가 자체적으로 동시 연결(보통 6개)을 관리하므로 모두 실행
-      Promise.all(regularTasks.map(t => t().catch(() => {}))).finally(() => {
-        // 모든 백그라운드 에셋 로드 완료 시 비디오/오디오 컨텍스트 한 번에 업데이트
-        setPreloadedMedia(new Map(preloadedMediaRef.current));
-      });
-    };
-
-    if (totalPriority === 0) {
+    // --- Run tasks sequentially by batch ---
+    const total = priorityTasks.length + regularTasks.length;
+    if (total === 0) {
       setLoadingProgress(100);
       setTimeout(() => setIsPreloading(false), 300);
-      runRegularTasksInBackground();
       return;
     }
 
-    let completedPriority = 0;
-    const onPriorityDone = () => {
-      completedPriority++;
-      setLoadingProgress(Math.round((completedPriority / totalPriority) * 100));
-      if (completedPriority >= totalPriority) {
-        // 우선순위 에셋(인트로, 폰트 등) 로드 완료 시 즉시 UI 블로킹 해제!
+    let completed = 0;
+    const onOneDone = () => {
+      completed++;
+      setLoadingProgress(Math.round((completed / total) * 100));
+      if (completed >= total) {
         setTimeout(() => setIsPreloading(false), 300);
-        // 즉시 백그라운드로 나머지 일반 에셋 다운로드 시작
-        runRegularTasksInBackground();
       }
     };
 
-    // 먼저 우선순위 태스크만 병렬 실행하여 초기 화면 진입 속도 극대화
-    priorityTasks.forEach(task => task().then(onPriorityDone).catch(onPriorityDone));
+    // First batch: Priority tasks (Wait for them to start)
+    Promise.all(priorityTasks.map(task => task().then(onOneDone).catch(onOneDone))).then(() => {
+      // Second batch: Regular tasks (All other media, including gallery)
+      regularTasks.forEach(task => task().then(onOneDone).catch(onOneDone));
+    });
+
+    // Update state snapshot when ALL are done
+    const allTasks = [...priorityTasks, ...regularTasks];
+    Promise.all(allTasks.map(t => t())).catch(() => {}).finally(() => {
+      setPreloadedMedia(new Map(preloadedMediaRef.current));
+    });
   }, [wedding, sections]);
 
 
