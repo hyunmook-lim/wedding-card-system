@@ -50,13 +50,19 @@ function DiagonalPhoto({
 
   // [메모리 크래시 핵심 수정] React 상태 대신 직접 DOM src 조작 (Virtualization)
   const imgRef = useRef<HTMLImageElement>(null);
+  const isLoadedRef = useRef(index < 14);
 
   // 브라우저 렌더링 직후에 한 번 강제로 현재 offset 기준으로 src 설정 (새로고침 시 alt 텍스트 깜빡임 방지)
   useEffect(() => {
     if (imgRef.current) {
       const currentOffset = offset.get();
-      if (currentOffset > -7 && currentOffset < 14) {
+      const shouldLoad = currentOffset > -7 && currentOffset < 14;
+      if (shouldLoad) {
         imgRef.current.setAttribute('src', src);
+        isLoadedRef.current = true;
+      } else {
+        imgRef.current.removeAttribute('src');
+        isLoadedRef.current = false;
       }
     }
   }, [offset, src]);
@@ -65,13 +71,14 @@ function DiagonalPhoto({
     if (!imgRef.current) return;
     // 화면에 보이기 직전(14)부터 메모리에 올리고, 벗어나면(-7) 메모리 완전 해제
     const shouldLoad = latest > -7 && latest < 14;
-    const currentSrc = imgRef.current.getAttribute('src');
     
-    if (shouldLoad && currentSrc !== src) {
+    if (shouldLoad && !isLoadedRef.current) {
       imgRef.current.setAttribute('src', src);
-    } else if (!shouldLoad && currentSrc) {
+      isLoadedRef.current = true;
+    } else if (!shouldLoad && isLoadedRef.current) {
       // src 속성 자체를 제거하여 브라우저의 GPU/RAM에 상주하는 디코딩된 비트맵 메모리 완전 반환
       imgRef.current.removeAttribute('src');
+      isLoadedRef.current = false;
     }
   });
 
