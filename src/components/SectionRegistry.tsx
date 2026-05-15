@@ -282,7 +282,14 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
           () =>
             new Promise<void>((resolve) => {
               const img = new window.Image();
-              img.onload = () => resolve();
+              img.onload = () => {
+                // 추가: 미리 디코딩하여 스크롤 시 끊김 방지
+                if ('decode' in img) {
+                  img.decode().then(() => resolve()).catch(() => resolve());
+                } else {
+                  resolve();
+                }
+              };
               img.onerror = () => resolve();
               img.src = url;
             })

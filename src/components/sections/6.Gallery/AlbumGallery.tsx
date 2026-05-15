@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 
-const GALLERY_IMAGES = Array.from({ length: 20 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
+const GALLERY_IMAGES = Array.from({ length: 33 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
 
 function DiagonalPhoto({
   src,
@@ -172,24 +172,37 @@ export default function AlbumGallery({ config, isVisible }: SectionProps) {
     }
   });
 
-  // 브라우저 백그라운드에서 모든 사진을 미리 다운로드(캐싱)하는 프리로드 로직
+  // 브라우저 백그라운드에서 모든 사진을 미리 다운로드(캐싱) 및 디코딩하는 프리로드 로직
   useEffect(() => {
     if (!isVisible || typeof window === 'undefined') return;
 
-    const preloadAllImages = () => {
-      images.forEach((src) => {
-        const img = new window.Image();
-        img.src = src;
-      });
+    // 1. 중복 방지: config에 이미지가 명시되어 있다면 SectionRegistry에서 이미 프리로딩을 수행함
+    const hasConfigImages = config?.images && (config.images as string[]).length > 0;
+    if (hasConfigImages) return;
+
+    const preloadAllImages = async () => {
+      // 2. 순차적 로딩 및 디코딩: 네트워크 대역폭을 독점하지 않으면서 메모리에 미리 올림
+      for (const src of images) {
+        try {
+          const img = new window.Image();
+          img.src = src;
+          // 브라우저가 지원한다면 decode()를 호출하여 GPU 메모리에 미리 로드
+          if ('decode' in img) {
+            await img.decode().catch(() => {}); 
+          }
+        } catch (e) {
+          console.warn(`Failed to preload gallery image: ${src}`, e);
+        }
+      }
     };
 
-    // 웹 페이지 접속 시 스크롤에 버벅임이 없도록 브라우저 여유 시간에 20장 전부 다운로드
+    // 3. 브라우저 유휴 시간에 실행하여 초기 렌더링 성능에 영향 주지 않음
     if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(preloadAllImages);
+      window.requestIdleCallback(() => preloadAllImages());
     } else {
-      setTimeout(preloadAllImages, 1000);
+      setTimeout(preloadAllImages, 1500);
     }
-  }, [images, isVisible]);
+  }, [images, isVisible, config?.images]);
 
   if (!isVisible) return null;
 
