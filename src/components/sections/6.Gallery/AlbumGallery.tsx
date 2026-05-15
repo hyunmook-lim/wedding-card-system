@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 
-const GALLERY_IMAGES = Array.from({ length: 33 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
+const GALLERY_IMAGES = Array.from({ length: 24 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
 
 function DiagonalPhoto({
   src,
@@ -44,16 +44,27 @@ function DiagonalPhoto({
     }
   });
 
-  // 등장 시 페이드인
-  const entranceOpacity = useTransform(inViewProgress, [0.95, 1.0], [0, 0.9]);
-  // 지나간 사진이 서서히 페이드아웃 (offset -1 ~ -4 구간에서 점진적으로 사라짐)
-  const exitOpacity = useTransform(offset, [-5, -1, 40], [0, 0.9, 0.9]);
-  // 두 값 중 작은 쪽 적용
-  const opacity = useTransform([entranceOpacity, exitOpacity], ([a, b]: number[]) => Math.min(a, b));
+  // 렌더링 최적화: 시야에서 완전히 벗어나면 display를 none 처리
+  // 페이드인/아웃 구간: -5~-1 (카메라를 지나칠 때 퇴장), 8~12 (멀리서 다가올 때 진입)
+  const opacity = useTransform(offset, [-5, -1, 8, 12], [0, 0.9, 0.9, 0]);
+  const display = useTransform(offset, (v) => (v > 12 || v < -5) ? "none" : "flex");
+  const pointerEvents = useTransform(offset, (v) => (v > -3 && v < 12) ? 'auto' : 'none');
 
-  // 페이드아웃 완료 후 DOM에서 제거 (-5 이하이면 이미 opacity 0)
-  const display = useTransform(offset, (v) => (v > 40 || v < -5) ? "none" : "flex");
-  const pointerEvents = useTransform(offset, (v) => (v > -3 && v < 40) ? 'auto' : 'none');
+  // [메모리 크래시 핵심 수정] React 상태 대신 직접 DOM src 조작 (Virtualization)
+  const imgRef = useRef<HTMLImageElement>(null);
+  useMotionValueEvent(offset, "change", (latest) => {
+    if (!imgRef.current) return;
+    // 화면에 보이기 직전(14)부터 메모리에 올리고, 벗어나면(-7) 메모리 완전 해제
+    const shouldLoad = latest > -7 && latest < 14;
+    const currentSrc = imgRef.current.getAttribute('src');
+    
+    if (shouldLoad && currentSrc !== src) {
+      imgRef.current.setAttribute('src', src);
+    } else if (!shouldLoad && currentSrc) {
+      // src 속성 자체를 제거하여 브라우저의 GPU/RAM에 상주하는 디코딩된 비트맵 메모리 완전 반환
+      imgRef.current.removeAttribute('src');
+    }
+  });
 
   return (
     <motion.div
@@ -62,7 +73,6 @@ function DiagonalPhoto({
         x, y, z, display,
         rotateY: -20,
         zIndex: total - index,
-        willChange: 'transform',
         transformStyle: 'preserve-3d'
       }}
     >
@@ -81,11 +91,12 @@ function DiagonalPhoto({
           }}
         >
           <motion.img 
-            src={src} 
+            ref={imgRef}
             alt={`Album photo ${index + 1}`}
             className="relative block w-auto h-auto max-w-[75vw] max-h-[75vw] sm:max-w-[300px] sm:max-h-[300px]"
-            loading="lazy"
+            loading="eager"
             decoding="async"
+            // src={src} -> useMotionValueEvent에서 직접 주입하여 메모리 관리
           />
 
           {/* 상단 테두리 — 왼쪽 대각선 컷 (투명→불투명 그라데이션) */}
@@ -135,31 +146,7 @@ export default function AlbumGallery({ config, isVisible }: SectionProps) {
   // 1. 완벽한 Sticky 구간에서만 스크롤이 사진 인덱스에 매핑됨
   const rawScrollOffset = useTransform(stickyProgress, [0, 1], [0, images.length - 0.5]);
   // useSpring으로 스크롤 입력을 부드럽게 보간 (끊김 제거)
-  const scrollOffset = useSpring(rawScrollOffset, { stiffness: 300, damping: 30, mass: 0.5 });
-  
-  // 2. 시간 기반 등장 오프셋 (맨 뒤 -20 궤도선상에서 대기)
-  const entranceOffset = useMotionValue(-20);
-  
-  // 두 값을 합쳐 최종 진행률 산출
-  const globalProgress = useTransform([scrollOffset, entranceOffset], ([s, e]: number[]) => s + e);
-
-  const hasEnteredRef = useRef(false);
-
-  // 컨테이너가 완벽히 상단에 고정된 시점(stickyProgress > 0)에 촤라락 모션 격발!
-  useMotionValueEvent(stickyProgress, "change", (latest) => {
-    if (latest > 0.001 && !hasEnteredRef.current) {
-      hasEnteredRef.current = true;
-      animate(entranceOffset, 0, { type: "spring", stiffness: 150, damping: 25, mass: 0.8 });
-    } 
-  });
-
-  // 컨테이너가 다시 화면 아래로 내려갈 때 초기화
-  useMotionValueEvent(inViewProgress, "change", (latest) => {
-    if (latest < 0.5 && hasEnteredRef.current) {
-      hasEnteredRef.current = false;
-      entranceOffset.set(-20);
-    }
-  });
+  const globalProgress = useSpring(rawScrollOffset, { stiffness: 300, damping: 30, mass: 0.5 });
 
   const [showTitle, setShowTitle] = useState(false);
 
