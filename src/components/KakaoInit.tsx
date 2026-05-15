@@ -7,7 +7,7 @@ export default function KakaoInit() {
   useEffect(() => {
     const initKakao = () => {
       if (window.Kakao && !window.Kakao.isInitialized()) {
-        const key = process.env.NEXT_PUBLIC_KAKAO_JS_KEY || '402797996de97afa0b70fad9b4b815ee';
+        const key = process.env.NEXT_PUBLIC_KAKAO_JS_KEY || '582d0ff214b1bf60c65cf4bd6954309f';
         window.Kakao.init(key);
       }
     };
