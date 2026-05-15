@@ -175,7 +175,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         isVisible: true,
         content: {
           background: { type: 'none' },
-          images: Array.from({ length: 24 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`)
+          images: Array.from({ length: 33 }, (_, i) => `/test-resources/gallery2/${i + 1}.webp`)
         }
       },
     ],

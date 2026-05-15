@@ -336,7 +336,6 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
   }, [showIntro, isPreloading, sections]);
 
   const fadeInRef = useRef<HTMLDivElement>(null);
-  const fadeOutRef = useRef<HTMLDivElement>(null);
 
   // 1. Separate 'intro' from other sections
   const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
@@ -392,7 +391,6 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
         {!showIntro && (
           <AdaptiveBackground
             fadeInTargetRef={fadeInRef}
-            fadeOutTargetRef={fadeOutRef}
           />
         )}
 
@@ -416,7 +414,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
 
               return (
                 <SectionDebugWrapper key={section.id} type={section.type} index={index}>
-                  <div ref={section.id === 'sec_memories' ? fadeInRef : section.id === 'sec_8' ? fadeOutRef : null}>
+                  <div ref={section.id === 'sec_memories' ? fadeInRef : null}>
                     <StickySection
                       index={index}
                       height={height}

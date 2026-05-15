@@ -8,21 +8,19 @@ import { useState, useEffect, useRef } from 'react';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 
 
-const GALLERY_IMAGES = Array.from({ length: 24 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
+const GALLERY_IMAGES = Array.from({ length: 33 }, (_, i) => `/test-resources/gallery2/${i + 1}.webp`);
 
 function DiagonalPhoto({
   src,
   index,
   total,
   globalProgress,
-  inViewProgress,
   onClick
 }: {
   src: string;
   index: number;
   total: number;
   globalProgress: MotionValue<number>;
-  inViewProgress: MotionValue<number>;
   onClick: () => void;
 }) {
   const offset = useTransform(globalProgress, (progress) => index - progress);
@@ -52,6 +50,17 @@ function DiagonalPhoto({
 
   // [메모리 크래시 핵심 수정] React 상태 대신 직접 DOM src 조작 (Virtualization)
   const imgRef = useRef<HTMLImageElement>(null);
+
+  // 브라우저 렌더링 직후에 한 번 강제로 현재 offset 기준으로 src 설정 (새로고침 시 alt 텍스트 깜빡임 방지)
+  useEffect(() => {
+    if (imgRef.current) {
+      const currentOffset = offset.get();
+      if (currentOffset > -7 && currentOffset < 14) {
+        imgRef.current.setAttribute('src', src);
+      }
+    }
+  }, [offset, src]);
+
   useMotionValueEvent(offset, "change", (latest) => {
     if (!imgRef.current) return;
     // 화면에 보이기 직전(14)부터 메모리에 올리고, 벗어나면(-7) 메모리 완전 해제
@@ -93,10 +102,12 @@ function DiagonalPhoto({
           <motion.img 
             ref={imgRef}
             alt={`Album photo ${index + 1}`}
-            className="relative block w-auto h-auto max-w-[75vw] max-h-[75vw] sm:max-w-[300px] sm:max-h-[300px]"
+            // text-transparent를 추가하여 src가 비어있을 때 alt 텍스트가 노출되는 것을 숨김
+            className="relative block w-auto h-auto max-w-[75vw] max-h-[75vw] sm:max-w-[300px] sm:max-h-[300px] text-transparent"
             loading="eager"
             decoding="async"
-            // src={src} -> useMotionValueEvent에서 직접 주입하여 메모리 관리
+            // 초기 로딩 시 상위 14개 이미지만 즉시 src 부여 (Virtualization 유지하면서 깜빡임 제거)
+            src={index < 14 ? src : undefined}
           />
 
           {/* 상단 테두리 — 왼쪽 대각선 컷 (투명→불투명 그라데이션) */}
@@ -243,7 +254,6 @@ export default function AlbumGallery({ config, isVisible }: SectionProps) {
                     index={idx} 
                     total={images.length} 
                     globalProgress={globalProgress}
-                    inViewProgress={inViewProgress}
                     onClick={() => {
                        setViewerIndex(idx);
                        setViewerOpen(true);
