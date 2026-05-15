@@ -1,8 +1,8 @@
 import { WeddingConfig } from '@/types/wedding';
 
 export const MOCK_DB: Record<string, WeddingConfig> = {
-  'default': {
-    id: 'default',
+  'younghoo_yeeun': {
+    id: 'younghoo_yeeun',
     couple: {
       groom: {
         name: '유영후',
