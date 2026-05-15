@@ -227,7 +227,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     }
 
     // 4. VideoGreeting2 frames (Regular)
-    for (let i = 1; i <= 73; i++) {
+    for (let i = 1; i <= 74; i++) {
       const frameNum = String(i).padStart(4, '0');
       const url = `/test-resources/video/frame_${frameNum}.webp`;
       regularTasks.push(

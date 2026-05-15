@@ -8,7 +8,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, anima
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { useIntroFaded } from '@/lib/preloaded-media-context';
 
-const TOTAL_FRAMES = 73;
+const TOTAL_FRAMES = 74;
 const FRAME_RATE = 25; // 약 3초 분량 (73프레임 / 25fps)
 const FRAME_PATH = '/test-resources/video';
 
