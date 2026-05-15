@@ -1,5 +1,7 @@
 export interface KakaoShareOptions {
   objectType: string;
+  address?: string;
+  addressTitle?: string;
   content: {
     title: string;
     description: string;

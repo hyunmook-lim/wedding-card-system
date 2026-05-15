@@ -27,7 +27,9 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
     const formattedTime = dateObj.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: false });
 
     window.Kakao.Share.sendDefault({
-      objectType: 'feed',
+      objectType: 'location',
+      address: weddingData.event.location.address || '서울 강남구 논현로132길 29',
+      addressTitle: weddingData.event.location.name || '토브헤세드',
       content: {
         title: `${weddingData.couple.groom.name} & ${weddingData.couple.bride.name}의 결혼식`,
         description: `${weddingData.event.location.name}\n${formattedDate} ${formattedTime}`,
