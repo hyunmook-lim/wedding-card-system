@@ -17,8 +17,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
   const handleShare = () => {
     if (!window.Kakao || !weddingData) return;
 
-    // 환경변수가 꼬여있을 수 있으므로, 무조건 현재 브라우저의 실제 주소를 사용하도록 강제합니다.
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://anotherwedding.vercel.app';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
     const currentUrl = `${baseUrl}/${weddingId}`;
     const imageUrl = `${baseUrl}${weddingData.ogImage || '/test-resources/openimage.jpeg'}`;
 

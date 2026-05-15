@@ -7,8 +7,12 @@ export default function KakaoInit() {
   useEffect(() => {
     const initKakao = () => {
       if (window.Kakao && !window.Kakao.isInitialized()) {
-        const key = process.env.NEXT_PUBLIC_KAKAO_JS_KEY || '582d0ff214b1bf60c65cf4bd6954309f';
-        window.Kakao.init(key);
+        const key = process.env.NEXT_PUBLIC_KAKAO_JS_KEY || '';
+        if (key) {
+          window.Kakao.init(key);
+        } else {
+          console.error('Kakao JS Key is missing in environment variables');
+        }
       }
     };
 
