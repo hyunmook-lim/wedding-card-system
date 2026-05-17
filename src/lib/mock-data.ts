@@ -100,10 +100,10 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
           isSticky: false,
           background: { type: 'none' },
           milestones: [
-            { id: 'start', date: '2018년 05월 27일', title: '설레었던 우리의 시작', image: '/test-resources/memories/1.webp' },
+            { id: 'start', date: '2018년, 05월 27일', title: '설레었던 우리의 시작', image: '/test-resources/memories/1.webp' },
             { id: 'period', date: '연애기간 2982일', title: '울고 웃었던\n8년간의 장거리 연애', image: '/test-resources/memories/2.webp' },
-            { id: 'promise', date: '2025. 04. 12', title: 'Will you marry me?', image: '/test-resources/memories/3.webp' },
-            { id: 'forever', date: '2026. 07. 25', title: '평생을 약속하는 오늘', image: '/test-resources/memories/4.webp' }
+            { id: 'promise', date: '2025년, 04월 12일', title: 'Will you marry me?', image: '/test-resources/memories/3.webp' },
+            { id: 'forever', date: '2026년, 07월 25일', title: '평생을 약속하는 오늘', image: '/test-resources/memories/4.webp' }
           ]
         }
       },
