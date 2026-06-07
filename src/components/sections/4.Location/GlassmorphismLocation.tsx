@@ -149,11 +149,11 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
                   <Typography className="text-[0.7rem] font-extrabold text-black/20 uppercase tracking-[0.2em] mb-1">
                     {info.title}
                   </Typography>
-                  <Typography variant="body" className="text-[0.95rem] text-black/80 font-medium leading-tight whitespace-nowrap">
+                  <Typography variant="body" className="text-[0.95rem] text-black/80 font-medium leading-tight break-keep">
                     {info.content}
                   </Typography>
                   {info.sub && (
-                    <Typography className="text-[0.7rem] text-black/40 mt-1 font-light tracking-wide italic whitespace-pre-line">
+                    <Typography className="text-[0.7rem] text-black/40 mt-1 font-light tracking-wide italic whitespace-pre-line break-keep">
                       {info.sub}
                     </Typography>
                   )}
