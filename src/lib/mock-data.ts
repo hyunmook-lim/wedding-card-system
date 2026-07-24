@@ -24,7 +24,7 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
         address: '서울시 강남구 논현동 123',
         lat: 37.5,
         lng: 127.0,
-        mapUrl: 'https://naver.me/placeholder'
+        mapUrl: 'https://naver.me/53lKcqqR'
       }
     },
     sections: [
