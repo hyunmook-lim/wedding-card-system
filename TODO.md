@@ -70,7 +70,7 @@
 
 ## P0. 초기 미디어 로딩
 
-- [ ] `SectionRegistry`의 프리로드 task 중복 실행 제거
+- [x] `SectionRegistry`의 프리로드 task 중복 실행 제거
   - 대상: `src/components/SectionRegistry.tsx`
   - 진행률 계산과 `preloadedMedia` snapshot이 동일한 Promise 결과를 공유하게 한다.
   - 동일 URL에 대한 이미지, 영상, 음원 요청이 한 번만 생성되는지 Network 패널로 확인한다.

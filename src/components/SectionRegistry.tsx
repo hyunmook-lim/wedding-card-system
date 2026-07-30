@@ -160,6 +160,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
 
   // Preloading Logic — track ALL resources so isPreloading stays true until everything is ready
   useEffect(() => {
+    preloadedMediaRef.current.clear();
     const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
     const introContent = introSection?.content as Record<string, unknown> | undefined;
     const introVideo: string | undefined =
@@ -294,30 +295,51 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     const total = priorityTasks.length + regularTasks.length;
     if (total === 0) {
       setLoadingProgress(100);
-      setTimeout(() => setIsPreloading(false), 300);
-      return;
+      const timer = setTimeout(() => setIsPreloading(false), 300);
+      return () => clearTimeout(timer);
     }
 
+    let cancelled = false;
+    let completionTimer: ReturnType<typeof setTimeout> | undefined;
     let completed = 0;
     const onOneDone = () => {
       completed++;
-      setLoadingProgress(Math.round((completed / total) * 100));
-      if (completed >= total) {
-        setTimeout(() => setIsPreloading(false), 300);
+      if (!cancelled) {
+        setLoadingProgress(Math.round((completed / total) * 100));
       }
     };
 
-    // First batch: Priority tasks (Wait for them to start)
-    Promise.all(priorityTasks.map(task => task().then(onOneDone).catch(onOneDone))).then(() => {
-      // Second batch: Regular tasks (All other media, including gallery)
-      regularTasks.forEach(task => task().then(onOneDone).catch(onOneDone));
-    });
+    const runBatch = async (tasks: Array<() => Promise<void>>) => {
+      await Promise.all(tasks.map(async task => {
+        try {
+          await task();
+        } catch {
+          // A failed resource should not block the invitation.
+        } finally {
+          onOneDone();
+        }
+      }));
+    };
 
-    // Update state snapshot when ALL are done
-    const allTasks = [...priorityTasks, ...regularTasks];
-    Promise.all(allTasks.map(t => t())).catch(() => {}).finally(() => {
+    const preload = async () => {
+      await runBatch(priorityTasks);
+      await runBatch(regularTasks);
+
+      if (cancelled) return;
+
       setPreloadedMedia(new Map(preloadedMediaRef.current));
-    });
+
+      completionTimer = setTimeout(() => {
+        if (!cancelled) setIsPreloading(false);
+      }, 300);
+    };
+
+    void preload();
+
+    return () => {
+      cancelled = true;
+      if (completionTimer) clearTimeout(completionTimer);
+    };
   }, [wedding, sections]);
 
 

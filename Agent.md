@@ -451,7 +451,7 @@ Priority task 전체가 끝난 후 regular task를 동시에 시작한다.
 
 각 task가 끝날 때 `loadingProgress`를 갱신하고, 전체 task가 완료되면 300ms 후 `isPreloading`을 `false`로 변경한다.
 
-현재 코드는 진행률 계산용 task 실행과 `preloadedMedia` snapshot 생성용 task 실행을 별도로 수행한다. 두 경로 모두 같은 task 함수를 호출한다.
+프리로드 task는 priority batch와 regular batch 순서로 각각 한 번씩 실행된다. 모든 task가 끝나면 `preloadedMedia` snapshot을 갱신하고 300ms 후 `isPreloading`을 `false`로 변경한다.
 
 비디오 자원은 `preloadedMediaRef`의 `Map<string, HTMLVideoElement>`에 저장된다. 이미지와 음원은 로드 완료 여부만 추적한다.
 
