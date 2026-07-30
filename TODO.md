@@ -85,7 +85,7 @@
   - 갤러리와 후반 섹션 로딩이 첫 화면 진입을 막지 않게 한다.
   - Critical, near-viewport, on-demand 세 단계의 로딩 상태를 구분한다.
 
-- [ ] 프리로드 대상을 현재 결혼식 설정과 visible section 기준으로 수집
+- [x] 프리로드 대상을 현재 결혼식 설정과 visible section 기준으로 수집
   - 사용하지 않는 `VideoGreeting2` 프레임을 모든 청첩장에서 로드하지 않는다.
   - `isVisible: false` 섹션의 미디어를 로드하지 않는다.
   - 실제 렌더링되는 variant가 선언한 미디어만 수집한다.

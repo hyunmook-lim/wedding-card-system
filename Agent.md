@@ -428,7 +428,7 @@ public/test-resources/
 
 ### URL 수집
 
-`WeddingConfig` 전체를 재귀적으로 순회하면서 다음 확장자를 가진 문자열을 수집한다.
+intro와 `isVisible: true` 섹션의 `content`를 재귀적으로 순회하면서 다음 확장자를 가진 문자열을 수집한다.
 
 ```text
 jpeg, jpg, gif, png, webp, svg, mp4, webm, mp3, wav
@@ -437,13 +437,13 @@ jpeg, jpg, gif, png, webp, svg, mp4, webm, mp3, wav
 ### Priority task
 
 - `GowunDodum` 폰트
-- `/test-resources/intro/frame_0001.webp`부터 `frame_0045.webp`
+- intro variant가 `video`인 경우 `/test-resources/intro/frame_0001.webp`부터 `frame_0045.webp`
 - intro content에 `introVideo`가 있으면 해당 영상
 
 ### Regular task
 
-- `/test-resources/video/frame_0001.webp`부터 `frame_0074.webp`
-- WeddingConfig에서 수집한 나머지 이미지
+- visible greeting variant가 `video2`인 경우 `/test-resources/video/frame_0001.webp`부터 `frame_0074.webp`
+- visible section content에서 수집한 나머지 이미지
 - 영상
 - 음원
 

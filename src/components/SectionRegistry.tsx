@@ -168,7 +168,7 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     const introVideo: string | undefined =
       (typeof introContent?.introVideo === 'string' ? introContent.introVideo : undefined);
 
-    // --- Collect every URL from the entire wedding config ---
+    // --- Collect URLs from sections that can be rendered ---
     const allUrls = new Set<string>();
     const extractUrls = (obj: unknown) => {
       if (!obj) return;
@@ -181,8 +181,10 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
       }
     };
     
-    // Extract from the whole wedding object (including ogImage, event location images, etc)
-    extractUrls(wedding);
+    const visibleSections = sections.filter((section: SectionConfig) => (
+      section.type === 'intro' || section.isVisible
+    ));
+    visibleSections.forEach(section => extractUrls(section.content));
 
     // --- Build task lists with priority ---
     const priorityTasks: Array<() => Promise<void>> = [];
@@ -201,17 +203,19 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     );
 
     // 2. Intro sequence frames (Priority)
-    for (let i = 1; i <= 45; i++) {
-      const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/intro/frame_${frameNum}.webp`;
-      priorityTasks.push(
-        () => new Promise<void>((resolve) => {
-          const img = new window.Image();
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-          img.src = url;
-        })
-      );
+    if (introSection?.variant === 'video') {
+      for (let i = 1; i <= 45; i++) {
+        const frameNum = String(i).padStart(4, '0');
+        const url = `/test-resources/intro/frame_${frameNum}.webp`;
+        priorityTasks.push(
+          () => new Promise<void>((resolve) => {
+            const img = new window.Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = url;
+          })
+        );
+      }
     }
 
     // 3. Intro video (if variant is video) (Priority)
@@ -230,20 +234,25 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     }
 
     // 4. VideoGreeting2 frames (Regular)
-    for (let i = 1; i <= 74; i++) {
-      const frameNum = String(i).padStart(4, '0');
-      const url = `/test-resources/video/frame_${frameNum}.webp`;
-      regularTasks.push(
-        () => new Promise<void>((resolve) => {
-          const img = new window.Image();
-          img.onload = () => resolve();
-          img.onerror = () => resolve();
-          img.src = url;
-        })
-      );
+    const hasVideoGreeting2 = visibleSections.some((section: SectionConfig) => (
+      section.type === 'greeting' && section.variant === 'video2'
+    ));
+    if (hasVideoGreeting2) {
+      for (let i = 1; i <= 74; i++) {
+        const frameNum = String(i).padStart(4, '0');
+        const url = `/test-resources/video/frame_${frameNum}.webp`;
+        regularTasks.push(
+          () => new Promise<void>((resolve) => {
+            const img = new window.Image();
+            img.onload = () => resolve();
+            img.onerror = () => resolve();
+            img.src = url;
+          })
+        );
+      }
     }
 
-    // 5. All other media from sections (Regular)
+    // 5. All other media from visible sections (Regular)
     allUrls.forEach(url => {
       // Skip if already in priority
       if (url === introVideo) return;
