@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { getWedding } from '@/lib/fetch-wedding';
+import { notFound } from 'next/navigation';
 
 export const runtime = 'edge';
 
@@ -14,7 +15,11 @@ export const contentType = 'image/png';
 export default async function Image({ params }: { params: { weddingId: string } }) {
   const wedding = await getWedding(params.weddingId);
 
-  if (!wedding || !wedding.ogImage) {
+  if (!wedding) {
+    notFound();
+  }
+
+  if (!wedding.ogImage) {
     // Fallback if no image is found
     return new ImageResponse(
       (

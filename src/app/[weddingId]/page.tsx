@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { weddingId } = await params;
   const wedding = await getWedding(weddingId);
   
-  if (!wedding) return {};
+  if (!wedding) notFound();
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
   const ogImageUrl = wedding.ogImage ? `${baseUrl}${wedding.ogImage}` : `${baseUrl}/test-resources/openimage.webp`;

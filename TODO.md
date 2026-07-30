@@ -36,7 +36,7 @@
 
 ## P0. 데이터 정확성과 공개 범위
 
-- [ ] 존재하지 않는 `weddingId`에 기본 청첩장을 반환하는 fallback 제거
+- [x] 존재하지 않는 `weddingId`에 기본 청첩장을 반환하는 fallback 제거
   - 대상: `src/lib/fetch-wedding.ts`
   - 없는 ID에는 `null`을 반환한다.
   - `src/app/[weddingId]/page.tsx`의 `notFound()` 동작을 확인한다.

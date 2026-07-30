@@ -83,7 +83,7 @@ src/app/[weddingId]/page.tsx
 getWedding(weddingId)
         |
         v
-MOCK_DB[weddingId] 또는 younghoo_yeeun
+MOCK_DB[weddingId] 또는 null
         |
         v
 공통 데이터를 section.content에 병합
@@ -173,7 +173,7 @@ export async function getWedding(
 - 실제 DB 또는 외부 API를 호출하지 않는다.
 - 데이터 조회를 흉내 내기 위해 100ms를 기다린다.
 - `MOCK_DB[weddingId]`가 있으면 해당 데이터를 반환한다.
-- 해당 ID가 없으면 `MOCK_DB['younghoo_yeeun']`을 반환한다.
+- 해당 ID가 없으면 `null`을 반환한다.
 - 현재 `MOCK_DB`에는 `younghoo_yeeun` 한 건이 등록되어 있다.
 
 `generateMetadata()`와 청첩장 페이지는 각각 `getWedding()`을 호출한다. `ShareButton`도 브라우저의 `useEffect`에서 같은 함수를 다시 호출한다.
