@@ -7,6 +7,7 @@ import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, animate, useMotionValueEvent } from 'framer-motion';
 import { useStickyScrollRef } from '@/components/ui/StickyScrollContext';
 import { useIntroFaded } from '@/lib/preloaded-media-context';
+import Loader from '@/components/ui/Loader';
 
 const TOTAL_FRAMES = 74;
 const FRAME_RATE = 25; // 약 3초 분량 (73프레임 / 25fps)
@@ -18,6 +19,7 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
   const framesRef = useRef<HTMLImageElement[]>([]);
   const [hasEnded, setHasEnded] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isFirstFrameLoaded, setIsFirstFrameLoaded] = useState(false);
   
   const scrollRef = useStickyScrollRef();
   const { scrollYProgress } = useScroll({
@@ -45,8 +47,11 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
 
   useEffect(() => {
     let loadedCount = 0;
-    const handleLoad = () => {
+    const handleLoad = (frameIndex: number, didLoad: boolean) => {
       loadedCount++;
+      if (frameIndex === 1 && didLoad) {
+        setIsFirstFrameLoaded(true);
+      }
       if (loadedCount === TOTAL_FRAMES) {
         setIsLoaded(true);
       }
@@ -55,8 +60,8 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
     for (let i = 1; i <= TOTAL_FRAMES; i++) {
       const img = new window.Image();
       const frameNum = String(i).padStart(4, '0');
-      img.onload = handleLoad;
-      img.onerror = handleLoad;
+      img.onload = () => handleLoad(i, true);
+      img.onerror = () => handleLoad(i, false);
       img.src = `${FRAME_PATH}/frame_${frameNum}.webp`;
       framesRef.current[i] = img;
     }
@@ -75,7 +80,7 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
       if (isLoaded && introFadedOut) return;
 
       const firstImg = framesRef.current[1];
-      if (firstImg && firstImg.complete) {
+      if (firstImg && firstImg.complete && firstImg.naturalWidth > 0) {
         if (canvas.width !== firstImg.naturalWidth || canvas.height !== firstImg.naturalHeight) {
           canvas.width = firstImg.naturalWidth;
           canvas.height = firstImg.naturalHeight;
@@ -112,7 +117,7 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
       );
       
       const img = framesRef.current[frameIndex];
-      if (img && img.complete) {
+      if (img && img.complete && img.naturalWidth > 0) {
         // 캔버스 크기 조정 (첫 프레임 기준)
         if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
           canvas.width = img.naturalWidth;
@@ -150,6 +155,11 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-cover"
         />
+        {!isFirstFrameLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white">
+            <Loader />
+          </div>
+        )}
       </motion.div>
 
       {/* Scroll Hint */}
@@ -174,5 +184,3 @@ export default function VideoGreeting2({ isVisible }: SectionProps) {
     </div>
   );
 }
-
-

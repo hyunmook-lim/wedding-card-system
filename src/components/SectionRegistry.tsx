@@ -158,9 +158,11 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     }
   }, [showIntro]);
 
-  // Preloading Logic — track ALL resources so isPreloading stays true until everything is ready
+  // Preloading Logic — block only on priority resources; regular media continues in the background.
   useEffect(() => {
     preloadedMediaRef.current.clear();
+    setIsPreloading(true);
+    setLoadingProgress(0);
     const introSection = sections.find((s: SectionConfig) => s.type === 'intro');
     const introContent = introSection?.content as Record<string, unknown> | undefined;
     const introVideo: string | undefined =
@@ -323,7 +325,6 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
 
     const preload = async () => {
       await runBatch(priorityTasks);
-      await runBatch(regularTasks);
 
       if (cancelled) return;
 
@@ -332,6 +333,12 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
       completionTimer = setTimeout(() => {
         if (!cancelled) setIsPreloading(false);
       }, 300);
+
+      await runBatch(regularTasks);
+
+      if (cancelled) return;
+
+      setPreloadedMedia(new Map(preloadedMediaRef.current));
     };
 
     void preload();
