@@ -4,7 +4,9 @@ import Image from 'next/image';
 export default function BasicGallery({ config, isVisible }: SectionProps) {
   if (!isVisible) return null;
 
-  const images = (config.images as string[]) || [];
+  const images = ((config.images as string[]) || []).filter(
+    (src): src is string => Boolean(src),
+  );
 
   return (
     <section className="py-16 px-6 bg-transparent text-center">
@@ -13,7 +15,7 @@ export default function BasicGallery({ config, isVisible }: SectionProps) {
         {images.map((src: string, idx: number) => (
           <div key={idx} className="relative aspect-square bg-gray-100 relative">
              <Image 
-               src={src || '/placeholder.png'} 
+               src={src}
                alt={`Gallery image ${idx + 1}`}
                fill
                className="object-cover"

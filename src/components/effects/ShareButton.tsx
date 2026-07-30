@@ -19,7 +19,7 @@ export default function ShareButton({ weddingId }: { weddingId: string }) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
     const currentUrl = `${baseUrl}/${weddingId}`;
-    const imageUrl = `${baseUrl}${weddingData.ogImage || '/test-resources/openimage.jpeg'}`;
+    const imageUrl = `${baseUrl}${weddingData.ogImage || '/test-resources/openimage.webp'}`;
 
     // Format date and time
     const dateObj = new Date(weddingData.event.date);

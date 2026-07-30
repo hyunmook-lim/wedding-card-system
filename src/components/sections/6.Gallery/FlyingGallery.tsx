@@ -9,7 +9,7 @@ import Image from 'next/image';
 import { useTitleAnimation } from '@/hooks/useTitleAnimation';
 
 // Test gallery images
-const GALLERY_IMAGES = Array.from({ length: 20 }, (_, i) => `/test-resources/gallery/${i + 1}.jpg`);
+const GALLERY_IMAGES = Array.from({ length: 20 }, (_, i) => `/test-resources/gallery/${i + 1}.webp`);
 
 export default function FlyingGallery({ config, isVisible }: SectionProps) {
   const containerRef = useRef<HTMLElement>(null);

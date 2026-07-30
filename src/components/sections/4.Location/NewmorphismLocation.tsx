@@ -143,7 +143,7 @@ export default function NewmorphismLocation({ config, isVisible }: SectionProps)
             >
               <div className="relative w-full overflow-hidden rounded-xl bg-transparent">
                 <Image 
-                  src="/test-resources/location/wedding-hall.png" 
+                  src="/test-resources/location/wedding-hall.webp"
                   alt="Map" 
                   width={500}
                   height={312}

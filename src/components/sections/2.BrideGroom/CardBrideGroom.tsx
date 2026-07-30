@@ -108,7 +108,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              {/* Front Face */}
              <div className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden bg-white">
                 <Image 
-                  src="/test-resources/bride-groom/front1.png" 
+                  src="/test-resources/bride-groom/front1.webp"
                   alt="Groom Front" 
                   fill
                   className="object-cover"
@@ -121,7 +121,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
                style={{ transform: 'rotateY(180deg)' }}
              >
                 <Image 
-                  src="/test-resources/bride-groom/back1.png" 
+                  src="/test-resources/bride-groom/back1.webp"
                   alt="Groom Back" 
                   fill
                   className="object-cover"
@@ -141,7 +141,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
              {/* Face 1 (Back Image in this context) */}
              <div className="absolute w-full h-full backface-hidden rounded-lg overflow-hidden bg-white">
                 <Image 
-                  src="/test-resources/bride-groom/back2.png" 
+                  src="/test-resources/bride-groom/back2.webp"
                   alt="Bride Back" 
                   fill
                   className="object-cover"
@@ -154,7 +154,7 @@ export default function CardBrideGroom({ isVisible }: SectionProps) {
                style={{ transform: 'rotateY(180deg)' }}
              >
                 <Image 
-                  src="/test-resources/bride-groom/front2.png" 
+                  src="/test-resources/bride-groom/front2.webp"
                   alt="Bride Front" 
                   fill
                   className="object-cover"

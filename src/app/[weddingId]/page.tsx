@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!wedding) return {};
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://anotherwedding.vercel.app';
-  const ogImageUrl = wedding.ogImage ? `${baseUrl}${wedding.ogImage}` : `${baseUrl}/test-resources/openimage.jpeg`;
+  const ogImageUrl = wedding.ogImage ? `${baseUrl}${wedding.ogImage}` : `${baseUrl}/test-resources/openimage.webp`;
 
   return {
     title: `${wedding.couple.groom.name} & ${wedding.couple.bride.name}의 결혼식`,
@@ -100,4 +100,3 @@ export default async function WeddingPage({ params }: PageProps) {
     <SectionRegistry wedding={{ ...wedding, sections: sectionsWithData }} />
   );
 }
-

@@ -25,7 +25,7 @@ export default function AdaptiveBackground({ fadeInTargetRef }: AdaptiveBackgrou
       style={{ opacity }}
     >
       <Image 
-        src="/bg/silk-bg-fixed-dark.jpeg" 
+        src="/bg/silk-bg-fixed-dark.webp"
         alt="Adaptive Background" 
         fill 
         className="object-cover"

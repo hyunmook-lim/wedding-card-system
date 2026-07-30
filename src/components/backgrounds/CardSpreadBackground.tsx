@@ -41,7 +41,7 @@ export default function CardSpreadBackground() {
 
       return {
         id: i,
-        src: `/test-resources/bride-groom/card${num}.png`,
+        src: `/test-resources/bride-groom/card${num}.webp`,
         xOffset: baseXOffset + randomXJitter, 
         yOffset: baseYOffset + randomYJitter,
         rotation: (Math.random() - 0.5) * 50, // -25deg ~ 25deg
