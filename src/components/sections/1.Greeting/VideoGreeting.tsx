@@ -94,16 +94,17 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
   );
 
   const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isLoading, setIsLoading] = useState(true);
+  const [firstFrameState, setFirstFrameState] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [hasScrolled, setHasScrolled] = useState(false);
 
   // Preload images
   useEffect(() => {
     if (!images || images.length === 0) {
-      setIsLoading(false);
+      setFirstFrameState('error');
       return;
     }
+
+    setFirstFrameState('loading');
 
     let loadedCount = 0;
     const imgElements: HTMLImageElement[] = [];
@@ -115,13 +116,15 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
       img.onload = () => {
         loadedCount++;
         if (loadedCount === images.length) {
-          setIsLoading(false);
+          setFirstFrameState((current) => current === 'loading' ? 'loaded' : current);
         }
       };
       // If error, we still count it or handle it? Simple approach for now.
       img.onerror = () => {
         loadedCount++;
-        if (loadedCount === images.length) setIsLoading(false);
+        if (loadedCount === images.length) {
+          setFirstFrameState((current) => current === 'loading' ? 'error' : current);
+        }
       }
       imgElements.push(img);
     });
@@ -145,6 +148,8 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
       if (canvasWidth === 0 || canvasHeight === 0) return;
+
+      if (img.naturalWidth === 0 || img.naturalHeight === 0) return;
 
       const scale = Math.max(canvasWidth / img.width, canvasHeight / img.height);
       
@@ -235,6 +240,8 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
                 className="object-cover"
                 priority
                 unoptimized
+                onLoad={() => setFirstFrameState('loaded')}
+                onError={() => setFirstFrameState('error')}
               />
             </div>
             {/* 캔버스 - 스크롤 시작 후 표시 */}
@@ -245,6 +252,17 @@ export default function VideoGreeting({ config, isVisible }: SectionProps) {
                 hasScrolled ? "opacity-100" : "opacity-0"
               )}
             />
+            {firstFrameState === 'loading' && (
+              <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 text-xs tracking-widest text-neutral-500">
+                이미지를 불러오는 중입니다
+              </div>
+            )}
+            {firstFrameState === 'error' && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-neutral-100 px-8 text-center text-neutral-600">
+                <p>인사말 이미지를 불러오지 못했습니다.</p>
+                <p className="mt-2 text-xs text-neutral-400">잠시 후 다시 시도하거나 아래로 스크롤해 주세요.</p>
+              </div>
+            )}
           </>
         ) : (
            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white p-4">

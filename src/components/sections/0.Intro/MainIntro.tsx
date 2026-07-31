@@ -14,6 +14,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
   const framesRef = useRef<HTMLImageElement[]>([]);
   const [isIntroLoaded, setIsIntroLoaded] = useState(false);
   const [isFirstFrameRendered, setIsFirstFrameRendered] = useState(false);
+  const [isFirstFrameFailed, setIsFirstFrameFailed] = useState(false);
 
   useEffect(() => {
     let loadedCount = 0;
@@ -32,6 +33,11 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
           setIsFirstFrameRendered(true); // 첫 프레임 렌더링 완료 알림
         }
       }
+    };
+    firstImg.onerror = () => {
+      loadedCount++;
+      setIsFirstFrameFailed(true);
+      if (loadedCount === TOTAL_FRAMES) setIsIntroLoaded(true);
     };
     firstImg.src = `${FRAME_PATH}/frame_0001.webp`;
     framesRef.current[1] = firstImg;
@@ -67,7 +73,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
       if (isIntroLoaded) return;
       
       const firstImg = framesRef.current[1];
-      if (firstImg && firstImg.complete) {
+      if (firstImg && firstImg.complete && firstImg.naturalWidth > 0) {
         if (canvas.width !== firstImg.naturalWidth || canvas.height !== firstImg.naturalHeight) {
           canvas.width = firstImg.naturalWidth;
           canvas.height = firstImg.naturalHeight;
@@ -103,7 +109,7 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
       );
       
       const img = framesRef.current[frameIndex];
-      if (img && img.complete) {
+      if (img && img.complete && img.naturalWidth > 0) {
         if (canvas.width !== img.naturalWidth || canvas.height !== img.naturalHeight) {
           canvas.width = img.naturalWidth;
           canvas.height = img.naturalHeight;
@@ -141,6 +147,22 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
 
             {/* Loading Overlay */}
             <AnimatePresence>
+                {!isFirstFrameRendered && !isFirstFrameFailed && (
+                    <motion.div
+                        key="first-frame-loading"
+                        className="absolute inset-0 flex items-center justify-center bg-white z-20"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                    >
+                        <Loader />
+                    </motion.div>
+                )}
+                {isFirstFrameFailed && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white px-8 text-center z-20">
+                        <p className="text-sm text-neutral-600">인트로 이미지를 불러오지 못했습니다.</p>
+                        <p className="mt-2 text-xs text-neutral-400">화면을 눌러 청첩장을 계속 볼 수 있습니다.</p>
+                    </div>
+                )}
                 {isPreloading && isFirstFrameRendered && (
                     <motion.div 
                         key="loading"
@@ -157,4 +179,3 @@ export default function MainIntro({ isVisible, onEnter, isPreloading }: SectionP
     </section>
   );
 }
-

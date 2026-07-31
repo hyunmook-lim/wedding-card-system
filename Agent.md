@@ -432,7 +432,7 @@ public/test-resources/
 - intro variant가 `video`인 경우 `/test-resources/intro/frame_0001.webp`부터 `frame_0045.webp`
 - intro content에 `introVideo`가 있으면 해당 영상
 
-Priority task 전체가 끝난 300ms 후 `isPreloading`은 `false`가 된다.
+Priority task는 각 자원을 최대 7초까지만 기다린다. 실패 또는 제한 시간 초과 자원은 진행률에 반영하고, 나머지 화면 진입을 막지 않는다. 전체가 끝난 300ms 후 `isPreloading`은 `false`가 된다.
 
 ### 섹션 선행 로딩
 
@@ -448,6 +448,13 @@ intro가 닫힌 후 스크롤 위치를 기준으로 현재 섹션과 진행 방
 - 대기 중인 요청은 현재 섹션에 가까운 자원을 우선하도록 우선순위를 갱신한다.
 
 비디오 자원은 `preloadedMediaRef`의 `Map<string, HTMLVideoElement>`에 저장된다. 이미지와 음원은 로드 완료 여부만 추적한다.
+
+### 미디어 지연·실패 표시
+
+- MainIntro와 VideoGreeting은 첫 프레임이 준비될 때까지 고정된 로딩 영역을 표시한다. 첫 프레임 실패 시 빈 canvas 대신 안내 문구를 유지한다.
+- VideoGreeting2는 첫 프레임을 poster처럼 유지하고, 준비 전에는 로딩 UI를 표시한다.
+- ImageViewer는 원본 이미지가 로드되는 동안 로딩 UI를, 실패 시 오류 안내를 표시한다.
+- AR 카메라 영상 또는 AR 오버레이 영상이 실패하면 재시도 UI 또는 3D fallback을 표시한다.
 
 ## 18. 현재 이미지 표시 방식
 

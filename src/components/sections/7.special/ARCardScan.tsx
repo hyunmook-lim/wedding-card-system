@@ -76,6 +76,10 @@ export default function ARCardScan({ config, onClose }: SectionProps) {
       video.muted = true;
       video.loop = true;
       video.crossOrigin = "anonymous";
+      video.onerror = () => {
+        setStatus('error');
+        setErrorMsg('AR 영상을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.');
+      };
       videoRef.current = video;
 
       const texture = new MTHREE.VideoTexture(video);

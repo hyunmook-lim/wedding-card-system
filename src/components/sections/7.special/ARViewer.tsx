@@ -209,6 +209,12 @@ function useCameraStream() {
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.onerror = () => {
+          streamRef.current?.getTracks().forEach(track => track.stop());
+          streamRef.current = null;
+          setStatus('fallback');
+          setErrorMsg('카메라 영상을 표시하지 못했습니다.\n3D 뷰어로 전환합니다.');
+        };
         await videoRef.current.play();
       }
       setStatus('active');

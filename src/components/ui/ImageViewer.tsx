@@ -14,11 +14,13 @@ export function ImageViewer({ images, initialIndex, isOpen, onClose }: ImageView
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [direction, setDirection] = useState(0); // 슬라이드 방향 (-1: 왼쪽, 1: 오른쪽)
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const [imageState, setImageState] = useState<'loading' | 'loaded' | 'error'>('loading');
 
   // Props 변화에 따른 상태 초기화 (렌더링 중 수행하여 cascading render 방지)
   if (isOpen && !prevIsOpen) {
     setCurrentIndex(initialIndex);
     setDirection(0);
+    setImageState('loading');
     setPrevIsOpen(true);
   }
   if (!isOpen && prevIsOpen) {
@@ -39,11 +41,13 @@ export function ImageViewer({ images, initialIndex, isOpen, onClose }: ImageView
 
   const goToPrev = useCallback(() => {
     setDirection(-1);
+    setImageState('loading');
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
   }, [images.length]);
 
   const goToNext = useCallback(() => {
     setDirection(1);
+    setImageState('loading');
     setCurrentIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
   }, [images.length]);
 
@@ -123,7 +127,24 @@ export function ImageViewer({ images, initialIndex, isOpen, onClose }: ImageView
                     className="object-contain"
                     sizes="100vw"
                     priority
+                    onLoad={() => setImageState('loaded')}
+                    onError={() => setImageState('error')}
                   />
+                  {imageState !== 'loaded' && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-neutral-950 text-center text-white">
+                      {imageState === 'loading' ? (
+                        <>
+                          <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white/80" />
+                          <p className="mt-4 text-xs tracking-widest text-white/60">사진을 불러오는 중입니다</p>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-sm text-white/80">사진을 불러오지 못했습니다.</p>
+                          <p className="mt-2 text-xs text-white/45">다른 사진을 선택해 주세요.</p>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -170,10 +191,11 @@ export function ImageViewer({ images, initialIndex, isOpen, onClose }: ImageView
               {images.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={(e) => { 
-                    e.stopPropagation(); 
-                    setDirection(idx > currentIndex ? 1 : -1);
-                    setCurrentIndex(idx); 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setDirection(idx > currentIndex ? 1 : -1);
+                      setImageState('loading');
+                      setCurrentIndex(idx);
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     idx === currentIndex ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'

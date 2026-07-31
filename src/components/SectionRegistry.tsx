@@ -140,6 +140,7 @@ const GALLERY_PRELOAD_COUNT = 6;
 const NORMAL_PRELOAD_AHEAD_COUNT = 2;
 const FAST_SCROLL_PRELOAD_AHEAD_COUNT = 3;
 const MAX_CONCURRENT_MEDIA_PRELOADS = 4;
+const PRIORITY_PRELOAD_TIMEOUT_MS = 7000;
 
 function collectMediaUrls(value: unknown, urls: Set<string>) {
   if (!value) return;
@@ -285,7 +286,16 @@ export default function SectionRegistry({ wedding }: { wedding: WeddingConfig })
     const runBatch = async (tasks: Array<() => Promise<void>>) => {
       await Promise.all(tasks.map(async task => {
         try {
-          await task();
+          await new Promise<void>((resolve) => {
+            const timeout = window.setTimeout(resolve, PRIORITY_PRELOAD_TIMEOUT_MS);
+            Promise.resolve()
+              .then(task)
+              .catch(() => undefined)
+              .finally(() => {
+                window.clearTimeout(timeout);
+                resolve();
+              });
+          });
         } catch {
           // A failed resource should not block the invitation.
         } finally {
