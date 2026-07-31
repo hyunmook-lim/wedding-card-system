@@ -44,6 +44,7 @@ export interface WeddingConfig {
       lat: number;
       lng: number;
       mapUrl?: string;
+      kakaoMapUrl?: string;
     };
   };
   sections: SectionConfig[];

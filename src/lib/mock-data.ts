@@ -208,7 +208,8 @@ MOCK_DB['chanho-jihye'] = {
       address: '서울 양천구 오목로 344 청학빌딩 10층',
       lat: 37.5246,
       lng: 126.8636,
-      mapUrl: 'https://map.naver.com/p/search/%EB%A1%9C%ED%94%84%ED%8A%B8%EA%B0%80%EB%93%A0%20344',
+      mapUrl: 'https://naver.me/xyTG8t3T',
+      kakaoMapUrl: 'https://place.map.kakao.com/7885407',
     },
   },
   sections: younghooYeeunSections.map((section) => {

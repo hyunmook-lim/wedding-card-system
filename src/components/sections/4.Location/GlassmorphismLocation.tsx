@@ -51,7 +51,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
     cafe_description,
     hospitality_message 
   } = config as { 
-    location: { name: string; address: string; mapUrl?: string };
+    location: { name: string; address: string; mapUrl?: string; kakaoMapUrl?: string };
     transportation: Array<{ title: string; content: string; sub?: string; icon: string }>;
     hall_info?: string;
     cafe_link?: string;
@@ -181,7 +181,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
               variant="dock"
               className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
               containerClassName="gap-3"
-              onClick={() => window.open(`https://map.kakao.com/link/search/${encodeURIComponent(location?.name || location?.address || '')}`)}
+              onClick={() => window.open(location?.kakaoMapUrl || `https://map.kakao.com/link/search/${encodeURIComponent(location?.name || location?.address || '')}`)}
             >
                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="text-[#FEE500] drop-shadow-sm">
                  <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.558 1.712 4.8 4.32 6.098l-.81 2.952c-.094.338.1.682.438.772.116.031.245.02.351-.03l3.35-2.233c.43.048.87.073 1.31.073 4.97 0 9-3.185 9-7.115S16.97 3 12 3z" />
