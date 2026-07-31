@@ -426,32 +426,26 @@ public/test-resources/
 
 `SectionRegistry`의 `useEffect`가 현재 프리로딩을 담당한다.
 
-### URL 수집
-
-intro와 `isVisible: true` 섹션의 `content`를 재귀적으로 순회하면서 다음 확장자를 가진 문자열을 수집한다.
-
-```text
-jpeg, jpg, gif, png, webp, svg, mp4, webm, mp3, wav
-```
-
 ### Priority task
 
 - `GowunDodum` 폰트
 - intro variant가 `video`인 경우 `/test-resources/intro/frame_0001.webp`부터 `frame_0045.webp`
 - intro content에 `introVideo`가 있으면 해당 영상
 
-### Regular task
+Priority task 전체가 끝난 300ms 후 `isPreloading`은 `false`가 된다.
 
-- visible greeting variant가 `video2`인 경우 `/test-resources/video/frame_0001.webp`부터 `frame_0074.webp`
-- visible section content에서 수집한 나머지 이미지
-- 영상
-- 음원
+### 섹션 선행 로딩
 
-Priority task 전체가 끝난 후 regular task를 동시에 시작한다. Priority task가 완료된 300ms 후 `isPreloading`은 `false`가 되며, regular task는 백그라운드에서 계속 실행된다.
+intro가 닫힌 후 스크롤 위치를 기준으로 현재 섹션과 진행 방향의 다음 섹션을 선행 로딩한다.
 
-각 task가 끝날 때 `loadingProgress`를 갱신한다. regular task까지 모두 끝나면 `preloadedMedia` snapshot을 다시 갱신한다.
-
-프리로드 task는 priority batch와 regular batch 순서로 각각 한 번씩 실행된다.
+- 일반 스크롤: 현재 섹션과 다음 2개 섹션
+- 빠른 스크롤: 현재 섹션과 다음 3개 섹션
+- visible section의 `content`를 재귀적으로 순회해 이미지, 영상, 음원 URL을 찾는다.
+- `video2` greeting은 74개 프레임을 해당 섹션의 미디어로 취급한다.
+- gallery 설정 이미지의 선행 로딩 대상은 처음 6장이다.
+- URL별 Promise를 재사용해 같은 자원을 중복 요청하지 않는다.
+- 동시에 실행되는 미디어 요청은 최대 4개다.
+- 대기 중인 요청은 현재 섹션에 가까운 자원을 우선하도록 우선순위를 갱신한다.
 
 비디오 자원은 `preloadedMediaRef`의 `Map<string, HTMLVideoElement>`에 저장된다. 이미지와 음원은 로드 완료 여부만 추적한다.
 
