@@ -17,6 +17,7 @@ export interface WeddingConfig {
   couple: {
     groom: {
       name: string;
+      nameEng?: string;
       relation: string; // ex. '장남'
       parents: {
         father: string;
@@ -26,6 +27,7 @@ export interface WeddingConfig {
     };
     bride: {
       name: string;
+      nameEng?: string;
       relation: string;
       parents: {
         father: string;

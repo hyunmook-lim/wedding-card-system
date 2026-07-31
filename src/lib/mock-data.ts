@@ -182,3 +182,89 @@ export const MOCK_DB: Record<string, WeddingConfig> = {
     ogImage: '/test-resources/openimage.webp',
   }
 };
+
+const younghooYeeunSections = MOCK_DB['younghoo_yeeun'].sections;
+
+MOCK_DB['chanho-jihye'] = {
+  id: 'chanho-jihye',
+  couple: {
+    groom: {
+      name: '전찬호',
+      nameEng: 'JEON CHANHO',
+      relation: '아들',
+      parents: { father: '전종대', mother: '정미숙' },
+    },
+    bride: {
+      name: '박지혜',
+      nameEng: 'PARK JIHYE',
+      relation: '딸',
+      parents: { father: '김춘성', mother: '박경종' },
+    },
+  },
+  event: {
+    date: '2026-09-06T12:30:00',
+    location: {
+      name: '로프트가든 344, 10층',
+      address: '서울 양천구 오목로 344 청학빌딩 10층',
+      lat: 37.5246,
+      lng: 126.8636,
+      mapUrl: 'https://map.naver.com/p/search/%EB%A1%9C%ED%94%84%ED%8A%B8%EA%B0%80%EB%93%A0%20344',
+    },
+  },
+  sections: younghooYeeunSections.map((section) => {
+    if (section.id === 'sec_memories') {
+      return {
+        ...section,
+        content: {
+          ...section.content,
+          milestones: [
+            { id: 'start', date: 'OUR STORY', title: '설레었던 우리의 시작', image: '/test-resources/memories/1.webp' },
+            { id: 'period', date: 'OUR MEMORIES', title: '함께 쌓아 온\n소중한 순간들', image: '/test-resources/memories/2.webp' },
+            { id: 'promise', date: 'OUR PROMISE', title: '평생을 함께하기로\n약속한 날', image: '/test-resources/memories/3.webp' },
+            { id: 'forever', date: '2026년 09월 06일', title: '평생을 약속하는 오늘', image: '/test-resources/memories/4.webp' },
+          ],
+        },
+      };
+    }
+
+    if (section.id === 'sec_5') {
+      return {
+        ...section,
+        content: {
+          ...section.content,
+          transportation: [
+            { title: '예식장', content: '로프트가든 344, 청학빌딩 10층', icon: '/test-resources/location/subway.svg' },
+            { title: '주소', content: '서울 양천구 오목로 344 청학빌딩 10층', icon: '/test-resources/location/bus.svg' },
+            { title: '자가용', content: "네비게이션 '로프트가든 344' 검색", icon: '/test-resources/location/car.svg' },
+          ],
+          hall_info: '로프트가든 344, 10층에서\n전찬호 · 박지혜 두 사람의\n새로운 시작을 함께해 주세요.',
+          cafe_link: 'https://map.naver.com/p/search/%EB%A1%9C%ED%94%84%ED%8A%B8%EA%B0%80%EB%93%A0%20344',
+          cafe_description: '',
+          hospitality_message: '아끼는 마음들을 모아\n함께하는 발걸음마다 축복을 더해주시는\n모든 분들께 감사의 인사를 전합니다.',
+        },
+      };
+    }
+
+    if (section.id === 'sec_6') {
+      return {
+        ...section,
+        content: {
+          ...section.content,
+          groom: [
+            { relation: '신랑', name: '전찬호', bank: '우리은행', accountNumber: '1002-647-790179' },
+            { relation: '신랑 아버지', name: '전종대', bank: '하나은행', accountNumber: '1999 10238 30207' },
+            { relation: '신랑 어머니', name: '정미숙', bank: '농협', accountNumber: '302 0194 5160 21' },
+          ],
+          bride: [
+            { relation: '신부', name: '박지혜', bank: '국민은행', accountNumber: '07300204254672' },
+            { relation: '신부 아버지', name: '김춘성', bank: '국민은행', accountNumber: '511302-01-136295' },
+            { relation: '신부 어머니', name: '박경종', bank: '우리은행', accountNumber: '1002-510-270571' },
+          ],
+        },
+      };
+    }
+
+    return section;
+  }),
+  ogImage: '/test-resources/openimage.webp',
+};

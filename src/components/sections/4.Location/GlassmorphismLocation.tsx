@@ -46,12 +46,16 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
   const { 
     location, 
     transportation = [], 
+    hall_info,
     cafe_link,
+    cafe_description,
     hospitality_message 
   } = config as { 
     location: { name: string; address: string; mapUrl?: string };
     transportation: Array<{ title: string; content: string; sub?: string; icon: string }>;
+    hall_info?: string;
     cafe_link?: string;
+    cafe_description?: string;
     hospitality_message?: string;
   };
 
@@ -62,6 +66,8 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
   ];
 
   const activeTransportation = transportation.length > 0 ? transportation : defaultTransportation;
+  const hallInfo = (hall_info || '예식장 안내는 추후 업데이트됩니다.').replace(/\[\/?h\]/g, '');
+  const cafeDescription = (cafe_description || '예식장 주변의 카페 정보를 확인하실 수 있습니다.').replace(/\[\/?h\]/g, '');
 
   const fadeInUp: Variants = {
     hidden: { opacity: 0, y: 30 },
@@ -175,7 +181,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
               variant="dock"
               className="px-5 py-2.5 rounded-full flex items-center justify-center transition-all hover:scale-105 active:scale-95 group"
               containerClassName="gap-3"
-              onClick={() => window.open('https://kko.to/yv_K3oie5q')}
+              onClick={() => window.open(`https://map.kakao.com/link/search/${encodeURIComponent(location?.name || location?.address || '')}`)}
             >
                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" className="text-[#FEE500] drop-shadow-sm">
                  <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.558 1.712 4.8 4.32 6.098l-.81 2.952c-.094.338.1.682.438.772.116.031.245.02.351-.03l3.35-2.233c.43.048.87.073 1.31.073 4.97 0 9-3.185 9-7.115S16.97 3 12 3z" />
@@ -204,33 +210,8 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
             className="flex flex-col items-center w-full text-center mt-8 px-2"
           >
             <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-            <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep font-medium">
-              저희의 예식은 두 곳의 복층 공간에서 진행됩니다.<br/>
-              하객분들의 편의에 맞춰<br/> 편안한 자리를 선택해 주세요.<br/><br/>
-              
-              <span className="font-bold text-black/80">1층 메인홀:</span> 예식에 오롯이 집중하며 온전히 즐긴 후<br/>
-              <span className="relative inline-block font-bold text-black/80 px-1">
-                <motion.span 
-                  initial={{ scaleX: 0 }}
-                  animate={revealed.hall_info ? { scaleX: 1 } : { scaleX: 0 }}
-                  transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
-                  style={{ transformOrigin: "left" }}
-                  className="absolute bottom-0.5 left-0 w-full h-[8px] bg-[#a3e635]/30 -z-10" 
-                />
-                예식이 끝난 후 식사
-              </span>를 하실 분들을 위한 장소입니다.<br/><br/>
- 
-              <span className="font-bold text-black/80">2층 테라스홀:</span> <span className="relative inline-block font-bold text-black/80 px-1">
-                <motion.span 
-                  initial={{ scaleX: 0 }}
-                  animate={revealed.hall_info ? { scaleX: 1 } : { scaleX: 0 }}
-                  transition={{ delay: 1.2, duration: 0.8, ease: "easeOut" }}
-                  style={{ transformOrigin: "left" }}
-                  className="absolute bottom-0.5 left-0 w-full h-[8px] bg-[#a3e635]/30 -z-10" 
-                />
-                예식과 식사를 동시
-              </span>에 편안하고<br/>
-              여유롭게 즐기실 분들을 위한 자리입니다.
+            <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep whitespace-pre-line font-medium">
+              {hallInfo}
             </Typography>
             <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-8" />
           </motion.div>
@@ -265,19 +246,8 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
               className="flex flex-col items-center w-full text-center px-2 mb-8"
             >
               <div className="w-6 h-[0.5px] bg-black/10 mb-6" />
-              <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep font-medium">
-                더운 햇살이 내리쬐는 여름 날<br/>
-                소중한 시간을 내어 와주신 하객분들을 위해<br/><br/>
-                식장 근처 <span className="relative inline-block font-bold text-black/80 px-1">
-                  <motion.span 
-                    initial={{ scaleX: 0 }}
-                    animate={revealed.cafe ? { scaleX: 1 } : { scaleX: 0 }}
-                    transition={{ delay: 0.8, duration: 0.8, ease: "easeOut" }}
-                    style={{ transformOrigin: "left" }}
-                    className="absolute bottom-0.5 left-0 w-full h-[8px] bg-[#a3e635]/30 -z-10" 
-                  />
-                  예쁘고 맛있는 카페들
-                </span>을 공유합니다.
+              <Typography className="text-[0.85rem] text-black/60 leading-[1.8] break-keep whitespace-pre-line font-medium">
+                {cafeDescription}
               </Typography>
             </motion.div>
 
