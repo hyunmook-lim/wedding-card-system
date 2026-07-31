@@ -151,7 +151,7 @@
   - CDN 이미지 변환과 Next.js 이미지 최적화 중 어느 계층이 변환을 담당할지 결정한다.
   - 이중 변환과 불필요한 Next.js 서버 중계를 방지한다.
 
-- [ ] AlbumGallery 점진적 로딩 적용
+- [x] AlbumGallery 점진적 로딩 적용
   - 최초에는 viewport에 필요한 썸네일만 요청한다.
   - 다음 행은 viewport 진입 직전에 요청한다.
   - 전체 화면 뷰어를 열 때 large variant를 요청한다.
