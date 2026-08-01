@@ -46,6 +46,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
   const { 
     location, 
     transportation = [], 
+    showExtraInfo = true,
     hall_info,
     cafe_link,
     cafe_description,
@@ -53,6 +54,7 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
   } = config as { 
     location: { name: string; address: string; mapUrl?: string; kakaoMapUrl?: string };
     transportation: Array<{ title: string; content: string; sub?: string; icon: string }>;
+    showExtraInfo?: boolean;
     hall_info?: string;
     cafe_link?: string;
     cafe_description?: string;
@@ -202,8 +204,10 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
             </LiquidGlassWidget>
           </motion.div>
 
-          {/* Hall Info Message */}
-          <motion.div
+          {showExtraInfo && (
+            <>
+              {/* Hall Info Message */}
+              <motion.div
             initial="hidden"
             animate={revealed.hall_info ? "visible" : "hidden"}
             variants={fadeInUp}
@@ -214,10 +218,10 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
               {hallInfo}
             </Typography>
             <div className="w-1.5 h-1.5 rounded-full bg-black/5 mt-8" />
-          </motion.div>
+              </motion.div>
 
-          {/* Cafe Section */}
-          <div className="flex flex-col items-center w-full mt-12 pb-10">
+              {/* Cafe Section */}
+              <div className="flex flex-col items-center w-full mt-12 pb-10">
             {/* Styled Cafe Header */}
             <motion.div
               initial="hidden"
@@ -266,7 +270,9 @@ export default function GlassmorphismLocation({ config, isVisible }: SectionProp
                  </span>
               </LiquidGlassWidget>
             </motion.div>
-          </div>
+              </div>
+            </>
+          )}
 
           {/* Hospitality Message (Moved from Memories) */}
           <motion.div

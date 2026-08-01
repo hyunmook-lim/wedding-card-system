@@ -238,6 +238,7 @@ MOCK_DB['chanho-jihye'] = {
             { title: '주소', content: '서울 양천구 오목로 344 청학빌딩 10층', icon: '/test-resources/location/bus.svg' },
             { title: '자가용', content: "네비게이션 '로프트가든 344' 검색", icon: '/test-resources/location/car.svg' },
           ],
+          showExtraInfo: false,
           hall_info: '로프트가든 344, 10층에서\n전찬호 · 박지혜 두 사람의\n새로운 시작을 함께해 주세요.',
           cafe_link: 'https://map.naver.com/p/search/%EB%A1%9C%ED%94%84%ED%8A%B8%EA%B0%80%EB%93%A0%20344',
           cafe_description: '',
